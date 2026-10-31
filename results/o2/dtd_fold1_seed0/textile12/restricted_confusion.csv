@@ -1,0 +1,13 @@
+,braided,fibrous,frilly,gauzy,interlaced,knitted,lacelike,matted,meshed,pleated,woven,wrinkled
+braided,26,0,0,0,3,5,0,0,1,0,3,2
+fibrous,1,26,0,1,0,0,0,10,0,0,1,1
+frilly,2,0,35,1,0,1,0,0,0,1,0,0
+gauzy,1,1,1,32,0,0,0,0,0,1,0,4
+interlaced,1,0,0,0,33,1,4,0,0,0,0,1
+knitted,1,0,1,0,0,38,0,0,0,0,0,0
+lacelike,0,1,0,1,0,0,38,0,0,0,0,0
+matted,3,5,0,0,0,2,0,28,0,1,0,1
+meshed,1,0,0,1,1,0,1,0,36,0,0,0
+pleated,1,0,2,3,1,0,1,0,0,31,0,1
+woven,6,0,0,2,2,2,1,0,4,0,23,0
+wrinkled,0,0,2,1,1,0,0,1,0,0,0,35

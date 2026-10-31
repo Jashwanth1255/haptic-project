@@ -2,6 +2,7 @@
 
     python -m vision.cli check --dataset dtd --data <path>      verify the splits
     python -m vision.cli train --dataset dtd --data <path>      fine-tune and report
+    python -m vision.cli textile --data <path> --checkpoint <path>   12-way DTD scores
 
 Re-running `train` with the same --out resumes from the last finished epoch.
 A run given --limit-per-class is a smoke run and its numbers are not results.
@@ -31,16 +32,78 @@ def _limit(items: list, n: int) -> list:
     return kept
 
 
+def _textile(a, test_items, classes) -> int:
+    import hashlib
+    import json
+
+    import pandas as pd
+    import torch
+
+    from . import textile as X
+    from . import train as T
+
+    path = Path(a.checkpoint)
+    if path.is_dir():
+        found = sorted(path.rglob("best.pt"))
+        if len(found) != 1:
+            raise RuntimeError(f"expected one best.pt under {path}, found {found}")
+        path = found[0]
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    ck = torch.load(path, map_location="cpu", weights_only=True)
+    if ck["classes"] != list(classes):
+        raise RuntimeError(f"{path} was trained on a different class list")
+    if ck["config"]["limit_per_class"]:
+        raise RuntimeError(f"{path} is a smoke run")
+
+    model = T.build_model(len(classes), pretrained=False)
+    model.load_state_dict(ck["model"])
+    keep = set(X.subset_indices(classes))
+    ds = V.ImageList([it for it in test_items if it[1] in keep],
+                     V.transforms_for(train=False))
+    logits, y = X.logits_of(model, ds, "cpu", num_workers=a.workers)
+    s = X.score_subset(logits, y, classes)
+    r, f = s["restricted"], s["filtered"]
+
+    print(f"checkpoint {path}\n  sha256 {digest}\n")
+    print(f"unrestricted (47-way)  n={s['n']}  accuracy "
+          f"{s['unrestricted_accuracy']:.4f}")
+    print(f"filtered               n={f.n}  accuracy {f.top1:.4f}  "
+          f"macro F1 {f.macro_f1:.4f}")
+    print(f"restricted (12-way)    n={r.n}  accuracy {r.top1:.4f}  "
+          f"macro F1 {r.macro_f1:.4f}\n")
+    print(r.per_class.round(3).to_string(index=False))
+
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "textile_metrics.json").write_text(json.dumps({
+        "checkpoint_sha256": digest, "best_epoch": ck["epoch"], "n": s["n"],
+        "n_predicted_outside": s["n_predicted_outside"],
+        "unrestricted_accuracy": s["unrestricted_accuracy"],
+        "filtered": f.as_dict(), "restricted": r.as_dict(),
+    }, indent=2))
+    r.per_class.to_csv(out / "restricted_per_class.csv", index=False)
+    pd.DataFrame(r.confusion, index=r.classes,
+                 columns=r.classes).to_csv(out / "restricted_confusion.csv")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="vision.cli")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     pc = sub.add_parser("check", help="verify the published splits on disk")
     pt = sub.add_parser("train", help="fine-tune and report on the test split")
-    for p in (pc, pt):
-        p.add_argument("--dataset", required=True, choices=sorted(V.SPECS))
+    px = sub.add_parser("textile", help="score DTD's textile subset, masked to 12 ways")
+    for p in (pc, pt, px):
+        p.add_argument("--dataset", default="dtd" if p is px else None,
+                       required=p is not px, choices=sorted(V.SPECS))
         p.add_argument("--data", required=True, help="dataset root or any parent")
         p.add_argument("--fold", type=int, default=1)
+
+    px.add_argument("--checkpoint", required=True,
+                    help="best.pt, or a directory holding exactly one")
+    px.add_argument("--out", default="runs/textile")
+    px.add_argument("--workers", type=int, default=2)
 
     pt.add_argument("--out", default="runs")
     pt.add_argument("--epochs", type=int)
@@ -64,6 +127,8 @@ def main(argv=None) -> int:
     print(f"{spec.name} fold {a.fold}: {len(classes)} classes, {sizes}  ({root})")
     if a.cmd == "check":
         return 0
+    if a.cmd == "textile":
+        return _textile(a, splits["test"], classes)
 
     import torch
 
