@@ -395,6 +395,23 @@ def normalise(d: Descriptor) -> dict:
 NORMALISED_CORE = ("wavelength_mm", "roughness_index", "pattern", "burst_spacing_mm")
 
 
+def denormalise(wavelength_mm: float, roughness_index: float, pattern: float,
+                burst_spacing_mm: float, velocity_mm_s: float,
+                force_n: float) -> dict:
+    """Inverse of `normalise`: re-apply a query velocity and force.
+
+    Assumes the relations in `normalise` hold. Whether they hold for real fabric
+    is Objective 3's experiment, so this must not be read as established physics.
+    """
+    v, fo = velocity_mm_s, force_n
+    return {
+        "frequency_hz": v / wavelength_mm,
+        "intensity": roughness_index * fo * np.sqrt(v / REF_VELOCITY_MM_S),
+        "pattern": pattern,
+        "duration_ms": 1000.0 * burst_spacing_mm / v,
+    }
+
+
 def normalise_frame(df):
     """Add the normalised columns to a descriptor DataFrame."""
     import pandas as pd

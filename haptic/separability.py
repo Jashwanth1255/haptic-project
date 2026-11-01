@@ -152,16 +152,21 @@ def anova_by_dimension(df: pd.DataFrame,
     # tests at alpha=0.05 give roughly a 1-in-5 chance of at least one false
     # positive; the corrected column is the one to quote.
     out["p_holm"] = np.nan
-    valid = out["p_value"].notna()
-    if valid.any():
-        idx = out.index[valid]
-        order = out.loc[idx, "p_value"].sort_values().index
-        m = len(order)
-        running = 0.0
-        for rank, i in enumerate(order):
-            adj = min(1.0, out.at[i, "p_value"] * (m - rank))
-            running = max(running, adj)     # Holm is monotone non-decreasing
-            out.at[i, "p_holm"] = running
+    out["p_holm"] = holm_adjust(out["p_value"].values)
+    return out
+
+
+def holm_adjust(p_values) -> np.ndarray:
+    """Holm-Bonferroni adjusted p-values. NaNs stay NaN and are not counted."""
+    p = np.asarray(p_values, dtype=float)
+    out = np.full(p.shape, np.nan)
+    idx = np.flatnonzero(np.isfinite(p))
+    order = idx[np.argsort(p[idx])]
+    running = 0.0
+    for rank, i in enumerate(order):
+        adj = min(1.0, p[i] * (len(order) - rank))
+        running = max(running, adj)     # Holm is monotone non-decreasing
+        out[i] = running
     return out
 
 
