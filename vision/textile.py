@@ -51,6 +51,29 @@ def logits_of(model, dataset, device, batch_size: int = 64,
     return torch.cat(logits), torch.cat(trues).numpy()
 
 
+def unseen_mask(items, seen_items) -> np.ndarray:
+    """True for each of `items` whose image is not in `seen_items`.
+
+    DTD's folds are resplits of one image pool, so a fold's test split shares
+    images with fold 1's. The class list was chosen after fold 1's test results
+    were seen; only images outside that split are unseen by that choice.
+    """
+    seen = {path.name for path, _ in seen_items}
+    return np.array([path.name not in seen for path, _ in items])
+
+
+def summarise_folds(values) -> dict:
+    """Mean and sample standard deviation across folds.
+
+    Fold test sets overlap, so the std describes spread between folds and is not
+    a standard error: it does not shrink as it would for independent samples.
+    """
+    v = np.asarray(values, dtype=float)
+    if v.size < 2:
+        raise ValueError("need at least two folds")
+    return {"folds": int(v.size), "mean": float(v.mean()), "std": float(v.std(ddof=1))}
+
+
 def score_subset(logits: torch.Tensor, y, classes,
                  subset=TEXTILE_CLASSES) -> dict:
     """All three scores for images whose true class is in `subset`."""

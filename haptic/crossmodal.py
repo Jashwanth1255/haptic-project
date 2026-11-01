@@ -63,14 +63,39 @@ def _check_square(m: np.ndarray, name: str) -> None:
         raise ValueError(f"{name} holds a non-finite value")
 
 
-def mantel_test(confusion, distance, n_permutations: int = 9999,
-                alternative: str = "two-sided", seed: int = 0) -> MantelResult:
+def _check_labels(confusion_labels, distance_labels, size: int) -> None:
+    """Refuse anything but the same N unique names in the same order.
+
+    Mismatches raise rather than being reordered: a misaligned matrix is a bug
+    upstream, and the correlation it produces would look perfectly plausible.
+    """
+    if confusion_labels is None or distance_labels is None:
+        raise ValueError("labels are required: bare arrays cannot be aligned")
+    a, b = [str(x) for x in confusion_labels], [str(x) for x in distance_labels]
+    for name, labels in (("confusion", a), ("distance", b)):
+        if len(labels) != size:
+            raise ValueError(f"{name}_labels has {len(labels)} names for "
+                             f"{size} materials")
+        if len(set(labels)) != size:
+            raise ValueError(f"{name}_labels holds duplicate names")
+    if set(a) != set(b):
+        raise ValueError(f"labels mismatch: {sorted(set(a) ^ set(b))}")
+    if a != b:
+        at = next(i for i, (x, y) in enumerate(zip(a, b)) if x != y)
+        raise ValueError(f"labels are in a different order, first at position "
+                         f"{at}: {a[at]!r} vs {b[at]!r}")
+
+
+def mantel_test(confusion, distance, *, confusion_labels, distance_labels,
+                n_permutations: int = 9999, alternative: str = "two-sided",
+                seed: int = 0) -> MantelResult:
     """Spearman correlation between confusability and haptic similarity.
 
     `confusion` is a matrix of counts and `distance` a symmetric haptic distance
-    matrix, both over the same N materials **in the same order**. Diagonals are
-    excluded: a material's distance to itself and its accuracy say nothing about
-    a pair.
+    matrix. Each must come with its material labels, which have to be identical
+    in content and order; there is no way to call this without them. Diagonals
+    are excluded: a material's distance to itself and its accuracy say nothing
+    about a pair.
 
     Ties are expected, since most confusion cells are zero, and get average
     ranks. The p-value counts the observed labelling as one permutation, so it
@@ -90,6 +115,7 @@ def mantel_test(confusion, distance, n_permutations: int = 9999,
     if (dist < 0).any():
         raise ValueError("distance holds a negative value")
     k = len(dist)
+    _check_labels(confusion_labels, distance_labels, k)
     if k < MIN_MATERIALS:
         raise ValueError(f"need at least {MIN_MATERIALS} materials, got {k}")
 

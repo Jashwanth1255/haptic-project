@@ -78,6 +78,48 @@ def test_missing_class_is_refused():
         X.subset_indices(("a", "b"), ("a", "z"))
 
 
+def test_unseen_mask_drops_only_the_seen_images():
+    a, b, c = Path("x/a.jpg"), Path("x/b.jpg"), Path("x/c.jpg")
+    assert X.unseen_mask([(a, 0), (b, 1), (c, 2)], [(b, 1)]).tolist() == [
+        True, False, True]
+
+
+def test_every_image_seen_when_a_fold_is_compared_with_itself():
+    items = [(Path("x/a.jpg"), 0), (Path("x/b.jpg"), 1)]
+    assert not X.unseen_mask(items, items).any()
+
+
+def test_summarise_folds_uses_the_sample_std():
+    s = X.summarise_folds([0.70, 0.80, 0.90])
+    assert s["folds"] == 3
+    assert s["mean"] == pytest.approx(0.80)
+    assert s["std"] == pytest.approx(0.10)
+
+
+def test_one_fold_has_no_spread():
+    with pytest.raises(ValueError, match="two folds"):
+        X.summarise_folds([0.8])
+
+
+def _checkpoint(path, fold, classes):
+    torch.save({"classes": list(classes), "epoch": 0, "model": {},
+                "config": {"fold": fold, "limit_per_class": 0}}, path)
+
+
+def test_another_folds_model_is_refused(tmp_path):
+    """Fold 1's model trained on fold 2's test images. Scoring it there would
+    report training accuracy as test accuracy."""
+    from types import SimpleNamespace
+
+    from vision import cli as C
+    classes = ("a", "b")
+    ck = tmp_path / "best.pt"
+    _checkpoint(ck, fold=1, classes=classes)
+    a = SimpleNamespace(checkpoint=str(ck), fold=2, workers=0, out=str(tmp_path))
+    with pytest.raises(RuntimeError, match="leak test images"):
+        C._textile(a, [], classes, [])
+
+
 def test_list_matches_the_preregistration():
     text = (Path(__file__).parents[1] / "PREREGISTRATION.md").read_text()
     listed = [l.split(". ", 1)[1].strip() for l in text.splitlines()

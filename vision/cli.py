@@ -32,7 +32,7 @@ def _limit(items: list, n: int) -> list:
     return kept
 
 
-def _textile(a, test_items, classes) -> int:
+def _textile(a, test_items, classes, seen_items) -> int:
     import hashlib
     import json
 
@@ -54,15 +54,25 @@ def _textile(a, test_items, classes) -> int:
         raise RuntimeError(f"{path} was trained on a different class list")
     if ck["config"]["limit_per_class"]:
         raise RuntimeError(f"{path} is a smoke run")
+    if ck["config"]["fold"] != a.fold:
+        # Folds resplit one image pool: another fold's model trained on this
+        # fold's test images, and would score them as if unseen.
+        raise RuntimeError(f"{path} was trained on fold {ck['config']['fold']}; "
+                           f"scoring it on fold {a.fold} would leak test images")
 
     model = T.build_model(len(classes), pretrained=False)
     model.load_state_dict(ck["model"])
     keep = set(X.subset_indices(classes))
-    ds = V.ImageList([it for it in test_items if it[1] in keep],
-                     V.transforms_for(train=False))
-    logits, y = X.logits_of(model, ds, "cpu", num_workers=a.workers)
+    items = [it for it in test_items if it[1] in keep]
+    ds = V.ImageList(items, V.transforms_for(train=False))
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model.to(device)
+    logits, y = X.logits_of(model, ds, device, num_workers=a.workers)
     s = X.score_subset(logits, y, classes)
     r, f = s["restricted"], s["filtered"]
+    unseen = X.unseen_mask(items, seen_items)
+    u = X.score_subset(logits[torch.from_numpy(unseen)], y[unseen],
+                       classes)["restricted"] if unseen.any() else None
 
     print(f"checkpoint {path}\n  sha256 {digest}\n")
     print(f"unrestricted (47-way)  n={s['n']}  accuracy "
@@ -70,7 +80,11 @@ def _textile(a, test_items, classes) -> int:
     print(f"filtered               n={f.n}  accuracy {f.top1:.4f}  "
           f"macro F1 {f.macro_f1:.4f}")
     print(f"restricted (12-way)    n={r.n}  accuracy {r.top1:.4f}  "
-          f"macro F1 {r.macro_f1:.4f}\n")
+          f"macro F1 {r.macro_f1:.4f}")
+    if u is not None:
+        print(f"restricted, unseen     n={u.n}  accuracy {u.top1:.4f}  "
+              f"macro F1 {u.macro_f1:.4f}  (outside fold 1's test split)")
+    print()
     print(r.per_class.round(3).to_string(index=False))
 
     out = Path(a.out)
@@ -79,7 +93,8 @@ def _textile(a, test_items, classes) -> int:
         "checkpoint_sha256": digest, "best_epoch": ck["epoch"], "n": s["n"],
         "n_predicted_outside": s["n_predicted_outside"],
         "unrestricted_accuracy": s["unrestricted_accuracy"],
-        "filtered": f.as_dict(), "restricted": r.as_dict(),
+        "fold": a.fold, "filtered": f.as_dict(), "restricted": r.as_dict(),
+        "restricted_unseen": u.as_dict() if u is not None else None,
     }, indent=2))
     r.per_class.to_csv(out / "restricted_per_class.csv", index=False)
     pd.DataFrame(r.confusion, index=r.classes,
@@ -128,7 +143,8 @@ def main(argv=None) -> int:
     if a.cmd == "check":
         return 0
     if a.cmd == "textile":
-        return _textile(a, splits["test"], classes)
+        return _textile(a, splits["test"], classes,
+                        V.read_split(root, spec, "test", fold=1))
 
     import torch
 

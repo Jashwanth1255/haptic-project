@@ -11,6 +11,16 @@ from scipy.stats import spearmanr
 from haptic import crossmodal as X
 
 
+def _names(m):
+    return [f"m{i}" for i in range(len(m))]
+
+
+def _mantel(c, d, **kw):
+    """Correctly labelled call, for tests about something else."""
+    return X.mantel_test(c, d, confusion_labels=_names(c),
+                         distance_labels=_names(d), **kw)
+
+
 def _points(k, rng):
     return squareform(pdist(rng.normal(size=(k, 2))))
 
@@ -36,7 +46,7 @@ def _dist_and_conf(k=12, seed=0):
 def test_perfect_positive_is_recovered_and_significant():
     """Confusability a strictly decreasing function of distance: rho is exactly 1."""
     d, c = _dist_and_conf()
-    r = X.mantel_test(c, d, n_permutations=999)
+    r = _mantel(c, d, n_permutations=999)
     assert r.rho == pytest.approx(1.0)
     assert r.p_value == pytest.approx(1 / 1000)
 
@@ -44,7 +54,7 @@ def test_perfect_positive_is_recovered_and_significant():
 def test_perfect_negative_is_recovered():
     d, _ = _dist_and_conf()
     c = _confusion(0.5 * d / d.max() / len(d))
-    r = X.mantel_test(c, d, n_permutations=999)
+    r = _mantel(c, d, n_permutations=999)
     assert r.rho == pytest.approx(-1.0)
     assert r.p_value < 0.01
 
@@ -55,7 +65,7 @@ def test_rho_equals_scipy_on_the_off_diagonal_with_ties():
     d = _points(k, rng)
     s = rng.integers(0, 4, (k, k)) * 0.002     # heavily tied, like real confusions
     s = (s + s.T) / 2
-    r = X.mantel_test(_confusion(s), d, n_permutations=9)
+    r = _mantel(_confusion(s), d, n_permutations=9)
     upper = np.triu_indices(k, 1)
     assert r.rho == pytest.approx(spearmanr(s[upper], -d[upper]).statistic)
 
@@ -67,7 +77,7 @@ def test_noisy_real_relationship_is_detected():
     noise = rng.normal(0, 0.15, (k, k))
     s = np.exp(-d) + (noise + noise.T) / 2
     s = 0.5 * (s - s.min()) / np.ptp(s) / k
-    r = X.mantel_test(_confusion(s), d, n_permutations=999)
+    r = _mantel(_confusion(s), d, n_permutations=999)
     assert 0.3 < r.rho < 0.99
     assert r.p_value < 0.01
 
@@ -78,7 +88,7 @@ def test_null_case_comes_back_non_significant():
     k = 16
     d = _points(k, rng)
     other = _points(k, rng)
-    r = X.mantel_test(_confusion(0.5 * np.exp(-other) / k), d, n_permutations=999)
+    r = _mantel(_confusion(0.5 * np.exp(-other) / k), d, n_permutations=999)
     assert r.p_value > 0.05
     assert abs(r.rho) < 0.2
 
@@ -92,7 +102,7 @@ def test_false_positive_rate_is_near_alpha():
     for i in range(runs):
         d = _points(k, rng)
         other = _points(k, rng)
-        r = X.mantel_test(_confusion(0.5 * np.exp(-other) / k), d,
+        r = _mantel(_confusion(0.5 * np.exp(-other) / k), d,
                           n_permutations=199, seed=i)
         rejected += r.p_value < 0.05
     assert 0.02 <= rejected / runs <= 0.09, f"rejected {rejected}/{runs}"
@@ -100,27 +110,27 @@ def test_false_positive_rate_is_near_alpha():
 
 def test_n_counts_pairs_not_cells():
     d, c = _dist_and_conf(k=8)
-    r = X.mantel_test(c, d, n_permutations=9)
+    r = _mantel(c, d, n_permutations=9)
     assert r.n == 28 and r.n_materials == 8
 
 
 def test_p_value_floor_and_ceiling():
     d, c = _dist_and_conf()
-    r = X.mantel_test(c, d, n_permutations=99)
+    r = _mantel(c, d, n_permutations=99)
     assert r.p_value == pytest.approx(0.01)
-    assert X.mantel_test(c, d, n_permutations=99, alternative="less").p_value == 1.0
+    assert _mantel(c, d, n_permutations=99, alternative="less").p_value == 1.0
 
 
 def test_one_sided_alternatives_split_correctly():
     d, c = _dist_and_conf()
-    assert X.mantel_test(c, d, n_permutations=99, alternative="greater").p_value < 0.05
-    assert X.mantel_test(c, d, n_permutations=99, alternative="less").p_value > 0.9
+    assert _mantel(c, d, n_permutations=99, alternative="greater").p_value < 0.05
+    assert _mantel(c, d, n_permutations=99, alternative="less").p_value > 0.9
 
 
 def test_same_seed_same_answer():
     d, c = _dist_and_conf()
-    a = X.mantel_test(c, d, n_permutations=99, seed=5)
-    assert a == X.mantel_test(c, d, n_permutations=99, seed=5)
+    a = _mantel(c, d, n_permutations=99, seed=5)
+    assert a == _mantel(c, d, n_permutations=99, seed=5)
 
 
 def test_symmetrise_by_hand_with_unequal_supports():
@@ -146,8 +156,8 @@ def test_confusion_direction_does_not_matter():
     d = _points(k, rng)
     c = _balanced_counts(k, 40, rng)
     assert not np.array_equal(c, c.T)
-    assert X.mantel_test(c, d, n_permutations=99).rho == pytest.approx(
-        X.mantel_test(c.T, d, n_permutations=99).rho)
+    assert _mantel(c, d, n_permutations=99).rho == pytest.approx(
+        _mantel(c.T, d, n_permutations=99).rho)
 
 
 def test_tied_pairs_stay_tied_after_averaging():
@@ -160,27 +170,27 @@ def test_tied_pairs_stay_tied_after_averaging():
     c = _balanced_counts(k, 40, rng)
     upper = np.triu_indices(k, 1)
     exact = spearmanr((c + c.T)[upper], -d[upper]).statistic
-    assert X.mantel_test(c, d, n_permutations=9).rho == pytest.approx(exact)
+    assert _mantel(c, d, n_permutations=9).rho == pytest.approx(exact)
 
 
 def test_diagonals_do_not_enter_the_correlation():
     d, c = _dist_and_conf()
-    base = X.mantel_test(c, d, n_permutations=9).rho
+    base = _mantel(c, d, n_permutations=9).rho
     noisy = d.copy()
     np.fill_diagonal(noisy, 123.0)
-    assert X.mantel_test(c, noisy, n_permutations=9).rho == pytest.approx(base)
+    assert _mantel(c, noisy, n_permutations=9).rho == pytest.approx(base)
 
 
 def test_scaling_counts_changes_nothing():
     d, c = _dist_and_conf()
-    assert X.mantel_test(c * 40, d, n_permutations=9).rho == pytest.approx(
-        X.mantel_test(c, d, n_permutations=9).rho)
+    assert _mantel(c * 40, d, n_permutations=9).rho == pytest.approx(
+        _mantel(c, d, n_permutations=9).rho)
 
 
 def test_scaling_distance_changes_nothing():
     d, c = _dist_and_conf()
-    assert X.mantel_test(c, d * 7, n_permutations=9).rho == pytest.approx(
-        X.mantel_test(c, d, n_permutations=9).rho)
+    assert _mantel(c, d * 7, n_permutations=9).rho == pytest.approx(
+        _mantel(c, d, n_permutations=9).rho)
 
 
 GOOD = np.ones((4, 4)) - np.eye(4)
@@ -199,13 +209,56 @@ GOOD = np.ones((4, 4)) - np.eye(4)
 ])
 def test_bad_input_raises(conf, dist, match):
     with pytest.raises(ValueError, match=match):
-        X.mantel_test(conf, dist, n_permutations=9)
+        _mantel(conf, dist, n_permutations=9)
+
+
+def test_bare_arrays_are_rejected():
+    d, c = _dist_and_conf(k=6)
+    with pytest.raises(TypeError, match="confusion_labels"):
+        X.mantel_test(c, d)
+    with pytest.raises(TypeError, match="distance_labels"):
+        X.mantel_test(c, d, confusion_labels=_names(c))
+
+
+def test_none_labels_are_rejected():
+    d, c = _dist_and_conf(k=6)
+    with pytest.raises(ValueError, match="labels are required"):
+        X.mantel_test(c, d, confusion_labels=None, distance_labels=None)
+
+
+def test_labels_in_a_different_order_are_rejected():
+    """The failure this guards: the same materials, shuffled, give a plausible
+    and wrong rho. Here the true relationship is perfect."""
+    d, c = _dist_and_conf(k=6)
+    names = _names(c)
+    swapped = [names[1], names[0], *names[2:]]
+    with pytest.raises(ValueError, match="different order.*position 0"):
+        X.mantel_test(c, d, confusion_labels=names, distance_labels=swapped)
+
+
+@pytest.mark.parametrize("other, match", [
+    (["m0", "m1", "m2", "m3", "m4", "zz"], "mismatch"),
+    (["m0", "m1", "m2", "m3", "m4"], "5 names for 6"),
+    (["m0", "m1", "m2", "m3", "m4", "m4"], "duplicate"),
+])
+def test_mismatched_labels_are_rejected(other, match):
+    d, c = _dist_and_conf(k=6)
+    with pytest.raises(ValueError, match=match):
+        X.mantel_test(c, d, confusion_labels=_names(c), distance_labels=other)
+
+
+def test_matching_labels_change_nothing():
+    d, c = _dist_and_conf(k=6)
+    names = ["silk", "wool", "denim", "linen", "felt", "fleece"]
+    a = X.mantel_test(c, d, confusion_labels=names, distance_labels=list(names),
+                      n_permutations=99)
+    assert a == _mantel(c, d, n_permutations=99)
 
 
 def test_constant_confusability_is_undefined():
     d, _ = _dist_and_conf(k=6)
     with pytest.raises(ValueError, match="confusability is constant"):
-        X.mantel_test(np.eye(6) * 40, d, n_permutations=9)
+        _mantel(np.eye(6) * 40, d, n_permutations=9)
 
 
 def test_docstring_carries_the_warning():
