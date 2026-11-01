@@ -2,6 +2,10 @@
 
 Team 15. Working code for Objective 1 of the tactile virtualization project.
 
+Objective 4, the rendering interface, is described in
+[docs/OBJECTIVE4.md](docs/OBJECTIVE4.md). A phone cannot reproduce a texture's
+carrier frequency through `navigator.vibrate()`, and that document says what it can do.
+
 ```
 haptic/
   descriptor.py     band-pass -> FFT -> RMS -> 4-D descriptor, + velocity normalisation

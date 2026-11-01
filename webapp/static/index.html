@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feel This Fabric</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>Feel this fabric</h1>
+  <p class="lede">Choose a fabric image to see its haptic descriptor and play it as a phone vibration.</p>
+</header>
+
+<section class="notices" aria-label="Limits of this demo">
+  <div id="support" class="notice" role="status"></div>
+  <div class="notice">
+    <strong>The phone cannot play the texture itself.</strong>
+    A web page can only switch the motor on and off, about 25 to 50 times a second at
+    best, with no strength control. Texture energy sits at 20 to 1000 Hz, so that
+    vibration is not reproduced. The pattern can carry intensity, slow modulation
+    and a code for coarseness.
+  </div>
+  <div class="notice">
+    <strong>Synthetic data.</strong>
+    Every descriptor, waveform and spectrum comes from a fictional fabric, chosen by a
+    placeholder lookup. The classifier was trained on DTD and is untested on product
+    photos.
+  </div>
+</section>
+
+<div class="controls">
+  <label class="check"><input type="checkbox" id="compare"> Compare two fabrics</label>
+  <label class="check"><input type="checkbox" id="autoplay" checked> Play when ready</label>
+  <label>Encoding
+    <select id="scheme">
+      <option value="B">B: pulse density, follows envelope</option>
+      <option value="A">A: duty cycle, intensity only</option>
+      <option value="C">C: pulse rate, codes coarseness</option>
+      <option value="D">D: random control</option>
+    </select>
+  </label>
+  <button id="play-both" class="primary" hidden>Play A then B</button>
+</div>
+
+<main id="slots"></main>
+
+<template id="slot-template">
+  <article class="slot">
+    <h2 class="slot-title"></h2>
+    <div class="picker">
+      <label class="file">Upload image<input type="file" accept="image/*" class="file-input"></label>
+      <div class="samples" role="group" aria-label="Sample images"></div>
+    </div>
+    <p class="hint">Samples are generated patterns, not product photos.</p>
+    <p class="error" role="alert" hidden></p>
+    <div class="result" hidden>
+      <div class="summary">
+        <img class="preview" alt="Selected fabric image">
+        <div>
+          <p class="label">Predicted class</p>
+          <p class="predicted"></p>
+          <p class="top3"></p>
+          <p class="fabric"></p>
+        </div>
+      </div>
+      <table class="descriptor"><caption>Retrieved descriptor (synthetic)</caption><tbody></tbody></table>
+      <button class="play primary">Play vibration</button>
+      <p class="play-status" role="status"></p>
+      <figure class="plot waveform"></figure>
+      <figure class="plot spectrum"></figure>
+      <figure class="plot envelope"></figure>
+      <table class="fidelity">
+        <caption>Envelope fidelity, playable band only</caption>
+        <thead><tr><th>Scheme</th><th>Log-spectral (dB)</th><th>Wasserstein (Hz)</th><th>Level error</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="renderable"></p>
+      <p class="latency"></p>
+    </div>
+  </article>
+</template>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
