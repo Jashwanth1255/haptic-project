@@ -47,6 +47,17 @@ class GateResult:
     effective_classes: int
     notes: list[str] = field(default_factory=list)
 
+    def as_dict(self) -> dict:
+        """Everything but the ANOVA table, which is saved as a table."""
+        return {"passed": self.passed, "silhouette": self.silhouette,
+                "n_materials": self.n_materials, "n_recordings": self.n_recordings,
+                "effective_classes": self.effective_classes,
+                "collapsed_pairs": [list(t) for t in self.collapsed_pairs],
+                "notes": list(self.notes),
+                "thresholds": {"alpha": ALPHA, "silhouette_min": SILHOUETTE_MIN,
+                               "collapse_ratio": COLLAPSE_RATIO,
+                               "min_separable": MIN_SEPARABLE}}
+
     def summary(self) -> str:
         lines = [
             "=" * 68,

@@ -12,6 +12,8 @@ from pathlib import Path
 
 import pandas as pd
 
+import runlog
+
 from . import descriptor as D
 from . import loader as L
 from . import separability as S
@@ -69,6 +71,8 @@ def main(argv=None) -> int:
     pg.add_argument("--out", default="descriptors.csv")
     pg.add_argument("--keep-out-of-band", action="store_true",
                     help="do not drop recordings whose centroid is at a band edge")
+    pg.add_argument("--no-save", action="store_true",
+                    help="do not save the run under results/")
 
     a = ap.parse_args(argv)
 
@@ -98,13 +102,27 @@ def main(argv=None) -> int:
         print()
     work = df if a.keep_out_of_band else df[df["in_band"]]
 
-    for label, dims in (("RAW", D.Descriptor.CORE),
-                        ("VELOCITY-NORMALISED", D.NORMALISED_CORE)):
+    metrics = {"n_recordings": len(df), "n_out_of_band": n_oob,
+               "out_of_band_by_material": (df[~df["in_band"]]
+                                           .groupby("material_name", observed=True)
+                                           .size().to_dict())}
+    artifacts = {"descriptors": df}
+    for key, label, dims in (("raw", "RAW", D.Descriptor.CORE),
+                             ("normalised", "VELOCITY-NORMALISED", D.NORMALISED_CORE)):
+        gate = S.run_gate(work, dims)
+        per_v = S.separability_by_velocity(work, dims)
         print(f"\n### {label}")
-        print(S.run_gate(work, dims).summary())
+        print(gate.summary())
         print("\nper-velocity silhouette:")
-        print(S.separability_by_velocity(work, dims).to_string(index=False))
+        print(per_v.to_string(index=False))
+        metrics[key] = gate.as_dict()
+        artifacts |= {f"{key}_anova": gate.anova, f"{key}_per_velocity": per_v,
+                      f"{key}_summary": gate.summary()}
 
+    if not a.no_save:
+        path = runlog.save_run("o1_gate_synthetic" if a.synthetic else "o1_gate",
+                               vars(a), metrics, artifacts, synthetic=a.synthetic)
+        print(f"\nsaved run {path}", file=sys.stderr)
     return 0
 
 

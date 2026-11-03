@@ -16,6 +16,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 
 TEMPLATE = '''\
+import os
 import pathlib
 import subprocess
 import sys
@@ -26,16 +27,21 @@ COMMANDS = {commands!r}
 
 src = pathlib.Path("/kaggle/working/src")
 for name, text in SOURCES.items():
-    path = src / "vision" / name
+    path = src / name
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text)
 
+# No git checkout here: saved runs take the commit from the environment.
+env = dict(os.environ, RUNLOG_COMMIT=COMMIT,
+           RUNLOG_ROOT="/kaggle/working/results")
 print("code at commit", COMMIT, flush=True)
 for args in COMMANDS:
     print("\\n$ vision.cli", " ".join(args), flush=True)
     subprocess.run([sys.executable, "-m", "vision.cli", *args],
-                   cwd=src, check=True)
+                   cwd=src, env=env, check=True)
 '''
+
+PACKAGES = ("vision", "runlog")
 
 
 def split_commands(args: list[str]) -> list[list[str]]:
@@ -53,8 +59,8 @@ def split_commands(args: list[str]) -> list[list[str]]:
 
 
 def build(commands: list[list[str]], commit: str) -> str:
-    sources = {p.name: p.read_text(encoding="utf-8")
-               for p in sorted((HERE / "vision").glob("*.py"))}
+    sources = {f"{pkg}/{p.name}": p.read_text(encoding="utf-8")
+               for pkg in PACKAGES for p in sorted((HERE / pkg).glob("*.py"))}
     return TEMPLATE.format(commit=commit, sources=sources, commands=commands)
 
 
@@ -68,7 +74,7 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv[:cut])
     res = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=HERE,
                          capture_output=True, text=True)
-    dirty = subprocess.run(["git", "status", "--porcelain", "vision"], cwd=HERE,
+    dirty = subprocess.run(["git", "status", "--porcelain", *PACKAGES], cwd=HERE,
                            capture_output=True, text=True).stdout.strip()
     commit = res.stdout.strip() + ("+uncommitted" if dirty else "")
     Path(a.out).write_text(build(split_commands(argv[cut + 1:]), commit),

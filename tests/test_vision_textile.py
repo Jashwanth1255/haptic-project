@@ -126,3 +126,15 @@ def test_list_matches_the_preregistration():
               if l[:1].isdigit() and ". " in l]
     assert tuple(listed) == X.TEXTILE_CLASSES
     assert len(X.TEXTILE_CLASSES) == 12
+
+
+def test_scores_survive_a_model_that_never_predicts_a_textile_class():
+    """Every open prediction outside the subset leaves `filtered` empty. This used
+    to crash, depending on how a random test model happened to initialise."""
+    classes = ["banded", *X.TEXTILE_CLASSES]
+    logits = torch.zeros(3, len(classes))
+    logits[:, 0] = 5.0
+    logits[:, 1] = 1.0
+    s = X.score_subset(logits, [1, 2, 3], classes)
+    assert s["n_predicted_outside"] == 3 and s["filtered"] is None
+    assert s["restricted"].n == 3

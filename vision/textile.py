@@ -82,12 +82,14 @@ def score_subset(logits: torch.Tensor, y, classes,
     if not np.isin(y, keep).all():
         raise ValueError("an image's true class is outside the subset")
     position = {c: i for i, c in enumerate(keep)}
-    to_subset = np.vectorize(position.__getitem__)
+    to_subset = np.vectorize(position.__getitem__, otypes=[int])
     y_sub = to_subset(y)
 
     open_pred = logits.argmax(1).numpy()
     inside = np.isin(open_pred, keep)
-    filtered = M.evaluate(y_sub[inside], to_subset(open_pred[inside]), subset)
+    # None when no open prediction lands in the subset: there is nothing to filter
+    filtered = (M.evaluate(y_sub[inside], to_subset(open_pred[inside]), subset)
+                if inside.any() else None)
     restricted = M.evaluate(y_sub, to_subset(restrict(logits, keep).argmax(1).numpy()),
                             subset)
     return {

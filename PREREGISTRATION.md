@@ -67,3 +67,61 @@ As set in `haptic/separability.py`:
 | `SILHOUETTE_MIN` | 0.30 | Minimum silhouette score in descriptor space |
 | `COLLAPSE_RATIO` | 1.0 | Centroid distance / pooled spread; a pair below this has collapsed |
 | `MIN_SEPARABLE` | 8 | Minimum effective classes after merging collapsed pairs |
+
+## Prediction: the drape group does not transfer
+
+Recorded 2026-11-03, before any haptic descriptors exist.
+
+**Status.** This entry is **exploratory**. The pile and weave prediction above is
+**confirmatory**: it was recorded on 2026-11-01 from the DTD fold 1 confusion
+matrix. The drape group was found afterwards, post hoc, in the confusion matrix
+pooled over folds 2–10, which was not expected.
+
+- **Drape:** gauzy, pleated, wrinkled
+
+**Prediction.** Pile and weave will cluster in haptic descriptor space, as
+registered above. Drape will not. Drape describes how fabric hangs and folds in
+three dimensions, and a probe sliding over a flat sample does not measure that.
+
+**Mapping.** This extends the assignment rule above to four labels: pile, weave,
+drape or neither. Each Cluster material gets one, from its name and scan alone,
+before any descriptor is computed.
+
+**Test.** Same as above: within-group against between-group distance, one-sided
+permutation test. Drape is tested on its own at alpha 0.05, outside the Holm family
+of the confirmatory test, which stays as registered. Report the within/between
+distance ratio beside the p-value. With few materials, a non-significant drape
+result is weak evidence that the group does not cluster, and must be described as
+weak. A drape group with fewer than 3 materials is reported as untested.
+
+## Prediction: representability ordering
+
+Recorded 2026-11-03, before any perceptual rating or haptic descriptor exists.
+
+**Status.** Confirmatory.
+
+The five perceptual attributes will rank by Stage-2 representability:
+
+roughness ≈ bumpiness > slipperiness > softness > warmth
+
+Warmth is a control. It depends on thermal properties, which neither an
+accelerometer nor a vibration motor carries, so it should not be representable.
+
+**Measure.** For each attribute, Stage-2 representability is the
+leave-one-material-out R² of predicting that attribute's mean rating from the four
+velocity-normalised haptic descriptors. Each attribute also gets a permutation
+test against the mean predictor.
+
+**Outcome.** The ordering holds if all three of these hold in the point estimates:
+
+- the lower of roughness and bumpiness is above slipperiness
+- slipperiness is above softness
+- softness is above warmth
+
+"≈" means no prediction is made about the order of roughness and bumpiness. The
+control holds if warmth does not beat the mean predictor, meaning its permutation
+p is at or above 0.05. Report each part separately, and report a failure as a
+failure. With 16 materials the ordering is a description, not a significance test.
+
+If the pilot drops an attribute for low rater agreement (ICC(2,k) below 0.50), the
+ordering is judged over the remaining attributes, and the drop is reported.

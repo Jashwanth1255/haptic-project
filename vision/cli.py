@@ -32,8 +32,12 @@ def _limit(items: list, n: int) -> list:
     return kept
 
 
-def _textile(a, test_items, classes, seen_items) -> int:
+def _sha256(path: Path) -> str:
     import hashlib
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _textile(a, test_items, classes, seen_items) -> int:
     import json
 
     import pandas as pd
@@ -48,7 +52,7 @@ def _textile(a, test_items, classes, seen_items) -> int:
         if len(found) != 1:
             raise RuntimeError(f"expected one best.pt under {path}, found {found}")
         path = found[0]
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    digest = _sha256(path)
     ck = torch.load(path, map_location="cpu", weights_only=True)
     if ck["classes"] != list(classes):
         raise RuntimeError(f"{path} was trained on a different class list")
@@ -77,8 +81,11 @@ def _textile(a, test_items, classes, seen_items) -> int:
     print(f"checkpoint {path}\n  sha256 {digest}\n")
     print(f"unrestricted (47-way)  n={s['n']}  accuracy "
           f"{s['unrestricted_accuracy']:.4f}")
-    print(f"filtered               n={f.n}  accuracy {f.top1:.4f}  "
-          f"macro F1 {f.macro_f1:.4f}")
+    if f is None:
+        print("filtered               n=0  (no prediction inside the subset)")
+    else:
+        print(f"filtered               n={f.n}  accuracy {f.top1:.4f}  "
+              f"macro F1 {f.macro_f1:.4f}")
     print(f"restricted (12-way)    n={r.n}  accuracy {r.top1:.4f}  "
           f"macro F1 {r.macro_f1:.4f}")
     if u is not None:
@@ -89,16 +96,95 @@ def _textile(a, test_items, classes, seen_items) -> int:
 
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "textile_metrics.json").write_text(json.dumps({
+    metrics = {
         "checkpoint_sha256": digest, "best_epoch": ck["epoch"], "n": s["n"],
         "n_predicted_outside": s["n_predicted_outside"],
         "unrestricted_accuracy": s["unrestricted_accuracy"],
-        "fold": a.fold, "filtered": f.as_dict(), "restricted": r.as_dict(),
+        "fold": a.fold, "filtered": f.as_dict() if f else None,
+        "restricted": r.as_dict(),
         "restricted_unseen": u.as_dict() if u is not None else None,
-    }, indent=2))
+    }
+    (out / "textile_metrics.json").write_text(json.dumps(metrics, indent=2))
+    confusion = pd.DataFrame(r.confusion, index=r.classes, columns=r.classes)
     r.per_class.to_csv(out / "restricted_per_class.csv", index=False)
-    pd.DataFrame(r.confusion, index=r.classes,
-                 columns=r.classes).to_csv(out / "restricted_confusion.csv")
+    confusion.to_csv(out / "restricted_confusion.csv")
+
+    import runlog
+    saved = runlog.save_run(
+        f"o2_textile_dtd_fold{a.fold}",
+        {"checkpoint": str(path), "fold": a.fold, "data": a.data},
+        metrics, {"restricted_per_class": r.per_class,
+                  "restricted_confusion": confusion}, synthetic=False)
+    print(f"\nsaved run {saved}")
+    return 0
+
+
+def _transfer(a) -> int:
+    import re
+
+    import torch
+
+    import runlog
+
+    from . import train as T
+    from . import transfer as P
+
+    la, lb = P.read_labels(a.labels_a), P.read_labels(a.labels_b)
+    agree = P.agreement(la, lb)
+    labels = P.agreed(la, lb)
+    photos = Path(a.photos)
+    missing = [i for i in labels.index if not (photos / i).is_file()]
+    if missing:
+        raise FileNotFoundError(f"{len(missing)} labelled photographs not under "
+                                f"{photos}: {missing[:5]}")
+    print(f"labellers: {agree['n_both']} photographs labelled by both, "
+          f"{agree['n_agreed']} agreed, Cohen's kappa {agree['cohen_kappa']:.3f}")
+    if len(labels) < P.MIN_PHOTOS:
+        print(f"WARNING: {len(labels)} agreed photographs, fewer than the "
+              f"{P.MIN_PHOTOS} committed to", file=sys.stderr)
+
+    checkpoints = {int(re.fullmatch(r"dtd_fold(\d+)_seed0", p.parent.name).group(1)): p
+                   for p in Path(a.models).glob("dtd_fold*_seed0/best.pt")}
+    if not checkpoints:
+        raise FileNotFoundError(f"no dtd_fold<k>_seed0/best.pt under {a.models}")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    photo, reference, digests = {}, {}, {}
+    for fold, path in sorted(checkpoints.items()):
+        ck = torch.load(path, map_location="cpu", weights_only=True)
+        if ck["config"]["limit_per_class"] or ck["config"]["fold"] != fold:
+            raise RuntimeError(f"{path} is a smoke run or holds another fold")
+        classes = ck["classes"]
+        model = T.build_model(len(classes), pretrained=False)
+        model.load_state_dict(ck["model"])
+        model.to(device)
+        items = [(photos / i, classes.index(c)) for i, c in labels.items()]
+        photo[fold] = P.score_photos(model, items, classes, device, a.workers)
+        reference[fold] = P.dtd_reference(a.reference, fold)
+        digests[fold] = _sha256(path)
+        print(f"  fold {fold}: photographs {photo[fold].top1:.3f}  "
+              f"DTD {reference[fold][0]:.3f}")
+
+    folds, per_class = P.gap_tables(photo, reference)
+    print("\nper class, mean over folds (gap = photographs - DTD):")
+    print(per_class.round(3).to_string(index=False))
+    gap = folds["gap_top1"]
+    print(f"\naccuracy gap {gap.mean():+.3f} ± {gap.std():.3f} over {len(folds)} folds")
+
+    metrics = {"agreement": agree, "n_scored": len(labels),
+               "meets_minimum": len(labels) >= P.MIN_PHOTOS,
+               "photos_per_class": labels.value_counts().to_dict(),
+               "gap_top1_mean": gap.mean(), "gap_top1_std": gap.std(),
+               "photo_top1_mean": folds["photo_top1"].mean(),
+               "dtd_top1_mean": folds["dtd_top1"].mean(),
+               "checkpoint_sha256": digests}
+    saved = runlog.save_run(
+        "o2_transfer_dtd_photos",
+        {"photos": str(photos), "labels_a": a.labels_a, "labels_b": a.labels_b,
+         "models": a.models, "reference": a.reference, "folds": sorted(checkpoints)},
+        metrics, {"per_fold": folds, "per_class": per_class,
+                  "agreed_labels": labels.rename_axis("image").reset_index()},
+        synthetic=False)
+    print(f"saved run {saved}")
     return 0
 
 
@@ -133,7 +219,19 @@ def main(argv=None) -> int:
     pt.add_argument("--resume-from",
                     help="directory holding last.pt from an earlier session")
 
+    pp = sub.add_parser("transfer", help="score product photographs, against DTD")
+    pp.add_argument("--photos", required=True, help="folder holding the photographs")
+    pp.add_argument("--labels-a", required=True, help="first labeller's image,label CSV")
+    pp.add_argument("--labels-b", required=True, help="second labeller's image,label CSV")
+    pp.add_argument("--models", default="models",
+                    help="folder holding dtd_fold<k>_seed0/best.pt")
+    pp.add_argument("--reference", default="results/o2",
+                    help="folder holding each fold's saved textile12 scores")
+    pp.add_argument("--workers", type=int, default=0)
+
     a = ap.parse_args(argv)
+    if a.cmd == "transfer":
+        return _transfer(a)
     spec = V.SPECS[a.dataset]
     root = V.find_root(a.data, spec)
     splits = V.load_splits(root, spec, a.fold)
@@ -146,6 +244,9 @@ def main(argv=None) -> int:
         return _textile(a, splits["test"], classes,
                         V.read_split(root, spec, "test", fold=1))
 
+    from dataclasses import asdict
+
+    import pandas as pd
     import torch
 
     from . import train as T
@@ -185,6 +286,19 @@ def main(argv=None) -> int:
     print("\nmost confused:")
     print(report.most_confused().to_string(index=False))
     print(f"\nwrote {out}")
+    if not cfg.is_smoke:
+        import runlog
+        path = runlog.save_run(
+            f"o2_train_{tag}", asdict(cfg),
+            {"top1": report.top1, "macro_f1": report.macro_f1, "n": report.n,
+             "best_epoch": fit["best_epoch"],
+             "best_val_macro_f1": fit["best_val_macro_f1"],
+             "checkpoint_sha256": _sha256(out / "best.pt")},
+            {"per_class": report.per_class,
+             "confusion": pd.DataFrame(report.confusion, index=report.classes,
+                                       columns=report.classes)},
+            synthetic=False)
+        print(f"saved run {path}")
     return 0
 
 

@@ -80,8 +80,10 @@ def test_kaggle_script_carries_the_whole_package_and_is_valid_python(tmp_path):
     ns = {}
     head = text.split("src = pathlib.Path")[0]
     exec(head, ns)
-    assert {"train.py", "data.py", "metrics.py", "cli.py"} <= set(ns["SOURCES"])
+    assert {"vision/train.py", "vision/data.py", "vision/metrics.py", "vision/cli.py",
+            "runlog/__init__.py"} <= set(ns["SOURCES"])
     assert ns["COMMIT"] == "abc"
+    assert "RUNLOG_COMMIT=COMMIT" in text
 
 
 def test_split_commands():
