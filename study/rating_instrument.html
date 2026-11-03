@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fabric Rating Study</title>
+<!--
+  Objective 5 instrument: image ratings, then vibration discrimination, one session.
+  STIMULI and PATTERNS come from stimuli.js (make_study_stimuli.py writes
+  placeholders). The export is read by study/reliability.py and
+  study/discrimination.py; keep the CSV columns in step with them.
+-->
+<style>
+  :root {
+    --bg: #fafaf8; --fg: #1d1d1b; --muted: #66665f; --line: #d9d9d2;
+    --accent: #2f5d8a; --accent-fg: #fff; --chosen: #2f5d8a; --warn-bg: #fff3cd;
+    --warn-fg: #5c4400; --card: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161614; --fg: #ececE6; --muted: #a3a39a; --line: #3a3a35;
+      --accent: #7aa7d6; --accent-fg: #0d1620; --chosen: #7aa7d6; --warn-bg: #3d3110;
+      --warn-fg: #f3dd9b; --card: #1f1f1c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.3rem; margin: 0.5rem 0 1rem; }
+  h2 { font-size: 1.1rem; margin: 0 0 0.75rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+          padding: 16px; margin-bottom: 16px; }
+  .banner { background: var(--warn-bg); color: var(--warn-fg); border-radius: 8px;
+            padding: 10px 12px; margin-bottom: 16px; font-size: 0.92rem; }
+  .muted { color: var(--muted); font-size: 0.9rem; }
+  label { display: block; margin: 0.6rem 0 0.25rem; font-weight: 600; }
+  input[type=text] { width: 100%; padding: 10px; font: inherit; border: 1px solid var(--line);
+                     border-radius: 8px; background: var(--bg); color: var(--fg); }
+  button { font: inherit; border-radius: 8px; border: 1px solid var(--line);
+           background: var(--card); color: var(--fg); padding: 10px 14px; cursor: pointer;
+           min-height: 44px; }
+  button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .stimulus { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px;
+              border: 1px solid var(--line); display: block; background: var(--line); }
+  .scale { margin: 14px 0; }
+  .scale .anchors { display: flex; justify-content: space-between; font-size: 0.85rem;
+                    color: var(--muted); }
+  .scale .points { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 4px; }
+  .scale .points button { padding: 8px 0; min-height: 40px; }
+  .scale .points button[aria-pressed=true] { background: var(--chosen); color: var(--accent-fg);
+                                             border-color: var(--chosen); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .row > button { flex: 1 1 140px; }
+  .progress { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>How does this fabric feel?</h1>
+  <div id="placeholder" class="banner" hidden>
+    <strong>Placeholder stimuli.</strong> These images are generated noise and the
+    vibrations come from synthetic signals. Do not run this page with participants.
+  </div>
+
+  <section id="consent" class="card">
+    <h2>Before you start</h2>
+    <!-- PLACEHOLDER: replace with the institution's required ethics text. -->
+    <p class="banner"><strong>Placeholder ethics text.</strong> Replace this paragraph
+      with the wording approved by the institution's ethics committee before the pilot.</p>
+    <p>You will see photographs of fabric and rate how you think each would feel.
+      Then your phone will play pairs of vibrations, and you will say whether each pair
+      felt the same or different. It takes about 20 minutes. No name or contact detail
+      is recorded. You can stop at any time.</p>
+    <label for="pid">Participant code</label>
+    <input id="pid" type="text" autocomplete="off" spellcheck="false">
+    <label for="device">Phone model</label>
+    <input id="device" type="text" autocomplete="off" spellcheck="false"
+           placeholder="e.g. Pixel 7">
+    <p class="muted" id="device-note"></p>
+    <div class="row"><button id="agree" class="primary">I agree, start</button></div>
+  </section>
+
+  <section id="rating" class="card" hidden>
+    <div class="progress" id="rating-progress"></div>
+    <img id="stimulus" class="stimulus" alt="Fabric to rate">
+    <div id="scales"></div>
+    <div class="row"><button id="next" class="primary" disabled>Next</button></div>
+  </section>
+
+  <section id="disc-intro" class="card" hidden>
+    <h2>Part 2: vibrations</h2>
+    <p>Hold the phone as you normally would. Each trial plays two vibrations, one after
+      the other. Say whether they felt the same or different. Guess if you are not sure.</p>
+    <p class="banner" id="no-vibrate" hidden>This browser cannot vibrate, so part 2 is
+      skipped. On iPhone no browser can vibrate from a web page.</p>
+    <div class="row"><button id="disc-start" class="primary">Start part 2</button></div>
+  </section>
+
+  <section id="disc" class="card" hidden>
+    <div class="progress" id="disc-progress"></div>
+    <div class="row"><button id="play" class="primary">Play the pair</button></div>
+    <div class="row">
+      <button id="same" disabled>Same</button>
+      <button id="different" disabled>Different</button>
+    </div>
+  </section>
+
+  <section id="done" class="card" hidden>
+    <h2>Thank you</h2>
+    <p>Your answers are ready. Press the button to save the file, and hand the phone back
+      to the researcher.</p>
+    <div class="row"><button id="download" class="primary">Save answers (CSV)</button></div>
+    <p class="muted" id="summary"></p>
+  </section>
+</main>
+
+<script src="stimuli.js"></script>
+<script>
+"use strict";
+const ATTRIBUTES = [
+  ["roughness", "smooth", "rough"],
+  ["bumpiness", "flat", "bumpy"],
+  ["slipperiness", "grippy", "slippery"],
+  ["softness", "stiff", "soft"],
+  ["warmth", "cool", "warm"],
+];
+const N_REPEATS = 4;          // images shown twice, for intra-rater reliability
+const GAP_MS = 700;           // silence between the two vibrations of a pair
+const COLUMNS = ["participant", "device_model", "block", "image_id", "attribute",
+  "rating", "repeat", "rt_ms", "trial", "scheme", "fabric_a", "fabric_b", "same",
+  "response_different"];
+
+const $ = (id) => document.getElementById(id);
+const rows = [];
+let participant = "", device = "unknown";
+
+function hashSeed(text) {
+  let h = 2166136261;
+  for (const c of text) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function rng(seed) {        // mulberry32: same participant code, same order
+  return () => {
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffle(list, rand) {
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function save() {
+  try { localStorage.setItem("fabric-study-" + participant, JSON.stringify(rows)); }
+  catch (e) { /* storage unavailable: the CSV download is the record */ }
+}
+
+// ---- consent ----------------------------------------------------------------
+$("placeholder").hidden = !(typeof PLACEHOLDER !== "undefined" && PLACEHOLDER);
+$("pid").value = "P-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+(async () => {
+  const ua = navigator.userAgentData;
+  if (ua && ua.getHighEntropyValues) {
+    try {
+      const h = await ua.getHighEntropyValues(["model"]);
+      if (h.model) { $("device").value = h.model; return; }
+    } catch (e) { /* not a secure context */ }
+  }
+  $("device-note").textContent =
+    "The phone model could not be read automatically. Please type it.";
+})();
+
+$("agree").addEventListener("click", () => {
+  participant = $("pid").value.trim();
+  device = $("device").value.trim() || "unknown";
+  if (!participant) { $("pid").focus(); return; }
+  $("consent").hidden = true;
+  startRating();
+});
+
+// ---- part 1: ratings --------------------------------------------------------
+let queue = [], qi = 0, shownAt = 0, current = {};
+
+function startRating() {
+  const order = shuffle(STIMULI, rng(hashSeed(participant)));
+  const repeats = order.slice(0, Math.min(N_REPEATS, order.length));
+  queue = order.map((s) => ({ ...s, repeat: 0 }))
+    .concat(repeats.map((s) => ({ ...s, repeat: 1 })));
+  $("rating").hidden = false;
+  showImage();
+}
+
+function showImage() {
+  const s = queue[qi];
+  current = {};
+  $("rating-progress").textContent = `Image ${qi + 1} of ${queue.length}`;
+  $("stimulus").src = s.src;
+  const box = $("scales");
+  box.innerHTML = "";
+  for (const [attr, low, high] of ATTRIBUTES) {
+    const scale = document.createElement("div");
+    scale.className = "scale";
+    scale.innerHTML = `<div class="anchors"><span>${low}</span><span>${high}</span></div>` +
+      `<div class="points" role="group" aria-label="${attr}: 1 ${low} to 7 ${high}"></div>`;
+    const points = scale.querySelector(".points");
+    for (let v = 1; v <= 7; v++) {
+      const b = document.createElement("button");
+      b.textContent = v;
+      b.setAttribute("aria-pressed", "false");
+      b.setAttribute("aria-label", `${attr} ${v}`);
+      b.addEventListener("click", () => {
+        points.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", "false"));
+        b.setAttribute("aria-pressed", "true");
+        current[attr] = v;
+        $("next").disabled = Object.keys(current).length < ATTRIBUTES.length;
+      });
+      points.appendChild(b);
+    }
+    box.appendChild(scale);
+  }
+  $("next").disabled = true;
+  window.scrollTo(0, 0);
+  shownAt = performance.now();
+}
+
+$("next").addEventListener("click", () => {
+  const s = queue[qi], rt = Math.round(performance.now() - shownAt);
+  for (const [attr] of ATTRIBUTES) {
+    rows.push({ participant, device_model: device, block: "rating", image_id: s.id,
+      attribute: attr, rating: current[attr], repeat: s.repeat, rt_ms: rt });
+  }
+  save();
+  qi += 1;
+  if (qi < queue.length) showImage();
+  else { $("rating").hidden = true; startDiscrimination(); }
+});
+
+// ---- part 2: discrimination -------------------------------------------------
+let trials = [], ti = 0, playedAt = 0;
+
+function buildTrials() {
+  const fabrics = Object.keys(PATTERNS), out = [];
+  const schemes = [...new Set(fabrics.flatMap((f) => Object.keys(PATTERNS[f])))].sort();
+  for (const scheme of schemes) {
+    for (let i = 0; i < fabrics.length; i++) {
+      out.push({ scheme, a: fabrics[i], b: fabrics[i], same: true });
+      for (let j = i + 1; j < fabrics.length; j++) {
+        out.push({ scheme, a: fabrics[i], b: fabrics[j], same: false });
+      }
+    }
+  }
+  return shuffle(out, rng(hashSeed(participant + "/disc")));
+}
+
+function startDiscrimination() {
+  const can = typeof navigator.vibrate === "function" && typeof PATTERNS !== "undefined";
+  $("disc-intro").hidden = false;
+  $("no-vibrate").hidden = can;
+  $("disc-start").textContent = can ? "Start part 2" : "Finish";
+  $("disc-start").onclick = () => {
+    $("disc-intro").hidden = true;
+    if (!can) return finish();
+    trials = buildTrials();
+    $("disc").hidden = false;
+    showTrial();
+  };
+}
+
+function showTrial() {
+  $("disc-progress").textContent = `Pair ${ti + 1} of ${trials.length}`;
+  $("play").disabled = false;
+  $("same").disabled = $("different").disabled = true;
+}
+
+$("play").addEventListener("click", () => {
+  const t = trials[ti];
+  const pa = PATTERNS[t.a][t.scheme], pb = PATTERNS[t.b][t.scheme];
+  const total = (p) => p.reduce((s, x) => s + x, 0);
+  // Two calls, not one joined pattern: joined, a pair can pass the browser's limit
+  // on pattern length. The tap that started the trial gives the page the sticky
+  // activation Chrome needs for the delayed second call.
+  navigator.vibrate(pa);
+  setTimeout(() => navigator.vibrate(pb), total(pa) + GAP_MS);
+  $("play").disabled = true;
+  setTimeout(() => {
+    $("same").disabled = $("different").disabled = false;
+    playedAt = performance.now();
+  }, total(pa) + GAP_MS + total(pb));
+});
+
+function answer(different) {
+  const t = trials[ti];
+  rows.push({ participant, device_model: device, block: "discrimination",
+    rt_ms: Math.round(performance.now() - playedAt), trial: ti, scheme: t.scheme,
+    fabric_a: t.a, fabric_b: t.b, same: t.same, response_different: different });
+  save();
+  ti += 1;
+  if (ti < trials.length) showTrial();
+  else { $("disc").hidden = true; finish(); }
+}
+$("same").addEventListener("click", () => answer(false));
+$("different").addEventListener("click", () => answer(true));
+
+// ---- export -----------------------------------------------------------------
+function toCsv() {
+  const cell = (v) => {
+    if (v === undefined || v === null) return "";
+    const s = String(v);
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  return [COLUMNS.join(",")]
+    .concat(rows.map((r) => COLUMNS.map((c) => cell(r[c])).join(","))).join("\n") + "\n";
+}
+
+function finish() {
+  $("done").hidden = false;
+  const n = (b) => rows.filter((r) => r.block === b).length;
+  $("summary").textContent = `${n("rating")} ratings, ${n("discrimination")} vibration pairs.`;
+}
+
+$("download").addEventListener("click", () => {
+  const blob = new Blob([toCsv()], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `session_${participant}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+</script>
+</body>
+</html>
