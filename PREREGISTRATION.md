@@ -125,3 +125,36 @@ failure. With 16 materials the ordering is a description, not a significance tes
 
 If the pilot drops an attribute for low rater agreement (ICC(2,k) below 0.50), the
 ordering is judged over the remaining attributes, and the drop is reported.
+
+## Cluster cloth group assignment
+
+Recorded 2026-11-04, before any descriptor was computed from real Cluster data.
+Only the file names, timestamps and position traces had been read; no acceleration
+spectrum, descriptor or separability figure existed.
+
+Assigned from each material's name (`documents/texture_list.pdf`) and its 300 dpi
+scan (`images_scan_area/img<id>.jpg`, viewed whole and at 4x), using the labels
+and rule registered above.
+
+| Group | Materials | n |
+|---|---|---|
+| Pile | 102 Velvet, 103 Corduroy | 2 |
+| Weave | 104 Cotton, 105 Cotton broadcloth, 111 Mesh, 112 Wool, 114 Polyester, 116 Linen, 117 Cotton linen | 7 |
+| Drape | 106 Cotton gauze, 107 Chiffon, 109 Georgette, 110 Organdy | 4 |
+| Neither | 108 Lace, 113 Nylon, 115 Silk | 3 |
+
+Where the scan decided it:
+
+- 104 Cotton is a gridded muslin weave with a floral print. The print is ignored.
+- 112 Wool is a woven twill pinstripe suiting, not a pile, despite the fibre name.
+- 114 Polyester shows a fine woven structure at 4x.
+- 108 Lace is an eyelet embroidery on a plain ground. DTD "lacelike" is in no group.
+- 113 Nylon and 115 Silk show no structure at scan resolution.
+
+**Consequence, stated before the data.** Pile has 2 materials, below the minimum
+of 3, so pile is reported as untested. The confirmatory prediction needs both pile
+and weave to pass, so it cannot be reported as supported whatever the data show;
+weave is still tested and reported. Drape (4) is tested as the exploratory entry
+specifies.
+
+This assignment must not change.
