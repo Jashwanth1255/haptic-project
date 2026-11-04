@@ -28,32 +28,40 @@ def _build_synthetic(seconds: float, repeats: int) -> pd.DataFrame:
     return D.normalise_frame(df)
 
 
-def _build_real(root: Path, seconds: float | None) -> pd.DataFrame:
+def _build_real(root: Path, seconds: float | None) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """(descriptors, skipped recordings with the reason for each)."""
     stubs = L.discover(root)
     names = L.load_names(root)
     print(f"found {len(stubs)} cloth recordings", file=sys.stderr)
-    rows = []
+    rows, skipped = [], []
     for i, st in enumerate(stubs, 1):
         if i % 50 == 0:
             print(f"  {i}/{len(stubs)}", file=sys.stderr)
-        rec = L.load(st)
-        if seconds:
-            n = int(seconds * rec["fs"])
-            rec["accel"] = rec["accel"][:n]
         try:
+            rec = L.load(st)
+            if seconds:
+                rec["accel"] = rec["accel"][:int(seconds * rec["fs"])]
             d = D.extract(rec["accel"], rec["fs"],
                           material_id=rec["material_id"],
                           velocity_mm_s=rec["velocity_mm_s"],
                           force_n=rec["force_n"])
         except ValueError as e:
-            print(f"  skipped {st['path'].name}: {e}", file=sys.stderr)
+            skipped.append({"file": st["path"].name, "material_id": st["material_id"],
+                            "velocity_mm_s": st["velocity_mm_s"], "reason": str(e)})
             continue
         row = d.as_dict()
         row["material_name"] = names.get(st["material_id"], rec["material_name"])
+        for k in ("direction_deg", "repeat", "measured_fs_hz", "rate_off", "steady_s"):
+            row[k] = rec[k]
         rows.append(row)
+    skipped = pd.DataFrame(skipped, columns=["file", "material_id", "velocity_mm_s", "reason"])
+    if len(skipped):
+        print(f"skipped {len(skipped)} recordings; reasons:\n"
+              f"{skipped['reason'].str.split(':').str[-1].value_counts().to_string()}",
+              file=sys.stderr)
     if not rows:
         raise RuntimeError("no recordings produced a descriptor")
-    return D.normalise_frame(pd.DataFrame(rows))
+    return D.normalise_frame(pd.DataFrame(rows)), skipped
 
 
 def main(argv=None) -> int:
@@ -66,7 +74,8 @@ def main(argv=None) -> int:
     pg = sub.add_parser("gate", help="run the Objective 1 separability gate")
     pg.add_argument("--root", help="dataset root (omit with --synthetic)")
     pg.add_argument("--synthetic", action="store_true")
-    pg.add_argument("--seconds", type=float, default=1.5)
+    pg.add_argument("--seconds", type=float,
+                    help="truncate each recording (synthetic default 1.5; real: whole steady window)")
     pg.add_argument("--repeats", type=int, default=3)
     pg.add_argument("--out", default="descriptors.csv")
     pg.add_argument("--keep-out-of-band", action="store_true",
@@ -83,9 +92,9 @@ def main(argv=None) -> int:
     if a.synthetic:
         print("SYNTHETIC SIGNALS — scaffolding only, not a result.\n",
               file=sys.stderr)
-        df = _build_synthetic(a.seconds, a.repeats)
+        df, skipped = _build_synthetic(a.seconds or 1.5, a.repeats), None
     elif a.root:
-        df = _build_real(Path(a.root), a.seconds)
+        df, skipped = _build_real(Path(a.root), a.seconds)
     else:
         ap.error("gate needs --root or --synthetic")
 
@@ -107,6 +116,9 @@ def main(argv=None) -> int:
                                            .groupby("material_name", observed=True)
                                            .size().to_dict())}
     artifacts = {"descriptors": df}
+    if skipped is not None:
+        metrics["n_skipped"] = len(skipped)
+        artifacts["skipped"] = skipped
     for key, label, dims in (("raw", "RAW", D.Descriptor.CORE),
                              ("normalised", "VELOCITY-NORMALISED", D.NORMALISED_CORE)):
         gate = S.run_gate(work, dims)

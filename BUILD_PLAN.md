@@ -25,6 +25,12 @@ Record: phone model, Android version, whether each pair was distinguishable.
 
 ### P1 · HUMAN · Cluster dataset (two browser tabs)
 
+**Steps 1 and 2 done 2026-11-03**, recorded in `docs/CLUSTER_DATASET.md`: the
+licence is Apache 2.0, and the 16 cloth names are listed there and in
+`haptic/loader.py`. Step 3 done 2026-11-04 with
+`python fetch_cluster.py --out data/cluster` (586 MB); the timing checks on the
+real files are in the same notes.
+
 1. Open figshare DOI `10.6084/m9.figshare.29438288` and record the **exact dataset
    licence**. The article appears CC BY-NC-ND; the dataset licence is separate. If
    it forbids derivatives you can use the data but may not redistribute a derived
