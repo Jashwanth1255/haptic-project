@@ -1,0 +1,13 @@
+{
+  "name": "o1_real_analysis",
+  "run_id": "20261104T155118_372566Z",
+  "created_utc": "2026-11-04T15:51:18.372566+00:00",
+  "synthetic": false,
+  "git_commit": "a2610b89fb851fe3d8570b7068c93fc808c52df6",
+  "git_dirty": true,
+  "argv": [
+    "make_o1_real.py"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

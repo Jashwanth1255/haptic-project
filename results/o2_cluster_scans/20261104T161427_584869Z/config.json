@@ -1,0 +1,5 @@
+{
+  "root": "data/cluster",
+  "models": "models",
+  "out": "data/derived/cluster_crops.npz"
+}

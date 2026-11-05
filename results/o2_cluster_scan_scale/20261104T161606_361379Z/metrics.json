@@ -1,0 +1,10 @@
+{
+  "exploratory": true,
+  "fabric_fraction_by_scale": {
+    "100 mm": 0.0625,
+    "50 mm": 0.046875
+  },
+  "n_images": 80,
+  "minc_test_fabric_recall": 0.756,
+  "minc_test_fabric_recall_source": "results/o2/minc2500_fold1_seed0/per_class.csv"
+}

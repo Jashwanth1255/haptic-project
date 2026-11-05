@@ -43,8 +43,8 @@ def test_o4_saves_its_table(monkeypatch):
              "lsd_db": 1.0, "wasserstein_hz": 2.0, "level_error": 0.1,
              "renderable": r}
             for s in "ABCD" for t in O4.TAUS_MS for r in (True, False)]
-    monkeypatch.setattr(O4, "rows", lambda: pd.DataFrame(rows))
-    assert O4.main() == 0
+    monkeypatch.setattr(O4, "rows", lambda real_root=None: pd.DataFrame(rows))
+    assert O4.main([]) == 0
     run = runlog.load_run("o4_fidelity_synthetic")
     assert run.info["synthetic"] is True
     assert run.metrics["median_renderable"]["B"]["wasserstein_hz"] == 2.0

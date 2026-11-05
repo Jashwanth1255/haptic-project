@@ -1,0 +1,15 @@
+{
+  "name": "o2_cluster_scans",
+  "run_id": "20261104T161427_584869Z",
+  "created_utc": "2026-11-04T16:14:27.584869+00:00",
+  "synthetic": false,
+  "git_commit": "a2610b89fb851fe3d8570b7068c93fc808c52df6",
+  "git_dirty": true,
+  "argv": [
+    "C:\\jashu\\major project\\Objective1_Code\\haptic_project\\vision\\cluster_scans.py",
+    "--root",
+    "data/cluster"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

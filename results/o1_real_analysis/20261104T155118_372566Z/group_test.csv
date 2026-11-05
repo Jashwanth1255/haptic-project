@@ -1,0 +1,4 @@
+group,n,n_pool,materials,within,between,ratio,p,n_permutations,tested,family,p_holm,clusters
+pile,2,13,"[102, 103]",,,,,0,False,confirmatory,1.0,
+weave,7,13,"[104, 105, 111, 112, 114, 116, 117]",0.565096846545522,0.7015897352111589,0.8054519873718557,0.11421911421911422,1716,True,confirmatory,0.22843822843822845,False
+drape,4,13,"[106, 107, 109, 110]",0.5977925090990838,0.664287249737825,0.899900621809338,0.2811188811188811,715,True,exploratory,,False

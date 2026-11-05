@@ -1,0 +1,10 @@
+{
+  "cmd": "gate",
+  "root": "data/cluster",
+  "synthetic": false,
+  "seconds": null,
+  "repeats": 3,
+  "out": "data/descriptors_cluster.csv",
+  "keep_out_of_band": false,
+  "no_save": false
+}

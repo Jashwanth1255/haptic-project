@@ -82,6 +82,10 @@ real files are in the same notes.
 > thresholds in separability.py — they were fixed before any real data was seen.
 > Save the run with save_run.
 
+**Done 2026-11-04: the gate failed** (silhouette −0.16 raw, −0.12 normalised;
+all 120 pairs collapse, 1 effective class). Group assignment registered first
+(`a2610b8`). Every real-data number is in `docs/RESULTS.md`.
+
 **This is the go/no-go.** If fewer than 8 materials separate, coarsen the class
 list, report the grouping, and continue — a collapsed class list is a finding
 about how much fabric identity survives a four-number descriptor, not a failure.
@@ -222,8 +226,14 @@ et al.", and the PDF paste residue. Fix those before any new content goes in.
 | Stage 3 discrimination d' (P12) | `study/discrimination.py` |
 | Representability profile (P13) | `study/representability.py` |
 | Mantel test | `haptic/crossmodal.py` |
+| Pre-registered group test | `haptic/groups.py`, `make_o1_real.py` |
+| Exploratory identity analysis | `haptic/identity.py` |
+| Classifiers on Cluster scans | `vision/cluster_scans.py` |
+| O3 on real data | `make_o3_real.py` |
+| O4 fidelity on real signals | `make_o4_table.py --real data/cluster` |
+| Real-data results, with run ids | `docs/RESULTS.md` |
 
-343 tests passing. Everything from P5 onwards is tested on invented data only
+388 tests passing. P5 and P7 onwards are tested on invented data only
 and has not run on real data.
 
 ## Standing rules

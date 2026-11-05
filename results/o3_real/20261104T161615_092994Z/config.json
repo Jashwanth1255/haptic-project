@@ -1,0 +1,8 @@
+{
+  "crops": "data/derived/cluster_crops.npz",
+  "n_folds": 4,
+  "strategies": [
+    "class_pair",
+    "cosine"
+  ]
+}

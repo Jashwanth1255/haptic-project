@@ -138,3 +138,42 @@ def excluded(df: pd.DataFrame) -> pd.DataFrame:
     """Out-of-band recordings per velocity. These must be reported, never hidden."""
     return (df.assign(out_of_band=~df["in_band"]).groupby("velocity_mm_s")["out_of_band"]
             .agg(["sum", "size"]).rename(columns={"sum": "excluded", "size": "total"}))
+
+
+SCALING_DIMS = ("frequency_hz", "intensity", "duration_ms")
+
+
+def scaling_exponents(df: pd.DataFrame, dims=SCALING_DIMS) -> pd.DataFrame:
+    """Per material and force: the slope b of log(dimension) = a + b log(velocity),
+    fitted to the per-velocity medians of in-band recordings.
+
+    f = v / lambda, the relation velocity normalisation assumes, predicts b = 1 for
+    frequency and b = -1 for duration. A frequency fixed by the probe or the
+    fabric's own resonance predicts b = 0.
+    """
+    usable = df[df["in_band"].astype(bool)]
+    rows = []
+    for (mid, fo), g in usable.groupby(["material_id", "force_n"]):
+        med = g.groupby("velocity_mm_s")[list(dims)].median()
+        if len(med) < 3:
+            continue
+        lv = np.log(med.index.to_numpy(dtype=float))
+        row = {"material_id": mid, "force_n": fo, "n_velocities": len(med)}
+        for dim in dims:
+            row[dim] = float(np.polyfit(lv, np.log(med[dim].to_numpy(dtype=float)), 1)[0])
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def variation_across_velocity(df: pd.DataFrame) -> pd.DataFrame:
+    """Coefficient of variation across the five velocities of each dimension's
+    per-velocity median, per material and force, raw beside normalised. Smaller is
+    more velocity-invariant. Pattern has no normalised form and appears once."""
+    usable = df[df["in_band"].astype(bool)]
+    cols = [*DIMS, *[c for c in D.NORMALISED_CORE if c not in DIMS]]
+    rows = []
+    for (mid, fo), g in usable.groupby(["material_id", "force_n"]):
+        med = g.groupby("velocity_mm_s")[cols].median()
+        cv = (med.std(ddof=1) / med.mean().abs()).to_dict()
+        rows.append({"material_id": mid, "force_n": fo, **cv})
+    return pd.DataFrame(rows)

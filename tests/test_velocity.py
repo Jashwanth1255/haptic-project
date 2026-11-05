@@ -171,3 +171,36 @@ def test_experiment_reports_failure_when_relations_are_false(velocity_free):
 def test_warning_is_in_the_docstring():
     assert "NO RESULT" in Y.__doc__ and "by construction" in Y.__doc__
     assert A.DIMS == D.Descriptor.CORE
+
+
+def _scaling_frame(exponent: float):
+    rows = []
+    for mid in (1, 2, 3):
+        lam = 0.5 * mid
+        for v in (20.0, 30.0, 40.0, 50.0, 60.0):
+            for rep in range(3):
+                f = 100 * (v / 40) ** exponent * mid
+                rows.append({"material_id": mid, "force_n": 1.0, "velocity_mm_s": v,
+                             "repeat": rep, "in_band": True, "frequency_hz": f,
+                             "intensity": 0.1 * v / 40, "pattern": 0.5,
+                             "duration_ms": 1000 / f * 5, "wavelength_mm": v / f,
+                             "roughness_index": 0.1, "burst_spacing_mm": v * 5 / f,
+                             "lam": lam})
+    return pd.DataFrame(rows)
+
+
+@pytest.mark.parametrize("exponent", [1.0, 0.0])
+def test_scaling_exponent_recovers_the_built_in_slope(exponent):
+    from haptic.velocity import scaling_exponents
+    s = scaling_exponents(_scaling_frame(exponent))
+    assert np.allclose(s["frequency_hz"], exponent, atol=1e-9)
+    assert np.allclose(s["duration_ms"], -exponent, atol=1e-9)
+    assert np.allclose(s["intensity"], 1.0, atol=1e-9)
+
+
+def test_normalisation_removes_variation_only_when_f_scales_with_v():
+    from haptic.velocity import variation_across_velocity
+    ok = variation_across_velocity(_scaling_frame(1.0))
+    bad = variation_across_velocity(_scaling_frame(0.0))
+    assert (ok["wavelength_mm"] < 1e-9).all() and (ok["frequency_hz"] > 0.2).all()
+    assert (bad["wavelength_mm"] > 0.2).all() and (bad["frequency_hz"] < 1e-9).all()

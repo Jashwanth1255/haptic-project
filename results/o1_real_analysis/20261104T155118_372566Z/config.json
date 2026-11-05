@@ -1,0 +1,4 @@
+{
+  "root": "data/cluster",
+  "bands_cache": "data/derived/band_features.csv"
+}

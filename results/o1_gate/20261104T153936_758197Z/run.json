@@ -1,0 +1,18 @@
+{
+  "name": "o1_gate",
+  "run_id": "20261104T153936_758197Z",
+  "created_utc": "2026-11-04T15:39:36.758197+00:00",
+  "synthetic": false,
+  "git_commit": "a2610b89fb851fe3d8570b7068c93fc808c52df6",
+  "git_dirty": true,
+  "argv": [
+    "C:\\jashu\\major project\\Objective1_Code\\haptic_project\\haptic\\cli.py",
+    "gate",
+    "--root",
+    "data/cluster",
+    "--out",
+    "data/descriptors_cluster.csv"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}
