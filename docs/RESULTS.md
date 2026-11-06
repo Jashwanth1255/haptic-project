@@ -95,6 +95,34 @@ The signal holds some identity, about four times chance with the richer spectrum
 and the four-number descriptor keeps roughly half of it. Best recall: Corduroy and
 Wool 0.45, Nylon 0.42. Worst: Cotton broadcloth 0.08, Organdy 0.10, Polyester 0.12.
 
+#### Learned baseline: a CNN on the spectrogram (exploratory)
+
+Run `o1_learned_baseline/20261106T214141_196418Z` (Kaggle T4, code
+`312c86f+uncommitted sources-sha256:6ace53cfef3f`). It uses the same 2,493 in-band
+recordings as gate run `20261104T153936_758197Z`. A small CNN reads the log
+spectrogram (20–1000 Hz, 0.5 s windows), and velocity and force go to its head.
+Each recording is scored by averaging its windows. Three seeds. Not pre-registered;
+added to answer "is it the descriptor or the signal?"
+
+| Split | Accuracy (mean over 3 seeds) | SD over seeds | SD over folds | Fold range |
+|---|---|---|---|---|
+| Sliding direction held out (8 folds) | **0.378** | 0.003 | 0.080 | 0.215–0.455 |
+| Repeat 0 → repeat 1 (all directions seen) | 0.542 | 0.007 | — | 0.533–0.547 |
+
+- The CNN reaches about six times chance with direction held out, against 0.248 for
+  the best hand-built feature set under the same split. So the four-number
+  descriptor throws away identity that the signal carries; the O1 negative result is
+  about the descriptor, not only the signal. Even so, 62% of held-out-direction
+  recordings are still misidentified.
+- Direction matters. The 90° and 270° folds score 0.267 and 0.241, while the
+  other six score 0.386–0.453. Holding out a sliding direction perpendicular to most
+  of the training data costs the most. This is an observation, not a tested effect.
+- The repeat split, with every direction seen, gives an upper bound of 0.542.
+- Per-material recall with direction held out: best Corduroy 0.66, Mesh 0.53;
+  worst Cotton broadcloth 0.14, Organdy 0.23. Corduroy is also the best and Cotton
+  broadcloth and Organdy are also the worst under the logistic regression above.
+  Wool and Nylon are not near the top here (0.38 each).
+
 ---
 
 ## O2 — Scan domain: the classifiers on Cluster's 300 dpi scans
@@ -184,6 +212,81 @@ velocity-agnostic for frequency at 20, 30, 50 and 60 mm/s (Holm p ≤ 0.006, err
 for an unseen query velocity and for the cosine substitute. The synthetic O1 result
 (silhouette +0.43 normalised) was built on the relation these data reject.
 
+### Velocity across all 118 materials: rig or cloth?
+
+Run `velocity_all_materials/20261105T202123_412283Z`. Added 2026-11-05 to tell
+apart two explanations of the cloth result. Subset identical for every material:
+directions 0° and 90°, first repeat, five velocities, two forces. 2,322 descriptors
+from 118 materials; 38 files skipped, 7 out of band. (Two earlier runs of the same
+script, `…200348…` and `…201244…`, hold the same centroid numbers and lack the later
+tests; the latest supersedes them.)
+
+**Centroid exponent** (pre-planned for this script):
+
+| | Result |
+|---|---|
+| Median exponent, cloth (n=16) / others (n=102) | −0.039 / −0.084 |
+| Materials within 0.25 of 1 / of 0 | 0 of 118 / 0.92 |
+| Others vs 1 (Wilcoxon) | p = 1.8×10⁻¹⁸ |
+| Cloth vs rest (Mann-Whitney) | p = 0.13 |
+| Kruskal-Wallis across 9 categories | p = 1.2×10⁻⁴ |
+| Centroid at 40 mm/s, category medians | 241–266 Hz (every category) |
+
+**No material, wood and stone included, has a spectral centroid that follows
+sliding speed, and every category's centroid sits at 240–270 Hz.** The centroid of
+this rig's acceleration describes the probe, not the surface. That is a property
+of the dataset, and anyone using Cluster's acceleration for texture rendering needs
+to know it.
+
+**Spectral-shift exponent** (EXPLORATORY, added 2026-11-06). The centroid is one
+number; a fixed resonance could dominate it while a texture peak beneath still
+scales. This aligns whole log spectra at each velocity against 40 mm/s and fits the
+best log-frequency shift on log(v/40). "Whitened" first subtracts the median log
+spectrum of all 118 materials at the same velocity and force, the part shared by
+every surface. Tests on synthetic tones (scaffolding only) recover 1 for a scaling
+tone, 0 for a fixed one, and recover scaling under a shared resonance only after
+whitening.
+
+| | Raw | Whitened |
+|---|---|---|
+| Median over 118 materials [IQR] | 0.159 [0.106, 0.204] | −0.001 [−0.135, 0.084] |
+| Within 0.25 of 1 | 0 of 118 | 0 of 118 |
+| vs 1 (Wilcoxon) | p = 4.2×10⁻²¹ | p = 4.2×10⁻²¹ |
+| Cloth median / rest median | 0.117 / 0.164 | 0.218 / −0.022 |
+| Cloth vs rest (Mann-Whitney) | p = 0.12 | p = 3.0×10⁻⁴ |
+| Cloth vs 0 (Wilcoxon) | | p = 0.009 |
+
+Not one material's spectrum moves as v/λ. **Post hoc, and to be reported as
+such:** the cloth-vs-rest test on the whitened exponent was added after seeing
+the figure. Once the shared spectrum is removed, cloth is the only category that
+shifts upward with speed at all, median 0.22, with a cluster of materials at
+0.3–0.65.
+
+**Confirmed on held-out data.** Run `velocity_confirm_cloth/20261105T203252_596852Z`,
+pre-registered in PREREGISTRATION.md ("Confirmation: cloth spectra shift with
+velocity after whitening") before the held-out recordings were analysed. Held out:
+cloth at the six other directions, both repeats, plus the second repeat at 0° and
+90°. 2,240 recordings, 40 skipped, giving 444 (material, force, direction, repeat)
+cells. The whitening reference comes only from the original subset.
+
+| | Result |
+|---|---|
+| Cloth held-out median exponent [IQR] | **0.338** [0.258, 0.388] |
+| Cloth materials above 0 | 16 of 16 (range 0.131–0.573) |
+| 1. Cloth > 0 (Wilcoxon, one-sided) | p = 1.5×10⁻⁵, Holm 1.5×10⁻⁵ |
+| 2. Cloth > other 102 materials (Mann-Whitney, one-sided) | p = 5.4×10⁻¹⁰, Holm 1.1×10⁻⁹ |
+
+Both predictions pass. **Relative to the response shared by all 118 surfaces,
+cloth's spectrum moves up with sliding speed, about a third as far as f = v/λ
+predicts; no other category's does.** Highest: Corduroy 0.57, Cotton 0.54, Lace
+0.51, Velvet 0.48. Lowest: Mesh 0.13, Chiffon 0.13. That ordering, coarse
+structure high and sheer fabric low, is descriptive and was not predicted. What
+this does not show: the mechanism. A partial log-frequency shift is also what a
+velocity-dependent change in spectral tilt would produce, such as damping by
+compliant fabric changing with speed. Identifying it needs the surface profile,
+which the dataset does not have. Figure: `figures/paper/fig3_velocity_exponents`
+(hollow markers).
+
 ---
 
 ## O4 — What survives a binary vibration channel (open question 3)
@@ -210,11 +313,21 @@ Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,
 2. **Negative result (O1):** four-number vibrotactile descriptors from a sliding
    probe do not separate 16 cloth materials (silhouette −0.16, 1 effective class).
    Direction and repetition variance swamp material. A richer spectrum reaches 0.25
-   accuracy against 0.0625 chance. This is publishable as is.
-3. **Negative result (O3, velocity):** cloth texture vibration on this rig is
-   velocity-invariant in frequency, not spatially periodic, so v/f normalisation
-   hurts. Report this.
-4. **Pre-registration outcome:** confirmatory prediction failed (weave p = 0.23
+   accuracy against 0.0625 chance, and a CNN on the spectrogram reaches 0.378 with
+   direction held out (exploratory). The loss is in the compact descriptor; the
+   signal carries more identity than four numbers keep. This is publishable as is.
+3. **Dataset finding (velocity, all 118 materials):** on this rig the spectral
+   centroid of acceleration does not follow sliding speed for any material (0 of
+   118 within 0.25 of the f = v/λ prediction, centroid 240–270 Hz everywhere), so
+   v/f normalisation hurts. This is a property of the measurement, not of cloth,
+   and it matters for anyone rendering from Cluster.
+4. **Confirmed positive result (velocity, cloth):** after removing the spectrum
+   shared by all surfaces, cloth alone shifts upward with speed, by about a third
+   of v/λ (held-out median exponent 0.338, 16 of 16 materials above 0, Holm p =
+   1.5×10⁻⁵ and 1.1×10⁻⁹). It was found post hoc, then pre-registered and
+   confirmed on 2,240 held-out recordings. This is the strongest single result in
+   the project.
+5. **Pre-registration outcome:** confirmatory prediction failed (weave p = 0.23
    Holm) with pile untestable; drape as predicted, weakly.
 
 ## Still blocked, needing people

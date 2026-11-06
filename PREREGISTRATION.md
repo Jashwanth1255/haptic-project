@@ -158,3 +158,32 @@ weave is still tested and reported. Drape (4) is tested as the exploratory entry
 specifies.
 
 This assignment must not change.
+
+## Confirmation: cloth spectra shift with velocity after whitening
+
+Written 2026-11-06, after run `velocity_all_materials/20261105T202123_412283Z`
+showed (post hoc) that cloth's rig-whitened spectral-shift exponent, median 0.218,
+exceeds the other 102 materials' median of −0.022. That finding came from
+directions 0° and 90°, first repeat only. **This entry is written before any of the
+held-out recordings below have been passed through the shift analysis.**
+
+**Held-out data.** The 16 cloth materials (102–117): every recording at directions
+45, 135, 180, 225, 270 and 315°, both repeats, plus the second repeat at 0° and 90°.
+None of these entered the post-hoc result.
+
+**Method, fixed now.** `haptic.velocity.shift_exponents` exactly as used in that
+run. The whitening reference is the median log spectrum over all 118 materials at
+the same velocity and force, from the original subset (0°/90°, first repeat), so the
+reference contains no held-out data. One exponent per material is the mean over its
+(force, direction, repeat) cells.
+
+**Predictions** (both one-sided, α = 0.05, Holm across the two):
+
+1. The median cloth exponent on held-out data is above 0 (Wilcoxon signed-rank on
+   16 per-material values).
+2. Cloth's held-out exponents exceed the other 102 materials' exponents from the
+   original run (Mann-Whitney U).
+
+Both passing confirms that cloth carries a velocity-scaled component that the rest
+of the dataset lacks. Either failing means the post-hoc result is reported as not
+replicated. In neither case is the exponent near 1 expected, and none is claimed.

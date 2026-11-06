@@ -2,6 +2,7 @@
 
     python fetch_cluster.py --out data/cluster            # accel, position, images
     python fetch_cluster.py --out data/cluster --with force audio
+    python fetch_cluster.py --out data/cluster --all-materials --directions 0 90         --repeats 0 --no-images                      # the velocity subset, all 118
 
 Figshare only offers the whole dataset as one 15 GB zip. The mirror holds the
 same recordings one file each, so this fetches just the cloth materials. It is
@@ -39,14 +40,16 @@ def patterns(signals=DEFAULT_SIGNALS, ids=CLOTH_IDS, images: bool = True) -> lis
     return out + ["README.md"]
 
 
-def expected_files(signals=DEFAULT_SIGNALS, ids=CLOTH_IDS, images: bool = True) -> list[str]:
+def expected_files(signals=DEFAULT_SIGNALS, ids=CLOTH_IDS, images: bool = True,
+                   directions=None, repeats=None) -> list[str]:
     """Every file the selection should hold, built from the documented naming.
     Listing the mirror instead costs one request per page of its 106,000 files,
-    which alone can exhaust the anonymous rate limit."""
+    which alone can exhaust the anonymous rate limit. `directions` and `repeats`
+    narrow the selection; None means all."""
     from haptic.loader import DIRECTIONS_DEG, FORCES_N, REPEATS, VELOCITIES_MM_S
     out = [f"sensor_data/{s}/{mid}/{mid}_{d}_{int(v)}_{int(fo * 1000)}_{r}.parquet"
-           for s in signals for mid in ids for d in DIRECTIONS_DEG
-           for v in VELOCITIES_MM_S for fo in FORCES_N for r in REPEATS]
+           for s in signals for mid in ids for d in (directions or DIRECTIONS_DEG)
+           for v in VELOCITIES_MM_S for fo in FORCES_N for r in (repeats or REPEATS)]
     if images:
         out += [f"images/images_scan_area/img{mid}.jpg" for mid in ids]
         out += [f"images/crop_images/img{mid}/img{mid}_{k}.jpg"
@@ -60,7 +63,12 @@ def main(argv=None) -> int:
     ap.add_argument("--with", dest="extra", nargs="*", default=[], choices=OPTIONAL_SIGNALS)
     ap.add_argument("--no-images", action="store_true")
     ap.add_argument("--retries", type=int, default=12)
+    ap.add_argument("--all-materials", action="store_true",
+                    help="all 118 materials, not only cloth 102-117")
+    ap.add_argument("--directions", type=int, nargs="*")
+    ap.add_argument("--repeats", type=int, nargs="*")
     a = ap.parse_args(argv)
+    ids = tuple(range(118)) if a.all_materials else CLOTH_IDS
 
     import time
 
@@ -68,8 +76,9 @@ def main(argv=None) -> int:
     from huggingface_hub.errors import HfHubHTTPError
 
     out = Path(a.out)
-    allow = patterns((*DEFAULT_SIGNALS, *a.extra), images=not a.no_images)
-    files = expected_files((*DEFAULT_SIGNALS, *a.extra), images=not a.no_images)
+    allow = patterns((*DEFAULT_SIGNALS, *a.extra), ids=ids, images=not a.no_images)
+    files = expected_files((*DEFAULT_SIGNALS, *a.extra), ids=ids, images=not a.no_images,
+                           directions=a.directions, repeats=a.repeats)
     todo = [f for f in files if not (out / f).exists()]
     print(f"{len(files)} files selected, {len(files) - len(todo)} already here", flush=True)
 
@@ -95,9 +104,10 @@ def main(argv=None) -> int:
     missing = [f for f in files if not (out / f).exists()]
     if missing:
         raise SystemExit(f"{len(missing)} files still missing, e.g. {missing[:3]}; re-run")
-    (out / "FETCHED.json").write_text(json.dumps(
-        {"repo": REPO, "revision": REVISION, "patterns": allow, "n_files": len(files)},
-        indent=2))
+    record = out / ("FETCHED_all.json" if a.all_materials else "FETCHED.json")
+    record.write_text(json.dumps(
+        {"repo": REPO, "revision": REVISION, "patterns": allow, "n_files": len(files),
+         "directions": a.directions, "repeats": a.repeats}, indent=2))
     print(f"all {len(files)} files in {out}\nnext: python -m haptic.cli inspect --root {out}")
     return 0
 

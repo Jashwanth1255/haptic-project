@@ -1,0 +1,8 @@
+{
+  "root": "data/cluster",
+  "directions": [
+    0,
+    90
+  ],
+  "repeat": 0
+}

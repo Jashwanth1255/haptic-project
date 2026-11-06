@@ -1,0 +1,17 @@
+{
+  "fig1_variance_shares": {
+    "o1_real_analysis": "20261104T155118_372566Z"
+  },
+  "fig2_scan_transfer": {
+    "o2_cluster_scans": "20261104T161427_584869Z",
+    "o2_cluster_scan_scale": "20261104T161606_361379Z"
+  },
+  "fig3_velocity_exponents": {
+    "velocity_all_materials": "20261105T202123_412283Z",
+    "velocity_confirm_cloth": "20261105T203252_596852Z"
+  },
+  "fig4_identification": {
+    "o1_real_analysis": "20261104T155118_372566Z",
+    "o1_learned_baseline": "20261106T214141_196418Z"
+  }
+}

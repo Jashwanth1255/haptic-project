@@ -1,0 +1,15 @@
+{
+  "name": "velocity_all_materials",
+  "run_id": "20261105T202123_412283Z",
+  "created_utc": "2026-11-05T20:21:23.412283+00:00",
+  "synthetic": false,
+  "git_commit": "312c86fa6236dc29113b1e0b63b8262f1e06a8e8",
+  "git_dirty": true,
+  "argv": [
+    "make_velocity_all.py",
+    "--root",
+    "data/cluster"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

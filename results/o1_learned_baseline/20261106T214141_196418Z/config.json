@@ -1,0 +1,20 @@
+{
+  "root": "/tmp/cluster",
+  "cache": "/kaggle/working/derived/spectrograms.npz",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "epochs": 25,
+  "config": {
+    "epochs": 25,
+    "batch_size": 64,
+    "lr": 0.002,
+    "weight_decay": 0.001,
+    "windows_per_recording": 4,
+    "channels": 32,
+    "dropout": 0.3,
+    "device": "auto"
+  }
+}

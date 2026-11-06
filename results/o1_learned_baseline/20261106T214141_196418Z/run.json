@@ -1,0 +1,17 @@
+{
+  "name": "o1_learned_baseline",
+  "run_id": "20261106T214141_196418Z",
+  "created_utc": "2026-11-06T21:41:41.196418+00:00",
+  "synthetic": false,
+  "git_commit": "312c86f+uncommitted sources-sha256:6ace53cfef3f",
+  "git_dirty": null,
+  "argv": [
+    "make_learned.py",
+    "--root",
+    "/tmp/cluster",
+    "--cache",
+    "/kaggle/working/derived/spectrograms.npz"
+  ],
+  "python": "3.13.18",
+  "platform": "Linux-6.18.55+-x86_64-with-glibc2.39"
+}

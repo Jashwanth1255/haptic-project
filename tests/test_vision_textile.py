@@ -121,7 +121,8 @@ def test_another_folds_model_is_refused(tmp_path):
 
 
 def test_list_matches_the_preregistration():
-    text = (Path(__file__).parents[1] / "PREREGISTRATION.md").read_text()
+    text = (Path(__file__).parents[1] / "PREREGISTRATION.md").read_text(encoding="utf-8")
+    text = text.split("## DTD textile subset", 1)[1].split("\n## ", 1)[0]
     listed = [l.split(". ", 1)[1].strip() for l in text.splitlines()
               if l[:1].isdigit() and ". " in l]
     assert tuple(listed) == X.TEXTILE_CLASSES

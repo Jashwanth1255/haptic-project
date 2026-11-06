@@ -1,0 +1,18 @@
+{
+  "gate_run": "20261104T153936_758197Z",
+  "n": 2493,
+  "chance": 0.0625,
+  "exploratory": true,
+  "direction": {
+    "accuracy_mean": 0.3779917101216741,
+    "accuracy_sd_over_seeds": 0.003217331037709847,
+    "fold_min": 0.21543408360128619,
+    "fold_max": 0.4551282051282051
+  },
+  "repeat": {
+    "accuracy_mean": 0.5418337342956429,
+    "accuracy_sd_over_seeds": 0.007451141333743037,
+    "fold_min": 0.5332798716920609,
+    "fold_max": 0.5469125902165196
+  }
+}

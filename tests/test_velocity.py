@@ -204,3 +204,58 @@ def test_normalisation_removes_variation_only_when_f_scales_with_v():
     bad = variation_across_velocity(_scaling_frame(0.0))
     assert (ok["wavelength_mm"] < 1e-9).all() and (ok["frequency_hz"] > 0.2).all()
     assert (bad["wavelength_mm"] > 0.2).all() and (bad["frequency_hz"] < 1e-9).all()
+
+
+# --- spectral shift (synthetic test scaffolding) --------------------------------
+
+def _shift_data(scaling: bool, resonance: float = 0.0, materials=(80.0,), seed=0):
+    from haptic import velocity as Y
+    rng = np.random.default_rng(seed)
+    fs = 6000.0
+    t = np.arange(0, 2.0, 1 / fs)
+    specs, rows = [], []
+    for m, f40 in enumerate(materials):
+        for v in (20.0, 30.0, 40.0, 50.0, 60.0):
+            f = f40 * v / 40 if scaling else f40
+            z = -1 + 0.002 * rng.normal(size=t.size) + 0.05 * np.sin(2 * np.pi * f * t)
+            z = z + resonance * np.sin(2 * np.pi * 250 * t)
+            specs.append(Y.log_spectrum(np.column_stack([0 * t, 0 * t, z]), fs))
+            rows.append({"material_id": m, "velocity_mm_s": v, "force_n": 1.0, "direction_deg": 0})
+    return np.array(specs), pd.DataFrame(rows)
+
+
+def test_shift_exponent_is_one_when_the_spectrum_scales():
+    from haptic import velocity as Y
+    s, m = _shift_data(scaling=True, materials=(60.0, 90.0))
+    assert np.allclose(Y.shift_exponents(s, m).shift_exponent, 1.0, atol=0.1)
+
+
+def test_shift_exponent_is_zero_when_the_spectrum_is_fixed():
+    from haptic import velocity as Y
+    s, m = _shift_data(scaling=False, materials=(60.0, 90.0))
+    assert np.allclose(Y.shift_exponents(s, m).shift_exponent, 0.0, atol=0.05)
+
+
+def test_whitening_recovers_scaling_under_a_shared_resonance():
+    from haptic import velocity as Y
+    s, m = _shift_data(scaling=True, resonance=0.5, materials=(50.0, 70.0, 90.0, 110.0, 140.0))
+    raw = Y.shift_exponents(s, m).shift_exponent.median()
+    white = Y.shift_exponents(s, m, whiten=True).shift_exponent.median()
+    assert white > 0.8 and white > raw + 0.3
+
+
+def test_external_reference_equals_internal_when_rows_match():
+    from haptic import velocity as Y
+    s, m = _shift_data(scaling=True, resonance=0.5, materials=(50.0, 90.0, 140.0))
+    ref = Y.whitening_reference(s, m)
+    a = Y.shift_exponents(s, m, whiten=True)
+    b = Y.shift_exponents(s, m, whiten=True, reference=ref)
+    assert np.allclose(a.shift_exponent, b.shift_exponent)
+
+
+def test_extra_key_splits_cells():
+    from haptic import velocity as Y
+    s, m = _shift_data(scaling=True, materials=(60.0,))
+    s2, m2 = np.vstack([s, s]), pd.concat([m.assign(repeat=0), m.assign(repeat=1)])
+    out = Y.shift_exponents(s2, m2, keys=("material_id", "force_n", "direction_deg", "repeat"))
+    assert len(out) == 2 and set(out.repeat) == {0, 1}

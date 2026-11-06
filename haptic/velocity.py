@@ -177,3 +177,75 @@ def variation_across_velocity(df: pd.DataFrame) -> pd.DataFrame:
         cv = (med.std(ddof=1) / med.mean().abs()).to_dict()
         rows.append({"material_id": mid, "force_n": fo, **cv})
     return pd.DataFrame(rows)
+
+
+# --- spectral shift: does any part of the spectrum move with velocity? ---------
+# Added 2026-11-06, EXPLORATORY. The centroid is one number and a fixed resonance
+# can dominate it while a texture peak underneath still scales as v / lambda. This
+# aligns whole log-frequency spectra instead: if the spectrum at velocity v is the
+# one at 40 mm/s shifted by log(v / 40), the shift exponent is 1; a spectrum fixed
+# in frequency gives 0. "Whitened" divides out the median spectrum of all
+# materials at the same velocity and force, the part common to every surface and
+# so most plausibly the rig's transfer function.
+
+SHIFT_GRID = np.geomspace(20.0, 1000.0, 241)     # 0.0163 log-units per step
+MAX_SHIFT_STEPS = 60                             # +-0.98 in ln f, beyond 60/20 mm/s
+
+
+def log_spectrum(accel: np.ndarray, fs: float) -> np.ndarray:
+    """Log Welch power of the band-passed magnitude on SHIFT_GRID."""
+    from scipy.signal import welch
+    from . import descriptor as D
+    x = D.bandpass(D.to_magnitude(accel), fs)
+    f, p = welch(x, fs, nperseg=2048)
+    return np.interp(np.log(SHIFT_GRID), np.log(f[1:]), np.log(p[1:] + 1e-20))
+
+
+def best_shift(ref: np.ndarray, other: np.ndarray, max_steps: int = MAX_SHIFT_STEPS) -> float:
+    """ln-frequency shift that best maps `ref` onto `other` (positive = `other` higher)."""
+    step = np.log(SHIFT_GRID[1] / SHIFT_GRID[0])
+    best, arg = -np.inf, 0
+    for k in range(-max_steps, max_steps + 1):
+        a, b = (ref[:len(ref) - k], other[k:]) if k >= 0 else (ref[-k:], other[:len(other) + k])
+        if len(a) < len(ref) // 2:
+            continue
+        r = np.corrcoef(a, b)[0, 1]
+        if r > best:
+            best, arg = r, k
+    return arg * step
+
+
+def whitening_reference(spectra: np.ndarray, meta: pd.DataFrame) -> dict:
+    """Median log spectrum per (velocity, force): the part shared by every surface."""
+    meta = meta.reset_index(drop=True)
+    return {k: np.median(spectra[g.index], axis=0)
+            for k, g in meta.groupby(["velocity_mm_s", "force_n"])}
+
+
+def shift_exponents(spectra: np.ndarray, meta: pd.DataFrame, ref_velocity: float = 40.0,
+                    whiten: bool = False, reference: dict | None = None,
+                    keys=("material_id", "force_n", "direction_deg")) -> pd.DataFrame:
+    """Per cell of `keys`: slope of best ln-shift on ln(v / ref) through the
+    origin. `spectra` rows align with `meta` (material_id, velocity_mm_s,
+    force_n, direction_deg, and any extra key). `whiten` subtracts the median
+    spectrum per (velocity, force) of these same rows, or of `reference` (from
+    `whitening_reference`) when given, so held-out rows can be whitened by a
+    reference they did not contribute to."""
+    meta = meta.reset_index(drop=True)
+    s = spectra.copy()
+    if whiten:
+        ref_spec = reference if reference is not None else whitening_reference(spectra, meta)
+        for k, g in meta.groupby(["velocity_mm_s", "force_n"]):
+            s[g.index] -= ref_spec[k]
+    keys = list(keys)
+    rows = []
+    for key, g in meta.groupby(keys):
+        ref = g[g.velocity_mm_s == ref_velocity]
+        others = g[g.velocity_mm_s != ref_velocity]
+        if len(ref) != 1 or len(others) < 2:
+            continue
+        x = np.log(others.velocity_mm_s.to_numpy() / ref_velocity)
+        y = np.array([best_shift(s[ref.index[0]], s[i]) for i in others.index])
+        rows.append(dict(zip(keys, key),
+                         shift_exponent=float(x @ y / (x @ x))))
+    return pd.DataFrame(rows)
