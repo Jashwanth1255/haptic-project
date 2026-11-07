@@ -402,6 +402,87 @@ than repeating the same stroke does.
 
 ---
 
+## Round 3, E — Direction structure (pre-registered)
+
+Run `direction_structure/20261107T140954_426324Z`. Registered in PREREGISTRATION.md
+("Round 3", commit `d3b3bf9`) before any distance was computed. 18,569 in-band
+recordings; features are 16 log bands + log RMS, standardised. Distances are
+Euclidean, within a (material, velocity, force, repeat) cell, averaged per
+material.
+
+| Median per material | Opposite (θ, θ+180°) | Perpendicular (θ, θ+90°) | Diagonal (±45°, ±135°) | Same direction, other repeat |
+|---|---|---|---|---|
+| Cloth (16) | 3.22 | 3.83 | 4.91 | 1.66 |
+| Other (102) | 2.86 | 4.00 | 5.83 | 1.33 |
+
+- Cloth, perpendicular > opposite: 16/16 materials, Wilcoxon p = 1.5×10⁻⁵ (Holm
+  1.5×10⁻⁵). **Prediction held.**
+- Other 102 materials: 102/102, p = 1.8×10⁻¹⁸ (Holm 3.6×10⁻¹⁸).
+
+**Reading. The prediction held, but the reason we registered for it does not
+hold up.** We expected a fabric's warp and weft to make strokes along one axis
+alike. The effect, however, is present in every category, and it is strongest
+in materials with no weave: glass (median gap 1.60), metal (1.49), ceramic (1.47).
+Cloth shows it least (0.63). Diagonal strokes are the most dissimilar of all. They
+also have a lower centroid (median 223 Hz vs 251 Hz for 0°/90°/180°/270°), so the
+diagonal moves of the stage, which drive both axes at once, produce a different
+signal. Direction in this dataset is therefore dominated by the stage's motion
+axes, not by the surface. This is a second rig property, alongside the 240–270 Hz
+centroid. It likely contributes to the hard 90°/270° folds and the large
+direction-vs-repeat gap in D, though we have not tested that link. Even opposite
+strokes are about twice as far apart as two repeats of the same stroke.
+
+## Round 3, H — Force transfer (pre-registered)
+
+Run `force_transfer/20261107T140925_493108Z`. Logistic regression on the
+`bands+raw4` features. The model is trained at one force, repeat 0, and tested on
+repeat 1 at the same or the other force; both ways round, pooled.
+
+| | Same force | Other force | Materials lower at other force | Wilcoxon p (Holm) |
+|---|---|---|---|---|
+| Cloth, 16-way | 0.324 | 0.224 | 12/16 | 0.0046 (0.0046) |
+| All 118, 118-way | 0.126 | 0.067 | 84/118 | 3.9×10⁻¹³ (7.8×10⁻¹³) |
+
+**Both predictions held.** Changing the force from 0.5 N to 1.0 N, or back, costs
+about a third of the cloth accuracy and half of the 118-way accuracy.
+Descriptive check: we removed level by subtracting log RMS from every band and
+dropping the intensity, RMS and duration features, keeping pattern and centroid.
+Accuracy then falls to 0.294 → 0.219 (cloth) and 0.109 → 0.057 (118). Most of the
+force cost therefore remains after level is removed: force changes the spectral
+shape, not only the amplitude. A renderer conditioned on a single recorded force
+will be mismatched to a user who presses differently.
+
+## Round 3, F — What survives the on/off channel (pre-registered)
+
+Run `onoff_channel/20261107T142357_330804Z`. The 2,493 cloth gate recordings,
+every one rendered. For each source, both band-passed to 20–1000 Hz, the first
+500 ms of the amplitude envelope is encoded with scheme B (10 ms tick) and passed
+through the assumed 25 ms actuator lag. Features: log modulation power in 12
+bands (1–50 Hz) plus log mean level. 16-way logistic regression, direction held
+out. Chance 0.0625.
+
+| Source | Intended envelope | Rendered (on/off + lag) |
+|---|---|---|
+| Acceleration | 0.118 | 0.099 |
+| Contact audio | 0.099 | 0.091 |
+
+| Prediction | p | Holm p | Outcome |
+|---|---|---|---|
+| Rendered acceleration above chance | 0.0039 | 0.012 | **held** |
+| Rendering loses identity (acceleration) | 0.016 | 0.031 | **held** |
+| Audio vs acceleration after rendering (two-sided) | 0.31 | 0.31 | no difference |
+
+**Reading.** An on/off phone vibration keeps a trace of fabric identity: 9.9%
+against 6.25% chance on 16 fabrics. It is a small trace. The envelope itself
+carries little to begin with (11.8%), far less than the spectrum (37.8% for the
+CNN), because the actuator channel discards the carrier frequency and keeps only
+the slow amplitude pattern. Rendering removes about a sixth of what the envelope
+had. Audio's large advantage in B (72% vs 38%) disappears here. It lives in the
+spectrum, which an on/off motor cannot reproduce. A one-motor phone is therefore
+an amplitude-pattern display: whatever makes fabrics distinct in the recordings
+mostly does not reach the fingertip through this channel. Untested: whether
+people can perceive the residual 10% (O5).
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,

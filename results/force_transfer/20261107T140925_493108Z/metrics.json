@@ -1,0 +1,66 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 3, H (commit d3b3bf9)",
+  "columns": [
+    "band00",
+    "band01",
+    "band02",
+    "band03",
+    "band04",
+    "band05",
+    "band06",
+    "band07",
+    "band08",
+    "band09",
+    "band10",
+    "band11",
+    "band12",
+    "band13",
+    "band14",
+    "band15",
+    "log_rms",
+    "frequency_hz",
+    "intensity",
+    "pattern",
+    "duration_ms"
+  ],
+  "tests": {
+    "cloth": {
+      "same_accuracy": 0.3239775461106656,
+      "cross_accuracy": 0.22373696872493987,
+      "n_same": 1247,
+      "n_cross": 1247,
+      "n_classes": 16,
+      "n_cross_lower": 12,
+      "chance": 0.0625,
+      "p": 0.0045928955078125,
+      "holm_p": 0.0045928955078125,
+      "significant": true,
+      "predicted": "cross < same",
+      "prediction_held": true
+    },
+    "all118": {
+      "same_accuracy": 0.12571367014973608,
+      "cross_accuracy": 0.06711192502423785,
+      "n_same": 9283,
+      "n_cross": 9283,
+      "n_classes": 118,
+      "n_cross_lower": 84,
+      "chance": 0.00847457627118644,
+      "p": 3.910147127349324e-13,
+      "holm_p": 7.820294254698648e-13,
+      "significant": true,
+      "predicted": "cross < same",
+      "prediction_held": true
+    }
+  },
+  "level_removed_descriptive": {
+    "cloth": {
+      "same_accuracy": 0.2943063352044908,
+      "cross_accuracy": 0.21892542101042503
+    },
+    "all118": {
+      "same_accuracy": 0.10912420553700312,
+      "cross_accuracy": 0.05741678336744587
+    }
+  }
+}

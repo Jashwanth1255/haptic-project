@@ -1,0 +1,17 @@
+{
+  "name": "onoff_channel",
+  "run_id": "20261107T142357_330804Z",
+  "created_utc": "2026-11-07T14:23:57.330804+00:00",
+  "synthetic": false,
+  "git_commit": "2b1b3c786513c3e7650eeef602c5f2252ba5717f",
+  "git_dirty": true,
+  "argv": [
+    "make_onoff.py",
+    "--root",
+    "data/cluster",
+    "--workers",
+    "6"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

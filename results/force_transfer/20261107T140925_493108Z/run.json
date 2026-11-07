@@ -1,0 +1,13 @@
+{
+  "name": "force_transfer",
+  "run_id": "20261107T140925_493108Z",
+  "created_utc": "2026-11-07T14:09:25.493108+00:00",
+  "synthetic": false,
+  "git_commit": "d3b3bf9b55eb598f0074a8809f9154de3218f653",
+  "git_dirty": true,
+  "argv": [
+    "make_round3.py"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

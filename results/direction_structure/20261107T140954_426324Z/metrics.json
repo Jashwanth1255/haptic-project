@@ -1,0 +1,96 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 3, E (commit d3b3bf9)",
+  "n_recordings": 18569,
+  "cloth": {
+    "opp": 3.219549812253415,
+    "perp": 3.82869218216368,
+    "diag": 4.905339250497913,
+    "repeat": 1.6575910745438052,
+    "perp_minus_opp": 0.6264473178433525,
+    "n_materials": 16,
+    "n_positive": 16,
+    "p": 1.52587890625e-05,
+    "holm_p": 1.52587890625e-05,
+    "significant": true,
+    "predicted": "perp > opp",
+    "prediction_held": true
+  },
+  "other": {
+    "opp": 2.8631636391931936,
+    "perp": 3.998190191836179,
+    "diag": 5.827364998052179,
+    "repeat": 1.3305983331074984,
+    "perp_minus_opp": 1.0878332582640464,
+    "n_materials": 102,
+    "n_positive": 102,
+    "p": 1.8229684908388888e-18,
+    "holm_p": 3.6459369816777776e-18,
+    "significant": true,
+    "predicted": "none (two-sided)"
+  },
+  "by_category_median": {
+    "ceramic": {
+      "opp": 2.6054,
+      "perp": 4.223,
+      "diag": 6.1265,
+      "repeat": 1.2512,
+      "perp_minus_opp": 1.4744
+    },
+    "cloth": {
+      "opp": 3.2195,
+      "perp": 3.8287,
+      "diag": 4.9053,
+      "repeat": 1.6576,
+      "perp_minus_opp": 0.6264
+    },
+    "composite": {
+      "opp": 2.7306,
+      "perp": 3.7212,
+      "diag": 5.602,
+      "repeat": 1.3014,
+      "perp_minus_opp": 0.9906
+    },
+    "glass": {
+      "opp": 2.8815,
+      "perp": 4.5145,
+      "diag": 6.6627,
+      "repeat": 1.3035,
+      "perp_minus_opp": 1.6049
+    },
+    "leather": {
+      "opp": 2.7454,
+      "perp": 4.1481,
+      "diag": 5.8152,
+      "repeat": 1.3982,
+      "perp_minus_opp": 1.1933
+    },
+    "metal": {
+      "opp": 2.8687,
+      "perp": 4.4161,
+      "diag": 6.6485,
+      "repeat": 1.3351,
+      "perp_minus_opp": 1.4868
+    },
+    "polymer": {
+      "opp": 2.8946,
+      "perp": 4.2417,
+      "diag": 6.3019,
+      "repeat": 1.3244,
+      "perp_minus_opp": 1.2813
+    },
+    "stone": {
+      "opp": 2.8362,
+      "perp": 4.3276,
+      "diag": 6.2553,
+      "repeat": 1.4041,
+      "perp_minus_opp": 1.4704
+    },
+    "wood": {
+      "opp": 2.8662,
+      "perp": 3.7475,
+      "diag": 5.6133,
+      "repeat": 1.3266,
+      "perp_minus_opp": 0.9005
+    }
+  }
+}

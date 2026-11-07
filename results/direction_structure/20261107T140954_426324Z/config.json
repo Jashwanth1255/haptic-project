@@ -1,0 +1,22 @@
+{
+  "features": "data/round2_features/features.csv",
+  "columns": [
+    "band00",
+    "band01",
+    "band02",
+    "band03",
+    "band04",
+    "band05",
+    "band06",
+    "band07",
+    "band08",
+    "band09",
+    "band10",
+    "band11",
+    "band12",
+    "band13",
+    "band14",
+    "band15",
+    "log_rms"
+  ]
+}

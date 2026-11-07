@@ -1,0 +1,13 @@
+{
+  "name": "direction_structure",
+  "run_id": "20261107T140954_426324Z",
+  "created_utc": "2026-11-07T14:09:54.426324+00:00",
+  "synthetic": false,
+  "git_commit": "d3b3bf9b55eb598f0074a8809f9154de3218f653",
+  "git_dirty": true,
+  "argv": [
+    "x"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}
