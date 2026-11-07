@@ -1,0 +1,47 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 3, G (commit 2b1b3c7)",
+  "classes": [
+    "cotton",
+    "chiffon",
+    "leather"
+  ],
+  "chance": 0.3333333333333333,
+  "n_scan_test": 570,
+  "n_photos": 211,
+  "photos_per_class": {
+    "cotton": 100,
+    "chiffon": 100,
+    "leather": 11
+  },
+  "scan_balanced_accuracy": 1.0,
+  "scan_ci95": [
+    1.0,
+    1.0
+  ],
+  "photo_balanced_accuracy": 0.23363636363636364,
+  "photo_ci95": [
+    0.17333333333333334,
+    0.31090909090909086
+  ],
+  "gap": 0.7663636363636364,
+  "test": {
+    "p_bootstrap": 0.0,
+    "significant": true,
+    "predicted": "photo < scan",
+    "prediction_held": true
+  },
+  "photo_recall": {
+    "cotton": 0.17,
+    "chiffon": 0.44,
+    "leather": 0.09090909090909091
+  },
+  "scan_recall": {
+    "cotton": 1.0,
+    "chiffon": 1.0,
+    "leather": 1.0
+  },
+  "descriptive": {
+    "photo_to_scan_balanced_accuracy": 0.5262222222222223,
+    "photo_cv_balanced_accuracy": 0.5439393939393941
+  }
+}

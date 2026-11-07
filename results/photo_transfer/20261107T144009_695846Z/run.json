@@ -1,0 +1,14 @@
+{
+  "name": "photo_transfer",
+  "run_id": "20261107T144009_695846Z",
+  "created_utc": "2026-11-07T14:40:09.695846+00:00",
+  "synthetic": false,
+  "git_commit": "5e3c21ffc4b5745e7a5a45cb2195c004aeffafb9",
+  "git_dirty": false,
+  "argv": [
+    "make_photo_transfer.py",
+    "run"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

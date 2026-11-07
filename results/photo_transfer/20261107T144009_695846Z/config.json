@@ -1,0 +1,33 @@
+{
+  "mirror": "silverstone1903/deep-fashion-multimodal",
+  "weights": "IMAGENET1K_V2",
+  "per_class": 100,
+  "seed": 0,
+  "cluster_ids": {
+    "cotton": [
+      104,
+      105,
+      106
+    ],
+    "chiffon": [
+      107
+    ],
+    "leather": [
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101
+    ]
+  }
+}

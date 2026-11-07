@@ -483,6 +483,53 @@ an amplitude-pattern display: whatever makes fabrics distinct in the recordings
 mostly does not reach the fingertip through this channel. Untested: whether
 people can perceive the residual 10% (O5).
 
+## Round 3, G — Scan → product-photo transfer (pre-registered; the headline question)
+
+Run `photo_transfer/20261107T144009_695846Z`. Registered in PREREGISTRATION.md
+("Round 3", G, commit `2b1b3c7`) before any image was opened. Three fabrics present
+in both sources:
+- cotton: Cluster 104–106;
+- chiffon: Cluster 107;
+- leather: Cluster 87–101.
+
+The scan training set is crops 1–70 of each material, with crops 71–100 held
+out. The photos are DeepFashion-MultiModal product photos whose caption names
+exactly one fabric, drawn with seed 0: 100 cotton, 100 chiffon, and only 11
+leather, because only 11 qualified. The model is a frozen ImageNet ResNet-50 with
+class-balanced logistic regression. The metric is balanced accuracy; chance is
+0.333.
+
+| Test set | Balanced accuracy | 95% bootstrap CI | Recall: cotton / chiffon / leather |
+|---|---|---|---|
+| Held-out scan crops | **1.000** | [1.000, 1.000] | 1.00 / 1.00 / 1.00 |
+| Product photos | **0.234** | [0.173, 0.311] | 0.17 / 0.44 / 0.09 |
+
+- Photo < scan: in all 10,000 bootstrap resamples the photo score fell below the
+  scan score (p < 10⁻⁴). **Prediction held.** The gap is 0.77.
+- Descriptive:
+  - train on photos, test on all scan crops: 0.526;
+  - photo-to-photo 5-fold cross-validation: 0.544.
+
+**Reading.** A classifier that is perfect on held-out crops of the scanned
+fabrics falls *below chance* on product photographs of the same fabric types.
+The photo CI lies entirely under 0.333. Most cotton shirts are called chiffon (65
+of 100), and leather is almost never recognised. The scan score is optimistic, as
+the pre-registration said: the test crops come from the same materials, so the
+model can memorise a swatch rather than learn "cotton". Even so, the transfer
+does not merely degrade; it fails. The same features separate the fabrics within
+the photo domain (0.544), so the photos carry fabric information. A model trained
+on 300 dpi lab scans simply does not reach it. The reverse direction (photos →
+scans, 0.526) works better than scans → photos.
+
+Limits:
+- three classes, with only 11 leather photos;
+- the photo labels come from captions;
+- a frozen ImageNet backbone, not fine-tuned.
+
+This is the first measurement of open question 1. It supports the warning that
+lab-scan haptic datasets cannot be paired with shop photographs without domain
+adaptation.
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,
