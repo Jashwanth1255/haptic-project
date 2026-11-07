@@ -378,3 +378,77 @@ Descriptive, no prediction:
 - the reverse direction (train on photos, test on all scan crops);
 - photo-to-photo 5-fold cross-validated balanced accuracy, as a within-domain
   reference.
+
+## Round 4: five further analyses (I, J, K, L, M)
+
+Registered 2026-11-07, after rounds 1–3 and before any quantity below was
+computed. All run on CPU.
+
+### I. Does removing the rig's shared response help identification?
+
+Features: the 16 log bands plus `log_rms` from `features.csv` (in-band, 18,569
+recordings). Whitening: from each feature, subtract its median over all 118
+materials at the same (velocity, force, direction). This is label-free, but it
+uses the test direction's recordings of every material; we disclose that. Model:
+standardised logistic regression, direction held out (8 folds).
+
+1. **Cloth, 16-way:** whitened > raw accuracy, one-sided Wilcoxon over the 8 folds.
+2. **All 118, 118-way:** whitened > raw, the same test.
+
+Holm across the two.
+
+### J. Scan → photo transfer, stricter and with a photo-trained model
+
+Same photos and classes as G (run `photo_transfer/20261107T144009_695846Z`).
+
+1. **Leave-one-material-out scans.** Two classes, cotton (3 materials) vs leather
+   (15); chiffon has a single material and drops out. ResNet-50 features as in G,
+   class-balanced logistic regression. Each scan material is predicted by a model
+   trained on the other materials. Photos are predicted by the model trained on
+   all scan materials. **Prediction: photo balanced accuracy < LOMO scan balanced
+   accuracy**, by a one-sided class-stratified bootstrap as in G.
+2. **CLIP zero-shot.** `openai/clip-vit-base-patch32` (Hugging Face), prompt
+   "a photo of {cotton|chiffon|leather} fabric", argmax over the 3 classes, on all
+   1,900 scan crops and the 211 photos. **Prediction: photo balanced accuracy >
+   scan balanced accuracy** (CLIP is trained on web photographs), by the same
+   bootstrap.
+
+Holm across J1 and J2. Descriptive: a CLIP linear probe trained on scans and
+tested on photos.
+
+### K. Test–retest reliability of the features (118 materials), descriptive
+
+For each feature (4 raw descriptors, 16 bands, `log_rms`; logs of positive
+descriptors): ICC(3,1) of repeat 0 vs repeat 1 over all (material, velocity,
+force, direction) cells; and split-half reliability of per-material means,
+Spearman–Brown corrected. The good-reliability threshold is fixed now at ICC ≥ 0.75.
+We report the features that meet it. No prediction.
+
+### L. Image → category → descriptor at 118-material scale
+
+Leave-one-material-out. A logistic regression on per-crop ResNet-50 features
+(IMAGENET1K_V2) is trained on the crops of the other 117 materials. It predicts
+the held-out material's category by majority vote over its 100 crops. The
+predicted descriptor is the mean of that category's other materials. The
+descriptor is each material's mean of log centroid, log intensity, pattern and
+log duration over its in-band recordings. Baselines: the mean of all other
+materials; and, as an oracle, the true category's mean.
+
+- **Prediction:** per dimension, absolute error of the image-predicted descriptor
+  < the all-materials mean. One-sided Wilcoxon over 118 materials, Holm across
+  the 4 dimensions.
+- Also reported: category accuracy from images, and the oracle errors.
+
+### M. Contact audio at 118-material scale (Kaggle CPU)
+
+Contact audio for every recording of all 118 materials, cut to the steady window
+of the position file, with the same loader rules. Features: 16 log band shares
+over 20–1000 Hz plus log RMS (as for acceleration); and 16 log band shares over
+20–8000 Hz plus log RMS. Logistic regression, direction held out, 118-way
+material.
+
+- **Prediction:** audio 20–8000 Hz > acceleration bands (D's `bands`, run
+  `benchmark118_linear/20261107T103411_132525Z`), one-sided Wilcoxon over the 8
+  folds.
+- Reported descriptively: audio 20–1000 Hz, the 9-way category task, and the
+  repeat split.
