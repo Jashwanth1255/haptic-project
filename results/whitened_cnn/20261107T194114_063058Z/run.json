@@ -1,0 +1,23 @@
+{
+  "name": "whitened_cnn",
+  "run_id": "20261107T194114_063058Z",
+  "created_utc": "2026-11-07T19:41:14.063058+00:00",
+  "synthetic": false,
+  "git_commit": "850de1d sources-sha256:435b19513d78",
+  "git_dirty": null,
+  "argv": [
+    "make_round6_cnn.py",
+    "--features",
+    "/kaggle/input/notebooks/jashwanth113/cluster-round2-features/features",
+    "--gate-keys",
+    "inputs/gate_keys.csv",
+    "--raw-cloth-folds",
+    "inputs/raw_cloth_folds.csv",
+    "--raw-118-folds",
+    "inputs/raw_118_folds.csv",
+    "--checkpoints",
+    "/kaggle/working/derived/round6"
+  ],
+  "python": "3.13.16",
+  "platform": "Linux-6.18.55+-x86_64-with-glibc2.39"
+}

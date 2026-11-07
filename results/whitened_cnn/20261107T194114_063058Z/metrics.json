@@ -1,0 +1,85 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 6, P (commit 869b910)",
+  "raw_reference": {
+    "P1": "audio_vs_accel/20261107T110948_431117Z accel_rerun",
+    "P2": "benchmark118_cnn/20261107T125519_960150Z material_id|direction"
+  },
+  "results": {
+    "P1": {
+      "accuracy_mean": 0.4353523198288542,
+      "accuracy_sd_over_seeds": 0.009237451771314829,
+      "fold_min": 0.3538961038961039,
+      "fold_max": 0.5605095541401274,
+      "accuracy_sd_over_folds": 0.0652532700576118,
+      "macro_f1_mean": 0.4275637059814817,
+      "top5_mean": 0.8864821500200563,
+      "n": 2493,
+      "chance": 0.0625,
+      "majority_baseline": 0.06377858002406739
+    },
+    "P2": {
+      "accuracy_mean": 0.3143590572100454,
+      "accuracy_sd_over_seeds": 0.0023077419388026813,
+      "fold_min": 0.22012037833190026,
+      "fold_max": 0.3937041828374299,
+      "accuracy_sd_over_folds": 0.05684744791171157,
+      "macro_f1_mean": 0.31248063498278494,
+      "top5_mean": 0.6495413502791391,
+      "n": 18569,
+      "chance": 0.00847457627118644,
+      "majority_baseline": 0.008616511389950994
+    },
+    "category": {
+      "accuracy_mean": 0.5897104493151669,
+      "accuracy_sd_over_seeds": 0.004617054500234244,
+      "fold_min": 0.5244060475161987,
+      "fold_max": 0.6376500857632933,
+      "accuracy_sd_over_folds": 0.038988560172038854,
+      "macro_f1_mean": 0.40591963723851304,
+      "top5_mean": 0.9567917855924749,
+      "n": 18569,
+      "chance": 0.1111111111111111,
+      "majority_baseline": 0.3234422963002854
+    }
+  },
+  "tests": {
+    "P1": {
+      "raw_accuracy": 0.3807560725955502,
+      "whitened_fold_mean": 0.43527850353313857,
+      "fold_differences": {
+        "0": -0.04978354978354976,
+        "45": 0.032154340836012874,
+        "90": 0.08966244725738398,
+        "135": 0.13163481953290868,
+        "180": 0.044871794871794934,
+        "225": 0.022580645161290325,
+        "270": 0.10825294748124331,
+        "315": 0.05680600214362275
+      },
+      "folds_improved": 7,
+      "p": 0.02734375,
+      "holm_p": 0.02734375,
+      "predicted": "whitened > raw",
+      "prediction_held": true
+    },
+    "P2": {
+      "raw_accuracy": 0.20182292484377057,
+      "whitened_fold_mean": 0.31436685236579487,
+      "fold_differences": {
+        "0": 0.1070190641247834,
+        "45": 0.09251352120694567,
+        "90": 0.11092003439380915,
+        "135": 0.1364093718556849,
+        "180": 0.08527131782945738,
+        "225": 0.0775126536514823,
+        "270": 0.17206623470122395,
+        "315": 0.11863922241280736
+      },
+      "folds_improved": 8,
+      "p": 0.00390625,
+      "holm_p": 0.0078125,
+      "predicted": "whitened > raw",
+      "prediction_held": true
+    }
+  }
+}

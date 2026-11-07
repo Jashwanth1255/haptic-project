@@ -724,6 +724,37 @@ direction held out (8 folds), 118-way material identification, chance 0.0085.
   The identity information is mostly in frequencies above the vibrotactile range,
   which bounds what any rendered vibration can carry.
 
+## Round 6, P — CNN on whitened spectrograms (pre-registered)
+
+Run `whitened_cnn/20261107T194114_063058Z`, Kaggle T4 GPU (kernel
+`jashwanth113/cluster-round6-cnn`, code 850de1d, about 1.6 GPU-hours). This is the
+round-2 CNN, unchanged, on the same acceleration spectrograms, after subtracting
+each (velocity, force, direction)'s median spectrum over all 118 materials.
+Direction is held out (8 folds) and results are averaged over 3 seeds. The raw
+comparisons are the registered round-2 runs.
+
+| Task | Chance | Raw CNN | Whitened CNN | Folds improved | Holm p |
+|---|---|---|---|---|---|
+| P1: 16 cloth materials (2,493 rec.) | 0.063 | 0.381 | **0.435** | 7/8 | 0.027 |
+| P2: 118 materials (18,569 rec.) | 0.008 | 0.202 | **0.314** | 8/8 | 0.0078 |
+| 9 categories (descriptive) | 0.111 (majority 0.323) | 0.449 | 0.590 | — | — |
+
+- **Both predictions held.** Whitening helps the CNN as it helped the linear model
+  (round 4, I). The gain is largest at 118 scale (+0.11, about 55% relative).
+  Cloth gains +0.05, and fold 0° is the one fold that got worse (−0.05).
+- Macro-F1: cloth 0.428, 118 materials 0.312. Top-5 accuracy: cloth 0.886,
+  118 materials 0.650. Seed SD is at most 0.009.
+- Interpretation: a large share of what the raw CNN had to learn was the rig's
+  condition-dependent response, which is shared by every surface. Removing it
+  with a label-free median makes identity easier to learn. The whitening is
+  transductive: the held-out direction's median comes from that direction's
+  unlabelled recordings, as pre-registered. A deployed renderer would need the
+  rig's median per condition, which is available from the dataset itself.
+- With both whitening and a CNN, vibration alone (0.435 on cloth) now exceeds the
+  linear model on whitened bands (0.306). It is still well below contact audio
+  (round 2 B: 0.720), and round 5 N shows that unsupervised clustering does not
+  improve.
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,

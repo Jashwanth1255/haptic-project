@@ -1,0 +1,24 @@
+{
+  "features": "/kaggle/input/notebooks/jashwanth113/cluster-round2-features/features",
+  "gate_keys": "inputs/gate_keys.csv",
+  "raw_cloth_folds": "inputs/raw_cloth_folds.csv",
+  "raw_118_folds": "inputs/raw_118_folds.csv",
+  "checkpoints": "/kaggle/working/derived/round6",
+  "epochs": 25,
+  "limit_materials": null,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "config": {
+    "epochs": 25,
+    "batch_size": 64,
+    "lr": 0.002,
+    "weight_decay": 0.001,
+    "windows_per_recording": 4,
+    "channels": 32,
+    "dropout": 0.3,
+    "device": "auto"
+  }
+}
