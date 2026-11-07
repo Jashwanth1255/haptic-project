@@ -1,0 +1,60 @@
+{
+  "preregistration": "PREREGISTRATION.md: Benchmark and findings round 2, D",
+  "n": 18569,
+  "n_materials": 118,
+  "category_codes": {
+    "0": "ceramic",
+    "1": "cloth",
+    "2": "composite",
+    "3": "glass",
+    "4": "leather",
+    "5": "metal",
+    "6": "polymer",
+    "7": "stone",
+    "8": "wood"
+  },
+  "results": {
+    "material_id|direction|cnn": {
+      "accuracy_mean": 0.2018238282442063,
+      "accuracy_sd_over_seeds": 0.002345758518522935,
+      "fold_min": 0.09762419006479482,
+      "fold_max": 0.2954446854663774,
+      "accuracy_sd_over_folds": 0.06812641339647484,
+      "macro_f1_mean": 0.18415764448024954,
+      "top5_mean": 0.44773547310032846,
+      "chance": 0.00847457627118644,
+      "majority_baseline": 0.008616511389950994
+    },
+    "material_id|repeat|cnn": {
+      "accuracy_mean": 0.33807318036554274,
+      "accuracy_sd_over_seeds": 0.00600779516315513,
+      "fold_min": 0.3315738446622859,
+      "fold_max": 0.34342346224280945,
+      "macro_f1_mean": 0.3300968834773128,
+      "top5_mean": 0.699737872095946,
+      "chance": 0.00847457627118644,
+      "majority_baseline": 0.008616511389950994
+    },
+    "category|direction|cnn": {
+      "accuracy_mean": 0.44854327104313646,
+      "accuracy_sd_over_seeds": 0.004297134118326157,
+      "fold_min": 0.2717062634989201,
+      "fold_max": 0.5865509761388287,
+      "accuracy_sd_over_folds": 0.10640280665725306,
+      "macro_f1_mean": 0.30119921122765086,
+      "top5_mean": 0.8746477103416087,
+      "chance": 0.1111111111111111,
+      "majority_baseline": 0.3234422963002854
+    },
+    "category|repeat|cnn": {
+      "accuracy_mean": 0.6314050773815936,
+      "accuracy_sd_over_seeds": 0.0038030212732451016,
+      "fold_min": 0.627922007971561,
+      "fold_max": 0.6354626737046214,
+      "macro_f1_mean": 0.42495427650387835,
+      "top5_mean": 0.9698373370677583,
+      "chance": 0.1111111111111111,
+      "majority_baseline": 0.3234422963002854
+    }
+  }
+}

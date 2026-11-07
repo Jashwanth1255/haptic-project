@@ -1,0 +1,75 @@
+{
+  "preregistration": "PREREGISTRATION.md: Benchmark and findings round 2, C",
+  "n": 2493,
+  "chance": 0.0625,
+  "conditions": {
+    "k0": {
+      "accuracy_mean": 0.2790480010696617,
+      "accuracy_sd_over_seeds": 0.013067834440829672,
+      "fold_min": 0.107421875,
+      "fold_max": 0.4186991869918699,
+      "accuracy_sd_over_folds": 0.0963725702368676,
+      "macro_f1_mean": 0.270223220507495,
+      "k": 0.0,
+      "per_velocity": {
+        "20.0": 0.12565104166666666,
+        "30.0": 0.3058284217419777,
+        "40.0": 0.3148148148148148,
+        "50.0": 0.3861788617886179,
+        "60.0": 0.2668067226890756
+      }
+    },
+    "k_confirmed": {
+      "accuracy_mean": 0.3051210054820163,
+      "accuracy_sd_over_seeds": 0.018339415688980166,
+      "fold_min": 0.091796875,
+      "fold_max": 0.4695121951219512,
+      "accuracy_sd_over_folds": 0.12441725497094133,
+      "macro_f1_mean": 0.30179958321735106,
+      "k": 0.338,
+      "per_velocity": {
+        "20.0": 0.09505208333333333,
+        "30.0": 0.31630648330058936,
+        "40.0": 0.35383597883597884,
+        "50.0": 0.4214092140921409,
+        "60.0": 0.34733893557422973
+      }
+    },
+    "k1": {
+      "accuracy_mean": 0.28426260195213265,
+      "accuracy_sd_over_seeds": 0.007791845051120973,
+      "fold_min": 0.078125,
+      "fold_max": 0.5,
+      "accuracy_sd_over_folds": 0.14931048360778537,
+      "macro_f1_mean": 0.2766396822812875,
+      "k": 1.0,
+      "per_velocity": {
+        "20.0": 0.08463541666666667,
+        "30.0": 0.22789783889980353,
+        "40.0": 0.28571428571428575,
+        "50.0": 0.49051490514905155,
+        "60.0": 0.34453781512605036
+      }
+    }
+  },
+  "tests": {
+    "k_confirmed_vs_k0": {
+      "wins": 307,
+      "losses": 251,
+      "p": 0.00990630292697532,
+      "holm_p": 0.01981260585395064,
+      "significant": true,
+      "predicted": true,
+      "prediction_held": true
+    },
+    "k_confirmed_vs_k1": {
+      "wins": 331,
+      "losses": 292,
+      "p": 0.06391611268257331,
+      "holm_p": 0.06391611268257331,
+      "significant": false,
+      "predicted": true,
+      "prediction_held": false
+    }
+  }
+}

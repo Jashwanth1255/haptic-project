@@ -319,6 +319,89 @@ fabric from another.
 
 ---
 
+## Round 2, B — Contact audio vs acceleration (pre-registered)
+
+Run `audio_vs_accel/20261107T110948_431117Z` (Kaggle T4, code `c0efe48`). Same
+2,493 cloth gate recordings, same CNN and direction-held-out folds as
+`o1_learned_baseline`, 3 seeds. Chance 6.25% (16 classes).
+
+| Input | Accuracy | SD over folds | Fold range | Macro-F1 |
+|---|---|---|---|---|
+| Audio, 20–8000 Hz (`audio_full`) | **0.720** | 0.048 | 0.640–0.807 | 0.719 |
+| Audio, 20–1000 Hz (`audio_band`) | 0.573 | 0.056 | 0.462–0.656 | 0.572 |
+| Acceleration, rerun with the new trainer | 0.381 | 0.073 | 0.235–0.458 | 0.375 |
+
+The acceleration rerun reproduces the committed baseline (0.378) to within 0.003,
+so the vectorised trainer did not change the result.
+
+Confirmatory test (audio_full > o1_learned_baseline, one-sided Wilcoxon over the
+8 direction folds): audio wins every fold by 0.22–0.45, p = 0.0039. **Prediction
+held.**
+
+`audio_band` was not part of the confirmatory test and is reported descriptively.
+It shows that most of audio's advantage remains inside the 20–1000 Hz band a phone
+actuator can reproduce. So the gap is not only high-frequency content. Audio here
+is the dataset's noise-cancelled contact microphone, a different sensor from the
+rubber-tip accelerometer. This result says which recorded signal identifies a
+fabric best; it does not say which one feels right when rendered.
+
+## Round 2, C — Recognition at an unseen velocity (pre-registered)
+
+Run `velocity_warp/20261107T111741_349222Z`. Leave-one-velocity-out (5 folds),
+log-frequency spectrogram warped by f·(v/40)^k before the CNN, 3 seeds. A
+recording counts as correct if the majority of seeds classify it correctly. Tests
+are exact one-sided sign tests on the recordings where the two conditions
+disagree, Holm-corrected.
+
+| Warp k | Accuracy | 20 mm/s | 30 | 40 | 50 | 60 |
+|---|---|---|---|---|---|---|
+| 0 (no warp) | 0.279 | 0.126 | 0.306 | 0.315 | 0.386 | 0.267 |
+| **0.338 (confirmed exponent)** | **0.305** | 0.095 | 0.316 | 0.354 | 0.421 | 0.347 |
+| 1 (pure f = v/λ) | 0.284 | 0.085 | 0.228 | 0.286 | 0.491 | 0.345 |
+
+| Prediction | Wins / losses | p | Holm p | Outcome |
+|---|---|---|---|---|
+| k = 0.338 beats k = 0 | 307 / 251 | 0.0099 | 0.020 | **held** |
+| k = 0.338 beats k = 1 | 331 / 292 | 0.064 | 0.064 | **not supported** |
+
+**Reading.** Warping by the exponent measured in the velocity analysis helps a
+classifier generalise to a velocity it never saw. The gain is modest (+2.6
+points), and every condition fails at the 20 mm/s extreme, where the test velocity
+lies outside the training range. The advantage over the pure kinematic warp (k = 1)
+was not significant, so the claim stops at "partial warp beats no warp". It does
+not extend to "partial warp beats full warp". Fold SD (0.10–0.15) is larger than
+any of the differences, so per-fold comparisons should not be read on their own.
+
+## Round 2, D — 118-material benchmark (descriptive)
+
+Runs `benchmark118_linear/20261107T103411_132525Z` (CPU) and
+`benchmark118_cnn/20261107T125519_960150Z` (T4). 18,569 in-band recordings: all 118
+materials, 8 directions, 5 velocities, 2 forces, 2 repeats. 266 files failed to
+load and 45 were out of band. Majority baselines: 0.009 for material, 0.323 for
+category (wood is the largest category).
+
+| Task | Split | raw4 LR | bands LR | bands+raw4 LR | CNN (3 seeds) |
+|---|---|---|---|---|---|
+| Material, 118-way | direction held out | 0.031 | 0.078 | 0.083 | **0.202** (top-5 0.448) |
+| Material, 118-way | repeat | 0.035 | 0.107 | 0.111 | **0.338** (top-5 0.700) |
+| Category, 9-way | direction held out | 0.347 | 0.354 | 0.355 | **0.449** (macro-F1 0.301) |
+| Category, 9-way | repeat | 0.352 | 0.387 | 0.394 | **0.631** (macro-F1 0.425) |
+
+CNN category recall with direction held out: cloth 0.71, wood 0.54, leather 0.52,
+polymer 0.49, stone 0.28, metal 0.22, glass 0.04, ceramic 0.04, composite 0.00.
+
+**Reading.** The four-number descriptor barely beats the majority baseline at
+category level (0.347 vs 0.323), so it is a rendering parameterisation, not a
+recogniser. The CNN reaches 20% on 118-way material identification across held-out
+directions, 24× chance. That is a usable baseline for this dataset, but well short
+of reliable identification. Cloth is the most recognisable category from
+vibration. The three smallest categories (composite 3, glass 5, ceramic 5
+materials) are almost never recognised. The gap between the direction and repeat
+splits (0.20 vs 0.34) shows that sliding direction changes the signal far more
+than repeating the same stroke does.
+
+---
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,

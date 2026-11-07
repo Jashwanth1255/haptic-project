@@ -1,0 +1,23 @@
+{
+  "name": "audio_vs_accel",
+  "run_id": "20261107T110948_431117Z",
+  "created_utc": "2026-11-07T11:09:48.431117+00:00",
+  "synthetic": false,
+  "git_commit": "c0efe48 sources-sha256:2e6a677c5e4b",
+  "git_dirty": null,
+  "argv": [
+    "make_round2_cnn.py",
+    "--features",
+    "/kaggle/input/notebooks/jashwanth113/cluster-round2-features/features",
+    "--gate-keys",
+    "inputs/gate_keys.csv",
+    "--baseline-folds",
+    "inputs/baseline_folds.csv",
+    "--k-confirmed",
+    "0.338",
+    "--checkpoints",
+    "/kaggle/working/derived/round2"
+  ],
+  "python": "3.13.16",
+  "platform": "Linux-6.18.55+-x86_64-with-glibc2.39"
+}

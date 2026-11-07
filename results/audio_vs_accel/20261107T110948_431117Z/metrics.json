@@ -1,0 +1,49 @@
+{
+  "preregistration": "PREREGISTRATION.md: Benchmark and findings round 2, B",
+  "n": 2493,
+  "chance": 0.0625,
+  "inputs": {
+    "audio_full": {
+      "accuracy_mean": 0.7196149217809867,
+      "accuracy_sd_over_seeds": 0.005572580822081722,
+      "fold_min": 0.639871382636656,
+      "fold_max": 0.8070739549839229,
+      "accuracy_sd_over_folds": 0.048042862486460766,
+      "macro_f1_mean": 0.7192517523373311
+    },
+    "audio_band": {
+      "accuracy_mean": 0.5733386816419307,
+      "accuracy_sd_over_seeds": 0.009097039012260508,
+      "fold_min": 0.46153846153846156,
+      "fold_max": 0.6559485530546624,
+      "accuracy_sd_over_folds": 0.05608084667319133,
+      "macro_f1_mean": 0.5716322597783529
+    },
+    "accel_rerun": {
+      "accuracy_mean": 0.3805321567054419,
+      "accuracy_sd_over_seeds": 0.006728036168155719,
+      "fold_min": 0.2347266881028939,
+      "fold_max": 0.45806451612903226,
+      "accuracy_sd_over_folds": 0.07253498322892382,
+      "macro_f1_mean": 0.3750052347925328
+    }
+  },
+  "confirmatory_test": {
+    "comparison": "audio_full vs o1_learned_baseline/20261106T214141_196418Z",
+    "n_folds": 8,
+    "fold_differences": {
+      "0": 0.2586580086580087,
+      "45": 0.36120042872454455,
+      "90": 0.44831223628691974,
+      "135": 0.3662420382165606,
+      "180": 0.21688034188034183,
+      "225": 0.2817204301075269,
+      "270": 0.414790996784566,
+      "315": 0.3826366559485531
+    },
+    "wilcoxon_greater_p": 0.00390625,
+    "significant": true,
+    "predicted": true,
+    "prediction_held": true
+  }
+}
