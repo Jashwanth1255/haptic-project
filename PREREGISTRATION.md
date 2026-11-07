@@ -486,3 +486,34 @@ features.
 velocity-induced SD is lower after whitening. One-sided Wilcoxon over 118
 materials, using each material's median over the 17 band features. Also reported
 per category.
+
+## Round 6: CNN on whitened spectrograms (P; Kaggle GPU)
+
+Registered 2026-11-07, after round 4's I (whitening helps a linear model: cloth
+0.218 → 0.306, 118 materials 0.078 → 0.133) and round 5's N (it does not help
+unsupervised clustering). Not yet computed. GPU use approved by the team.
+
+**Whitening a spectrogram.** Inputs are exactly the round-2 acceleration
+spectrograms (`accel_specs.npz` from kernel `cluster-round2-features`: log power,
+20–1000 Hz). For each recording take its time-mean log spectrum. For each
+(velocity, force, direction), take the per-bin median of these over every
+recording of all 118 materials in the file. Subtract that median vector from
+every frame of every recording at that condition. This uses no labels. It is
+transductive in the same way as I: the held-out direction's median comes from
+that direction's (unlabelled) recordings.
+
+**Model, seeds and splits:** unchanged from round 2 (`haptic/learned.py`,
+`Config()` defaults, seeds 0, 1, 2, direction held out, 8 folds).
+
+- **P1 (cloth, 16 materials, the gate's in-band recordings):** whitened >
+  raw, where raw is `accel_rerun` in run
+  `audio_vs_accel/20261107T110948_431117Z` (0.381).
+- **P2 (all 118 materials, material identity):** whitened > raw, where raw is
+  `material_id|direction` in run `benchmark118_cnn/20261107T125519_960150Z`
+  (0.202).
+
+Each test is a one-sided Wilcoxon over the 8 folds' seed-averaged accuracies.
+The two are Holm-corrected together, at α = 0.05.
+
+Descriptive only: 9-way category with direction held out, whitened (raw 0.449,
+same run). If P1 or P2 fails, it is reported as failed, with no retuning.
