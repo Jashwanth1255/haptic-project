@@ -77,6 +77,8 @@ def main(argv=None) -> int:
                     help="all 118 materials, not only cloth 102-117")
     ap.add_argument("--directions", type=int, nargs="*")
     ap.add_argument("--repeats", type=int, nargs="*")
+    ap.add_argument("--signals", nargs="*", choices=(*DEFAULT_SIGNALS, *OPTIONAL_SIGNALS),
+                    help="exactly these signals, replacing accel+position and --with")
     ap.add_argument("--threads", type=int, default=1,
                     help="concurrent downloads; 4 is about 4x faster under the rate limit")
     a = ap.parse_args(argv)
@@ -88,8 +90,9 @@ def main(argv=None) -> int:
     from huggingface_hub.errors import HfHubHTTPError
 
     out = Path(a.out)
-    allow = patterns((*DEFAULT_SIGNALS, *a.extra), ids=ids, images=not a.no_images)
-    files = expected_files((*DEFAULT_SIGNALS, *a.extra), ids=ids, images=not a.no_images,
+    signals = tuple(a.signals) if a.signals else (*DEFAULT_SIGNALS, *a.extra)
+    allow = patterns(signals, ids=ids, images=not a.no_images)
+    files = expected_files(signals, ids=ids, images=not a.no_images,
                            directions=a.directions, repeats=a.repeats)
     todo = [f for f in files if not (out / f).exists()]
     print(f"{len(files)} files selected, {len(files) - len(todo)} already here", flush=True)

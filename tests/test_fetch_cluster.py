@@ -58,3 +58,11 @@ def test_audio_files_are_flac_and_sensor_files_parquet():
     assert all(f.endswith(".flac") for f in files if "/audio/" in f or "/raw_audio/" in f)
     assert all(f.endswith(".parquet") for f in files if "/accel/" in f)
     assert "sensor_data/audio/102/102_0_40_1000_0.flac" in files
+
+
+def test_signals_option_replaces_the_defaults(tmp_path, monkeypatch):
+    dl, calls = _fake(0, None)
+    monkeypatch.setattr(huggingface_hub, "hf_hub_download", dl)
+    assert F.main(["--out", str(tmp_path), *ARGS, "--signals", "audio", "position"]) == 0
+    got = {p.parts[len(tmp_path.parts) + 1] for p in tmp_path.rglob("*.*") if "sensor_data" in p.parts}
+    assert got == {"audio", "position"}
