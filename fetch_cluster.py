@@ -55,7 +55,9 @@ def expected_files(signals=DEFAULT_SIGNALS, ids=CLOTH_IDS, images: bool = True,
     which alone can exhaust the anonymous rate limit. `directions` and `repeats`
     narrow the selection; None means all."""
     from haptic.loader import DIRECTIONS_DEG, FORCES_N, REPEATS, VELOCITIES_MM_S
-    out = [f"sensor_data/{s}/{mid}/{mid}_{d}_{int(v)}_{int(fo * 1000)}_{r}.parquet"
+    # audio and raw_audio are FLAC on the mirror; every other signal is Parquet
+    out = [f"sensor_data/{s}/{mid}/{mid}_{d}_{int(v)}_{int(fo * 1000)}_{r}"
+           f"{'.flac' if s in ('audio', 'raw_audio') else '.parquet'}"
            for s in signals for mid in ids for d in (directions or DIRECTIONS_DEG)
            for v in VELOCITIES_MM_S for fo in FORCES_N for r in (repeats or REPEATS)]
     if images:

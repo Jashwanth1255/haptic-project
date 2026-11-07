@@ -49,3 +49,12 @@ def test_threads_fetch_everything_and_retry(tmp_path, monkeypatch):
     assert F.main(["--out", str(tmp_path), *ARGS, "--threads", "4"]) == 0
     n = len(F.expected_files(ids=F.CLOTH_IDS, images=False, directions=[0], repeats=[0]))
     assert calls["n"] == n + 3
+
+
+def test_audio_files_are_flac_and_sensor_files_parquet():
+    # The mirror stores audio as FLAC (checked 2026-11-07); a .parquet audio name 404s.
+    files = F.expected_files(("accel", "audio", "raw_audio"), ids=(102,), images=False,
+                             directions=[0], repeats=[0])
+    assert all(f.endswith(".flac") for f in files if "/audio/" in f or "/raw_audio/" in f)
+    assert all(f.endswith(".parquet") for f in files if "/accel/" in f)
+    assert "sensor_data/audio/102/102_0_40_1000_0.flac" in files
