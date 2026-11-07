@@ -452,3 +452,37 @@ material.
   folds.
 - Reported descriptively: audio 20–1000 Hz, the 9-way category task, and the
   repeat split.
+
+## Round 5: consequences of rig whitening (N, O)
+
+Registered 2026-11-07, after round 4's analysis I showed whitening helps linear
+identification. Not yet computed. Whitening as in I: per feature, subtract the
+cross-material median at the same (velocity, force, direction).
+
+### N. Does whitening rescue the O1 separability gate? (16 cloth materials)
+
+The O1 gate is fixed and failed (run `o1_gate/20261104T153936_758197Z`); this does
+not change it. We recompute the gate's own metrics (pooled silhouette, collapsed
+pairs out of 120, effective classes, same thresholds) on whitened versions of:
+- the 4 raw descriptors (log centroid, log intensity, entropy, log duration);
+- the 17 band features.
+
+Whitening is computed over all 118 materials and applied to the cloth recordings.
+
+**Prediction:** silhouette on whitened band features > silhouette on raw band
+features. Tested by a permutation test that permutes the whitened/raw assignment
+within each recording's pair of silhouette values (10,000 permutations), one-sided.
+The 4-descriptor version is reported descriptively. We expect it to stay below
+the 0.30 threshold, but make no formal prediction.
+
+### O. Velocity invariance after whitening (open question 2; 118 materials)
+
+For each material and feature, the coefficient of variation across the 5
+velocities of the per-velocity mean. For log-scale features we use the SD
+instead, because their mean can be near zero. Computed on raw and on whitened
+features.
+
+**Prediction:** across materials, the median over features of the
+velocity-induced SD is lower after whitening. One-sided Wilcoxon over 118
+materials, using each material's median over the 17 band features. Also reported
+per category.
