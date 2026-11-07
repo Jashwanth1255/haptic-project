@@ -269,3 +269,70 @@ Analysis plan fixed now; no predictions.
   - the CNN from `haptic/learned.py`, three seeds.
 - **Reported:** accuracy, macro-F1, top-5 (material task), per-category recall,
   chance (1/118, 1/9) and the majority-class baseline.
+
+## Round 3: three further analyses (E, F, H)
+
+Registered 2026-11-07, before any of the quantities below was computed. Already
+seen at registration: the round-2 results, including the per-fold accuracies of
+the direction-held-out splits (90° and 270° hardest for the cloth CNN). No
+direction-pair distance, rendered-envelope feature or cross-force accuracy had
+been computed.
+
+Data for E and H: `features.csv` from the round-2 features kernel (code
+`c0efe48`), in-band recordings only: 18,569 recordings, 118 materials. Features: 16
+log band powers (`band00`–`band15`) plus `log_rms`, standardised over the whole
+table.
+
+### E. Direction structure: opposite vs perpendicular strokes
+
+For each (material, velocity, force, repeat), take the feature vector at each of
+the 8 directions. Opposite pairs: (θ, θ+180°), 4 per cell. Perpendicular pairs:
+(θ, θ+90°), 8 per cell. Euclidean distance; per material, average over cells to
+get d_opp and d_perp. A cell missing a direction drops only the pairs that need it.
+
+1. **Prediction (cloth, 16 materials):** d_perp > d_opp, i.e. a stroke along the
+   same axis (warp or weft) resembles its reverse more than the crossing axis.
+   One-sided Wilcoxon signed-rank over materials.
+2. **Other 102 materials:** two-sided Wilcoxon, no direction predicted.
+
+Holm across the two. Reported descriptively: diagonal pairs (45°, 135°) and the
+repeat-to-repeat distance at the same direction, as a noise floor.
+
+### F. What survives the on/off channel (16 cloth materials)
+
+The 2,493 gate recordings (run `20261104T153936_758197Z`), same steady window.
+Two sources per recording, both band-passed to 20–1000 Hz:
+- acceleration (as in O1);
+- the contact audio.
+
+For each source, the amplitude envelope (`render.signal_envelope`) of the first
+500 ms is rendered with scheme B (`render.encode_b`): tick 10 ms, level from RMS
+intensity relative to that source's 95th-percentile intensity. It is then passed
+through the assumed actuator lag (`render.achievable_envelope`, τ = 25 ms).
+Features: log modulation power in 12 log-spaced bands from 1 to 50 Hz, plus the
+log mean level. Computed on the intended envelope and on the achievable
+(rendered) envelope. Model: standardised logistic regression, 16-way,
+direction-held-out folds.
+
+1. **Rendered acceleration identifies fabrics above chance:** per-fold accuracy
+   > 1/16, one-sided Wilcoxon over the 8 folds.
+2. **Rendering loses identity:** rendered < intended accuracy, acceleration,
+   one-sided Wilcoxon over the 8 folds.
+3. **Audio vs acceleration after rendering:** two-sided Wilcoxon over the 8
+   folds, no direction predicted.
+
+Holm across the three.
+
+### H. Force transfer
+
+Logistic regression on bands + `log_rms` + the 4 raw descriptors (the
+`bands+raw4` set of D). Train on force A, repeat 0. Test on repeat 1 at force A
+(same) and at force B (cross). Run both ways round, A = 0.5 N and A = 1.0 N, and
+pool the predictions. Per-material recall, same vs cross.
+
+1. **Prediction (cloth, 16 materials):** cross-force recall < same-force recall.
+   One-sided Wilcoxon over materials.
+2. **Prediction (all 118 materials, 118-way):** the same, over 118 materials.
+
+Holm across the two. Reported descriptively: the same comparison after
+subtracting `log_rms` from every band (level removed).
