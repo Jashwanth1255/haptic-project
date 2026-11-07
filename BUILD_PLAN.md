@@ -234,11 +234,12 @@ et al.", and the PDF paste residue. Fix those before any new content goes in.
 | Velocity scaling, all 118 materials, spectral shift | `haptic/velocity.py`, `make_velocity_all.py` |
 | Pre-registered cloth velocity confirmation | `make_velocity_confirm.py` |
 | CNN spectrogram baseline (exploratory) | `haptic/learned.py`, `make_learned.py`; run on Kaggle GPU via `make_kaggle_learned.py` |
+| Paper manuscript (IEEE, numbers checked against runs by tests/test_paper_numbers.py) | `paper/main.tex`, `paper/references.bib` |
 | Paper figures from saved runs | `make_paper_figures.py` → `figures/paper/` |
 | All-materials velocity subset download | `fetch_cluster.py --all-materials --directions 0 90 --repeats 0 --no-images` |
 | Real-data results, with run ids | `docs/RESULTS.md` |
 
-399 tests passing. P5 and P7 onwards are tested on invented data only
+404 tests passing. P5 and P7 onwards are tested on invented data only
 and has not run on real data.
 
 ## Standing rules
