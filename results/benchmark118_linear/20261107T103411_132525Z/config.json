@@ -1,0 +1,5 @@
+{
+  "root": "/tmp/cluster",
+  "out": "/kaggle/working/features",
+  "workers": 4
+}
