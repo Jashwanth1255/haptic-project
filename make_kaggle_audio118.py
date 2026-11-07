@@ -32,7 +32,7 @@ def main(argv=None) -> int:
     here = K.HERE
     files = [*sorted((here / "haptic").glob("*.py")), here / "runlog" / "__init__.py",
              here / "fetch_cluster.py", here / "make_audio118.py"]
-    sources = {str(p.relative_to(here)).replace("\\\\", "/"): p.read_text(encoding="utf-8")
+    sources = {str(p.relative_to(here)).replace("\\", "/"): p.read_text(encoding="utf-8")
                for p in files}
     import subprocess
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=here,
