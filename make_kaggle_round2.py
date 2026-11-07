@@ -53,8 +53,8 @@ try:
     import soundfile  # noqa: F401
 except ImportError:
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "soundfile"], check=True)
-run("fetch_cluster.py", "--out", "/tmp/cluster", "--all-materials", "--no-images", "--retries", "300")
-run("fetch_cluster.py", "--out", "/tmp/cluster", "--no-images", "--with", "audio", "--retries", "300")
+run("fetch_cluster.py", "--out", "/tmp/cluster", "--all-materials", "--no-images", "--retries", "300", "--threads", "4")
+run("fetch_cluster.py", "--out", "/tmp/cluster", "--no-images", "--with", "audio", "--retries", "300", "--threads", "4")
 run("make_round2_features.py", "--root", "/tmp/cluster", "--out", "/kaggle/working/features",
     "--workers", str(os.cpu_count() or 4))
 print("done", flush=True)

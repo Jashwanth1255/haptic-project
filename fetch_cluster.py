@@ -75,6 +75,8 @@ def main(argv=None) -> int:
                     help="all 118 materials, not only cloth 102-117")
     ap.add_argument("--directions", type=int, nargs="*")
     ap.add_argument("--repeats", type=int, nargs="*")
+    ap.add_argument("--threads", type=int, default=1,
+                    help="concurrent downloads; 4 is about 4x faster under the rate limit")
     a = ap.parse_args(argv)
     ids = tuple(range(118)) if a.all_materials else CLOTH_IDS
 
@@ -95,8 +97,13 @@ def main(argv=None) -> int:
     # a time here, and a 429 waits out the window and retries the same file.
     # A dropped connection (seen 2026-11-07 on the CDN) is retried after a short
     # pause, up to NET_RETRIES times in a row for the same file.
-    waits = 0
-    for k, f in enumerate(todo, 1):
+    # With --threads > 1 files are fetched concurrently; the 429 budget is shared.
+    import threading
+    lock = threading.Lock()
+    state = {"waits": 0, "done": 0}
+
+    def fetch_one(k_f):
+        k, f = k_f
         net_fails = 0
         while True:
             try:
@@ -104,11 +111,13 @@ def main(argv=None) -> int:
                 break
             except HfHubHTTPError as e:
                 if e.response is not None and e.response.status_code == 429:
-                    if waits >= a.retries:
-                        raise
-                    waits += 1
+                    with lock:
+                        if state["waits"] >= a.retries:
+                            raise
+                        state["waits"] += 1
+                        w = state["waits"]
                     print(f"rate limited at {k}/{len(todo)}; waiting {RATE_WAIT_S} s "
-                          f"({waits}/{a.retries})", flush=True)
+                          f"({w}/{a.retries})", flush=True)
                     time.sleep(RATE_WAIT_S)
                     continue
                 if not _transient(e) or net_fails >= NET_RETRIES:
@@ -123,8 +132,19 @@ def main(argv=None) -> int:
                 print(f"network error at {k}/{len(todo)} ({type(e).__name__}); "
                       f"retry {net_fails}", flush=True)
                 time.sleep(NET_WAIT_S * net_fails)
-        if k % 500 == 0:
-            print(f"  {k}/{len(todo)}", flush=True)
+        with lock:
+            state["done"] += 1
+            if state["done"] % 500 == 0:
+                print(f"  {state['done']}/{len(todo)}", flush=True)
+
+    jobs = list(enumerate(todo, 1))
+    if a.threads <= 1:
+        for job in jobs:
+            fetch_one(job)
+    else:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(a.threads) as ex:
+            list(ex.map(fetch_one, jobs))     # list() re-raises the first failure
 
     missing = [f for f in files if not (out / f).exists()]
     if missing:

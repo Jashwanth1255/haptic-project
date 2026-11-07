@@ -40,3 +40,12 @@ def test_gives_up_after_repeated_network_failures(tmp_path, monkeypatch):
     monkeypatch.setattr("time.sleep", lambda s: None)
     with pytest.raises(ConnectionError):
         F.main(["--out", str(tmp_path), *ARGS])
+
+
+def test_threads_fetch_everything_and_retry(tmp_path, monkeypatch):
+    dl, calls = _fake(3, ConnectionError("blip"))
+    monkeypatch.setattr(huggingface_hub, "hf_hub_download", dl)
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    assert F.main(["--out", str(tmp_path), *ARGS, "--threads", "4"]) == 0
+    n = len(F.expected_files(ids=F.CLOTH_IDS, images=False, directions=[0], repeats=[0]))
+    assert calls["n"] == n + 3
