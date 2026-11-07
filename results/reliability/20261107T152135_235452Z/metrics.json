@@ -1,0 +1,199 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 4, K (commit a86cb06)",
+  "threshold_icc": 0.75,
+  "n_good": 19,
+  "n_features": 21,
+  "good_features": [
+    "frequency_hz",
+    "intensity",
+    "pattern",
+    "band01",
+    "band02",
+    "band03",
+    "band04",
+    "band05",
+    "band06",
+    "band07",
+    "band08",
+    "band09",
+    "band10",
+    "band11",
+    "band12",
+    "band13",
+    "band14",
+    "band15",
+    "log_rms"
+  ],
+  "icc_median": 0.9436089867344,
+  "split_half_sb_median": 0.9807759132447325,
+  "by_feature": {
+    "frequency_hz": {
+      "icc3_1": 0.9002,
+      "n_cells": 9145,
+      "split_half_r": 0.9576,
+      "split_half_sb": 0.9783,
+      "n_materials": 118,
+      "good": true
+    },
+    "intensity": {
+      "icc3_1": 0.946,
+      "n_cells": 9145,
+      "split_half_r": 0.9623,
+      "split_half_sb": 0.9808,
+      "n_materials": 118,
+      "good": true
+    },
+    "pattern": {
+      "icc3_1": 0.9388,
+      "n_cells": 9145,
+      "split_half_r": 0.9838,
+      "split_half_sb": 0.9918,
+      "n_materials": 118,
+      "good": true
+    },
+    "duration_ms": {
+      "icc3_1": 0.5571,
+      "n_cells": 9145,
+      "split_half_r": 0.9329,
+      "split_half_sb": 0.9653,
+      "n_materials": 118,
+      "good": false
+    },
+    "band00": {
+      "icc3_1": 0.6774,
+      "n_cells": 9145,
+      "split_half_r": 0.9572,
+      "split_half_sb": 0.9781,
+      "n_materials": 118,
+      "good": false
+    },
+    "band01": {
+      "icc3_1": 0.848,
+      "n_cells": 9145,
+      "split_half_r": 0.9639,
+      "split_half_sb": 0.9816,
+      "n_materials": 118,
+      "good": true
+    },
+    "band02": {
+      "icc3_1": 0.8688,
+      "n_cells": 9145,
+      "split_half_r": 0.9689,
+      "split_half_sb": 0.9842,
+      "n_materials": 118,
+      "good": true
+    },
+    "band03": {
+      "icc3_1": 0.9226,
+      "n_cells": 9145,
+      "split_half_r": 0.9615,
+      "split_half_sb": 0.9804,
+      "n_materials": 118,
+      "good": true
+    },
+    "band04": {
+      "icc3_1": 0.948,
+      "n_cells": 9145,
+      "split_half_r": 0.9638,
+      "split_half_sb": 0.9816,
+      "n_materials": 118,
+      "good": true
+    },
+    "band05": {
+      "icc3_1": 0.9626,
+      "n_cells": 9145,
+      "split_half_r": 0.9643,
+      "split_half_sb": 0.9818,
+      "n_materials": 118,
+      "good": true
+    },
+    "band06": {
+      "icc3_1": 0.953,
+      "n_cells": 9145,
+      "split_half_r": 0.9499,
+      "split_half_sb": 0.9743,
+      "n_materials": 118,
+      "good": true
+    },
+    "band07": {
+      "icc3_1": 0.9491,
+      "n_cells": 9145,
+      "split_half_r": 0.96,
+      "split_half_sb": 0.9796,
+      "n_materials": 118,
+      "good": true
+    },
+    "band08": {
+      "icc3_1": 0.9564,
+      "n_cells": 9145,
+      "split_half_r": 0.9576,
+      "split_half_sb": 0.9784,
+      "n_materials": 118,
+      "good": true
+    },
+    "band09": {
+      "icc3_1": 0.9533,
+      "n_cells": 9145,
+      "split_half_r": 0.9371,
+      "split_half_sb": 0.9675,
+      "n_materials": 118,
+      "good": true
+    },
+    "band10": {
+      "icc3_1": 0.9441,
+      "n_cells": 9145,
+      "split_half_r": 0.9857,
+      "split_half_sb": 0.9928,
+      "n_materials": 118,
+      "good": true
+    },
+    "band11": {
+      "icc3_1": 0.9355,
+      "n_cells": 9145,
+      "split_half_r": 0.9831,
+      "split_half_sb": 0.9915,
+      "n_materials": 118,
+      "good": true
+    },
+    "band12": {
+      "icc3_1": 0.9317,
+      "n_cells": 9145,
+      "split_half_r": 0.9714,
+      "split_half_sb": 0.9855,
+      "n_materials": 118,
+      "good": true
+    },
+    "band13": {
+      "icc3_1": 0.9241,
+      "n_cells": 9145,
+      "split_half_r": 0.9485,
+      "split_half_sb": 0.9736,
+      "n_materials": 118,
+      "good": true
+    },
+    "band14": {
+      "icc3_1": 0.9436,
+      "n_cells": 9145,
+      "split_half_r": 0.9779,
+      "split_half_sb": 0.9888,
+      "n_materials": 118,
+      "good": true
+    },
+    "band15": {
+      "icc3_1": 0.9599,
+      "n_cells": 9145,
+      "split_half_r": 0.9664,
+      "split_half_sb": 0.9829,
+      "n_materials": 118,
+      "good": true
+    },
+    "log_rms": {
+      "icc3_1": 0.946,
+      "n_cells": 9145,
+      "split_half_r": 0.9623,
+      "split_half_sb": 0.9808,
+      "n_materials": 118,
+      "good": true
+    }
+  }
+}

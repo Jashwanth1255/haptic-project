@@ -1,0 +1,13 @@
+{
+  "name": "reliability",
+  "run_id": "20261107T152135_235452Z",
+  "created_utc": "2026-11-07T15:21:35.235452+00:00",
+  "synthetic": false,
+  "git_commit": "46247c9a296a8fefc9f74760f592244829c9f807",
+  "git_dirty": false,
+  "argv": [
+    "make_round4.py"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

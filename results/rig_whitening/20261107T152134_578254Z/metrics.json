@@ -1,0 +1,53 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 4, I (commit a86cb06)",
+  "features": [
+    "band00",
+    "band01",
+    "band02",
+    "band03",
+    "band04",
+    "band05",
+    "band06",
+    "band07",
+    "band08",
+    "band09",
+    "band10",
+    "band11",
+    "band12",
+    "band13",
+    "band14",
+    "band15",
+    "log_rms"
+  ],
+  "n_recordings": 18569,
+  "tests": {
+    "cloth": {
+      "raw_accuracy": 0.21821099077416767,
+      "whitened_accuracy": 0.3064580826313678,
+      "raw_macro_f1": 0.2112670056392812,
+      "whitened_macro_f1": 0.2953336020498847,
+      "folds_improved": 8,
+      "n_folds": 8,
+      "chance": 0.0625,
+      "p": 0.00390625,
+      "holm_p": 0.0078125,
+      "significant": true,
+      "predicted": "whitened > raw",
+      "prediction_held": true
+    },
+    "all118": {
+      "raw_accuracy": 0.07835640045236685,
+      "whitened_accuracy": 0.1326942754052453,
+      "raw_macro_f1": 0.056770675003697375,
+      "whitened_macro_f1": 0.12194638975665592,
+      "folds_improved": 8,
+      "n_folds": 8,
+      "chance": 0.00847457627118644,
+      "p": 0.00390625,
+      "holm_p": 0.0078125,
+      "significant": true,
+      "predicted": "whitened > raw",
+      "prediction_held": true
+    }
+  }
+}

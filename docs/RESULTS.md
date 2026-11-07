@@ -530,6 +530,51 @@ This is the first measurement of open question 1. It supports the warning that
 lab-scan haptic datasets cannot be paired with shop photographs without domain
 adaptation.
 
+## Round 4, I — Removing the rig's shared response (pre-registered)
+
+Run `rig_whitening/20261107T152134_578254Z`. Plan: PREREGISTRATION.md "Round 4"
+(commit `a86cb06`). From each of the 17 band features (16 bands + log RMS), we
+subtract its median over all 118 materials at the same (velocity, force,
+direction). This is label-free; it does use the test direction's recordings of
+every material. Logistic regression, direction held out.
+
+| | Raw | Whitened | Folds improved | p (Holm) |
+|---|---|---|---|---|
+| Cloth, 16-way | 0.218 | **0.306** | 8/8 | 0.0039 (0.0078) |
+| All 118, 118-way | 0.078 | **0.133** | 8/8 | 0.0039 (0.0078) |
+
+**Both predictions held.** Removing what every surface shares at a given speed,
+force and direction raises linear identification by 40% (cloth) and 70% (118
+materials). That's a gain of 9 and 5.5 points, from a one-line, label-free
+correction. With direction held out, the whitened linear model (0.306) closes most
+of the gap to the 16-fabric CNN (0.378). The rig properties found in round 1
+(fixed centroid) and round 3 (motion axes) are not just curiosities: correcting
+for them is the single most effective step for this dataset.
+
+## Round 4, K — Test–retest reliability (descriptive)
+
+Run `reliability/20261107T152135_235452Z`. ICC(3,1) of repeat 0 vs repeat 1
+over 9,145 (material, velocity, force, direction) cells. Split-half
+(Spearman–Brown) reliability of per-material means over 118 materials. Threshold
+fixed in advance: ICC ≥ 0.75.
+
+- **19 of 21 features meet the threshold.**
+  - Centroid 0.90, intensity 0.95, entropy 0.94.
+  - Bands 1–15: 0.85–0.96.
+  - Log RMS 0.95.
+- **Two fall short:**
+  - envelope period (`duration_ms`), ICC 0.56;
+  - the lowest band (20–25 Hz), 0.68.
+- Per-material means are highly reliable for every feature (split-half 0.97–0.99).
+
+**Reading.** The recordings are not noisy. Repeating a stroke reproduces the
+features almost exactly. So the poor material separation in O1 (silhouette −0.16,
+material ω² 0.07–0.16) is not measurement noise. It comes from systematic
+variation with condition: direction, velocity and force, which E, H and I show
+are largely rig- and contact-driven. The one weak descriptor, the envelope
+period, is also the one the on/off renderer depends on most. That compounds F's
+finding that little identity survives rendering.
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,
