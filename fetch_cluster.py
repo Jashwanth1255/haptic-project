@@ -30,6 +30,14 @@ DEFAULT_SIGNALS = ("accel", "position")
 OPTIONAL_SIGNALS = ("force", "audio", "raw_audio")
 RATE_WAIT_S = 310
 CROPS_PER_MATERIAL = 100
+NET_RETRIES = 8
+NET_WAIT_S = 15
+
+
+def _transient(e) -> bool:
+    """5xx and connection-level HTTP errors are worth retrying; 404 and the like are not."""
+    r = getattr(e, "response", None)
+    return r is None or r.status_code >= 500 or r.status_code in (408, 409)
 
 
 def patterns(signals=DEFAULT_SIGNALS, ids=CLOTH_IDS, images: bool = True) -> list[str]:
@@ -85,19 +93,36 @@ def main(argv=None) -> int:
     # Anonymous access allows about 1000 requests per 5 minutes. snapshot_download
     # hides a 429 by returning the partial local copy, so files are fetched one at
     # a time here, and a 429 waits out the window and retries the same file.
+    # A dropped connection (seen 2026-11-07 on the CDN) is retried after a short
+    # pause, up to NET_RETRIES times in a row for the same file.
     waits = 0
     for k, f in enumerate(todo, 1):
+        net_fails = 0
         while True:
             try:
                 hf_hub_download(REPO, f, repo_type="dataset", revision=REVISION, local_dir=out)
                 break
             except HfHubHTTPError as e:
-                if e.response is None or e.response.status_code != 429 or waits >= a.retries:
+                if e.response is not None and e.response.status_code == 429:
+                    if waits >= a.retries:
+                        raise
+                    waits += 1
+                    print(f"rate limited at {k}/{len(todo)}; waiting {RATE_WAIT_S} s "
+                          f"({waits}/{a.retries})", flush=True)
+                    time.sleep(RATE_WAIT_S)
+                    continue
+                if not _transient(e) or net_fails >= NET_RETRIES:
                     raise
-                waits += 1
-                print(f"rate limited at {k}/{len(todo)}; waiting {RATE_WAIT_S} s "
-                      f"({waits}/{a.retries})", flush=True)
-                time.sleep(RATE_WAIT_S)
+                net_fails += 1
+                print(f"HTTP error at {k}/{len(todo)} ({e}); retry {net_fails}", flush=True)
+                time.sleep(NET_WAIT_S * net_fails)
+            except (OSError, TimeoutError, RuntimeError) as e:   # incl. ConnectionError, xet errors
+                if net_fails >= NET_RETRIES:
+                    raise
+                net_fails += 1
+                print(f"network error at {k}/{len(todo)} ({type(e).__name__}); "
+                      f"retry {net_fails}", flush=True)
+                time.sleep(NET_WAIT_S * net_fails)
         if k % 500 == 0:
             print(f"  {k}/{len(todo)}", flush=True)
 
