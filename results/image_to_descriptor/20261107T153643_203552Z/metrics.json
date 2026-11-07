@@ -1,0 +1,59 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 4, L (commit a86cb06)",
+  "n_materials": 118,
+  "category_accuracy": 0.7288135593220338,
+  "category_accuracy_by_category": {
+    "ceramic": 0.8,
+    "cloth": 0.5625,
+    "composite": 0.0,
+    "glass": 0.0,
+    "leather": 0.5333333333333333,
+    "metal": 0.6666666666666666,
+    "polymer": 0.625,
+    "stone": 1.0,
+    "wood": 1.0
+  },
+  "majority_category_share": 0.3220338983050847,
+  "tests": {
+    "log_frequency": {
+      "mae_image": 0.04018902795683183,
+      "mae_global": 0.04758788866151282,
+      "mae_oracle": 0.03921136633044519,
+      "n_image_better": 74,
+      "p": 0.008578256842237196,
+      "holm_p": 0.034313027368948784,
+      "predicted": "image < global",
+      "prediction_held": true
+    },
+    "log_intensity": {
+      "mae_image": 0.11129105393175281,
+      "mae_global": 0.1175356737752679,
+      "mae_oracle": 0.09935053846227802,
+      "n_image_better": 67,
+      "p": 0.31584386609458304,
+      "holm_p": 0.41072158722599766,
+      "predicted": "image < global",
+      "prediction_held": false
+    },
+    "pattern": {
+      "mae_image": 0.03742293197751267,
+      "mae_global": 0.04165018661099581,
+      "mae_oracle": 0.03190197473305398,
+      "n_image_better": 73,
+      "p": 0.1566345413933079,
+      "holm_p": 0.41072158722599766,
+      "predicted": "image < global",
+      "prediction_held": false
+    },
+    "log_duration": {
+      "mae_image": 0.20659488787335897,
+      "mae_global": 0.21329523164368636,
+      "mae_oracle": 0.1677774485179099,
+      "n_image_better": 74,
+      "p": 0.13690719574199922,
+      "holm_p": 0.41072158722599766,
+      "predicted": "image < global",
+      "prediction_held": false
+    }
+  }
+}

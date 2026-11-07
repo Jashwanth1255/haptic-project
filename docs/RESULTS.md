@@ -575,6 +575,35 @@ are largely rig- and contact-driven. The one weak descriptor, the envelope
 period, is also the one the on/off renderer depends on most. That compounds F's
 finding that little identity survives rendering.
 
+## Round 4, L — Image → category → descriptor at 118 scale (pre-registered)
+
+Run `image_to_descriptor/20261107T153643_203552Z`. Leave-one-material-out:
+1. A logistic regression on ResNet-50 crop features from the other 117 materials
+   predicts the held-out material's category, by majority vote over its 100 crops.
+2. That category's mean descriptor (from the other materials) is the prediction.
+
+Baselines: the all-materials mean, and an oracle that knows the true category.
+
+- **Category from image:** 0.729 (majority baseline 0.322). Wood and stone are
+  always right, cloth 0.56, leather 0.53; glass and composite are never right.
+
+| Dimension | MAE, image category | MAE, global mean | MAE, oracle category | Image better | p (Holm) | Held |
+|---|---|---|---|---|---|---|
+| log centroid | 0.040 | 0.048 | 0.039 | 74/118 | 0.0086 (0.034) | **yes** |
+| log intensity | 0.111 | 0.118 | 0.099 | 67/118 | 0.32 (0.41) | no |
+| pattern (entropy) | 0.037 | 0.042 | 0.032 | 73/118 | 0.16 (0.41) | no |
+| log duration | 0.207 | 0.213 | 0.168 | 74/118 | 0.14 (0.41) | no |
+
+**One of four predictions held.** Looking at a material's image gets its category
+right three times in four. Even so, that improves the predicted vibration only
+for the spectral centroid, and only by a little (MAE 0.048 → 0.040 in log Hz,
+about 8%). The oracle shows why: even the *true* category barely beats the global
+mean. Category means are close together, which matches round 1's finding that
+the centroid sits at 240–270 Hz for every category. At 118-material scale,
+choosing a vibration by recognising the material category is nearly as good as
+it gets, and it is only slightly better than playing the average vibration for
+everything. This is the 118-material version of O3's null retrieval result.
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,

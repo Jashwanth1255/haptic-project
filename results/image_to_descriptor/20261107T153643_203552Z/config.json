@@ -1,0 +1,4 @@
+{
+  "features": "data/round2_features/features.csv",
+  "weights": "IMAGENET1K_V2"
+}
