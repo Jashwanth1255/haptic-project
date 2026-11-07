@@ -700,6 +700,30 @@ features. For rendering, this means:
 - non-cloth textures can be stored at one speed once the rig response is removed;
 - fabrics need speed-conditioned signatures.
 
+## Round 4, M — Contact audio at 118-material scale (pre-registered)
+
+Run `audio118/20261107T171843_782790Z`, computed on a Kaggle CPU kernel
+(`jashwanth113/cluster-audio118`; all 37,760 files fetched, 18,614 audio
+recordings, 18,569 matched to in-band acceleration). Logistic regression,
+direction held out (8 folds), 118-way material identification, chance 0.0085.
+
+| Features | Accuracy | Macro-F1 | Top-5 |
+|---|---|---|---|
+| Acceleration bands (20–1000 Hz) | 0.078 | 0.057 | 0.233 |
+| Audio bands, 20–1000 Hz | 0.103 | 0.090 | 0.294 |
+| Audio bands, 20–8000 Hz | **0.225** | **0.209** | **0.472** |
+
+- **Prediction (audio 20–8000 Hz > acceleration bands): held.** Higher in 8 of 8
+  folds, one-sided Wilcoxon p = 0.0039 against both the registered run
+  (`benchmark118_linear/20261107T103411_132525Z`, 0.078) and the matched rerun.
+- Descriptive: audio in the same 20–1000 Hz band beats acceleration only modestly
+  (0.103 vs 0.078). Most of audio's advantage comes from content above 1 kHz,
+  which a phone actuator cannot render. Repeat split: 0.267 audio 8k vs 0.107
+  acceleration. 9-way category (direction split): 0.485 vs 0.354, majority 0.323.
+- This extends round 2's B (cloth only, 0.720 vs 0.378) to all 118 materials.
+  The identity information is mostly in frequencies above the vibrotactile range,
+  which bounds what any rendered vibration can carry.
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,
