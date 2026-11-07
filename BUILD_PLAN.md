@@ -239,7 +239,7 @@ et al.", and the PDF paste residue. Fix those before any new content goes in.
 | All-materials velocity subset download | `fetch_cluster.py --all-materials --directions 0 90 --repeats 0 --no-images` |
 | Real-data results, with run ids | `docs/RESULTS.md` |
 
-404 tests passing. P5 and P7 onwards are tested on invented data only
+426 tests passing. P5 and P7 onwards are tested on invented data only
 and has not run on real data.
 
 ## Standing rules

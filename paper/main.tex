@@ -52,6 +52,11 @@ found post hoc, then pre-registered and confirmed on 2,240 held-out recordings
 (median exponent 0.34, 16 of 16 fabrics above zero, Holm $p=1.5\times10^{-5}$).
 Finally, a photo-trained material classifier recognises only 3.25\% of the
 dataset's flatbed fabric scans as fabric, against 75.6\% of photographed fabric.
+Four further pre-registered analyses show the following. Visual and vibrotactile
+similarity agree across all 118 materials only through category; within cloth they
+do not. Contact audio identifies the fabrics far better than acceleration (72.0\%
+vs.\ 37.8\%). Warping spectra by the confirmed exponent improves recognition at an
+unseen speed. On a 118-material benchmark, a CNN reaches 20.2\% (chance 0.85\%).
 We release code, saved runs and the pre-registration.
 \end{abstract}
 
@@ -96,6 +101,10 @@ shared by all surfaces, cloth spectra do shift with velocity, by about one third
 of the $f=v/\lambda$ prediction (Sec.~\ref{sec:vel}).
 \item A measurement of the domain gap between the dataset's flatbed scans and
 photographs for an off-the-shelf material classifier (Sec.~\ref{sec:scan}).
+\item Four pre-registered follow-ups (Sec.~\ref{sec:round2}). They test whether
+visual similarity predicts vibrotactile similarity, compare contact audio with
+acceleration for identification, test recognition at an unseen speed, and give
+baselines over all 118 materials.
 \end{enumerate}
 Results 1, 3 and 5 are negative or cautionary; we report them because anyone
 rendering from this dataset will meet them.
@@ -104,7 +113,7 @@ rendering from this dataset will meet them.
 \section{Data and Pre-registration}
 
 \subsection{Dataset}
-We use the Cluster Haptic Texture Dataset~\cite{cluster2026} (Hugging Face mirror,
+We use the Cluster Haptic Texture Dataset~\cite{cluster2026,eguchi2025arxiv} (Hugging Face mirror,
 revision \texttt{b7c2fb70}). The cloth materials are IDs 102--117: velvet,
 corduroy, cotton, cotton broadcloth, cotton gauze, chiffon, lace, georgette,
 organdy, mesh, wool, nylon, polyester, silk, linen and cotton linen. Each was
@@ -127,8 +136,10 @@ pairs with standardised centroid separation $<1.0$ count as collapsed; at least
 8 effective classes), and (ii) an assignment of the fabrics to structural groups
 (pile, weave, drape) with the prediction that pile and weave would each cluster.
 The velocity-shift test in Sec.~\ref{sec:confirm} was registered separately,
-after an exploratory finding and before the held-out data were analysed. Every
-other analysis is labelled exploratory.
+after an exploratory finding and before the held-out data were analysed. The
+four analyses of Sec.~\ref{sec:round2} were registered together, with their
+predictions, tests and the run identifiers they compare against, before any of
+them was run. Every other analysis is labelled exploratory.
 
 % ---------------------------------------------------------------------------
 \section{Methods}
@@ -199,6 +210,40 @@ images. We then classify 100 random 224-pixel crops (about 19~mm) from each clot
 scan, as well as whole scans and 50~mm quadrants. Separately, a ResNet-50 fine-tuned
 on DTD~\cite{cimpoi2014} (47 classes, 10 folds) reaches top-1
 $0.691\pm0.008$.
+
+\subsection{Pre-registered follow-up analyses}
+\emph{(A) Looks vs.\ feel.} Each material's visual representation is the mean
+ImageNet ResNet-50 feature over its 100 dataset crops, compared by cosine
+distance. Its vibrotactile representation is the mean log spectrum on the
+log-frequency grid of the velocity subset, compared by Euclidean distance. The two
+distance matrices are compared with one-sided Spearman Mantel tests (9,999
+permutations): over all 118 materials with free permutation; with permutation
+restricted to within category; and over cloth alone. Holm correction is applied
+across the three tests. We predicted that only the first would be significant.
+
+\emph{(B) Audio vs.\ acceleration.} The CNN and direction-held-out folds of
+Sec.~\ref{sec:sep} are reused unchanged on the same 2,493 cloth recordings. The
+input is the dataset's mono, noise-cancelled contact audio (44.1~kHz), cut to the
+same steady-sliding window: a log STFT (2048-point frames, hop 512) pooled into 64
+log-spaced bands over 20--8000~Hz, or over 20--1000~Hz to match the actuator band.
+The confirmatory test compares the full-band audio with the registered
+acceleration baseline using a one-sided Wilcoxon test over the 8 folds.
+
+\emph{(C) Unseen velocity.} Leave-one-velocity-out cross-validation (5 folds) on the
+cloth recordings. The input is a log-frequency spectrogram (1024-point frames, hop
+128, 48 bands), with the frequency axis warped by $f\,(v/40)^{k}$ before the CNN, for
+$k\in\{0,\,0.338,\,1\}$. Here 0.338 is the exponent confirmed in
+Sec.~\ref{sec:confirm}. A recording counts as correct when most of the three seeds
+classify it correctly. We predicted that $k=0.338$ would beat both $k=0$ and $k=1$.
+Each comparison is an exact one-sided sign test over the recordings on which the
+two conditions disagree, with Holm correction.
+
+\emph{(D) 118-material benchmark.} Descriptive, with no prediction. Material
+(118-way) and category (9-way) identification over every recording of all 118
+materials, with the direction-held-out and repeat splits. The models are logistic
+regression on the descriptor, on band powers or on both, and the CNN of
+Sec.~\ref{sec:sep}. We report accuracy, macro-F1 and top-5, against chance and a
+majority-class baseline.
 
 % ---------------------------------------------------------------------------
 \section{Results}
@@ -385,6 +430,86 @@ fabrics. Second, the browser vibration channel is on/off with a practical
 10~ms tick, so it cannot switch faster than 25~Hz. Only 9 of 80 real cloth
 envelopes have their modulation below that limit.
 
+\subsection{Pre-registered follow-ups}\label{sec:round2}
+Table~\ref{tab:round2} lists the six registered predictions; five held.
+
+\emph{(A) Looks predict feel only through category.}
+% run looks_feel/20261107T082554_607613Z
+Over all 118 materials, visual and vibrotactile distances correlate weakly but
+significantly ($r=+0.154$, Holm $p=0.0033$; 2,315 recordings). Permuting only
+within category removes the effect (Holm $p=0.42$). Among the 16 fabrics the
+correlation is $-0.095$ ($p=0.83$). Wood looks and feels unlike cloth, but which
+fabric looks like which other fabric says nothing about which vibrates like which.
+This matches the null retrieval result above. Generic image features are not
+enough to choose a fabric's vibration.
+
+\emph{(B) Contact audio carries more identity than acceleration.}
+% run audio_vs_accel/20261107T110948_431117Z
+On the same folds, full-band audio identifies the fabric in 72.0\% of recordings,
+against 37.8\% for the acceleration baseline. Audio wins all 8 folds, by 0.22--0.45
+(Wilcoxon $p=0.0039$). Restricted to 20--1000~Hz, audio still reaches 57.3\%. This
+band-limited comparison was not part of the confirmatory test. Retraining on
+acceleration with the same code gives 38.1\%, so the gap is not caused by the
+training code. The microphone is a different sensor from the probe accelerometer.
+The result therefore shows which recorded signal identifies a fabric best, not
+which one feels right when rendered.
+
+\emph{(C) A partial warp helps at an unseen speed.}
+% run velocity_warp/20261107T111741_349222Z
+With $k=0.338$, leave-one-velocity-out accuracy is 30.5\%, against 27.9\% unwarped
+($k=0$) and 28.4\% for the full kinematic warp ($k=1$). The first prediction holds
+(307 vs.\ 251 recordings, Holm $p=0.020$). The second does not: the advantage over
+$k=1$ (331 vs.\ 292) is not significant ($p=0.064$). Every condition fails when
+20~mm/s is held out (8.5--12.6\%), because that speed lies outside the training range.
+Fold-to-fold SD (0.10--0.15) exceeds every difference between conditions.
+
+\emph{(D) Benchmark.}
+% runs benchmark118_linear/20261107T103411_132525Z, benchmark118_cnn/20261107T125519_960150Z
+Table~\ref{tab:bench} gives baselines on 18,569 in-band recordings of all 118
+materials. With direction held out, the CNN identifies the material in 20.2\% of
+recordings (top-5 44.8\%; chance 0.85\%) and the category in 44.9\%, against a
+majority baseline of 32.3\%. The four-number descriptor barely beats that baseline
+at category level (34.7\%). Cloth is the most recognisable category (recall 0.71).
+The three smallest categories, composite, glass and ceramic, are almost never
+recognised (0.00--0.04).
+
+\begin{table}[t]
+\caption{Pre-registered follow-up predictions and outcomes}
+\label{tab:round2}
+\centering
+\begin{tabular}{llc}
+\toprule
+Prediction & Test & Held \\
+\midrule
+(A) all 118 significant & Mantel, Holm $p=0.0033$ & yes \\
+(A) within category n.s. & Mantel, Holm $p=0.42$ & yes \\
+(A) cloth only n.s. & Mantel, $p=0.83$ & yes \\
+(B) audio $>$ acceleration & Wilcoxon, $p=0.0039$ & yes \\
+(C) $k=0.338>k=0$ & sign, Holm $p=0.020$ & yes \\
+(C) $k=0.338>k=1$ & sign, Holm $p=0.064$ & no \\
+\bottomrule
+\multicolumn{3}{l}{\footnotesize Earlier registered tests: Tables~\ref{tab:gate} and \ref{tab:confirm}.}
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{118-material benchmark: accuracy (descriptive)}
+\label{tab:bench}
+\centering
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llcccc}
+\toprule
+Task & Split & Descr. & Bands & Both & CNN \\
+\midrule
+Material (118) & direction & 0.031 & 0.078 & 0.083 & 0.202 \\
+ & repeat & 0.035 & 0.107 & 0.111 & 0.338 \\
+Category (9) & direction & 0.347 & 0.354 & 0.355 & 0.449 \\
+ & repeat & 0.352 & 0.387 & 0.394 & 0.631 \\
+\bottomrule
+\multicolumn{6}{l}{\footnotesize Chance 0.0085 / 0.111; majority 0.009 / 0.323. CNN: mean of 3 seeds.}
+\end{tabular}
+\end{table}
+
 % ---------------------------------------------------------------------------
 \section{Discussion}
 
@@ -394,6 +519,17 @@ modulated mostly by speed. The CNN result shows that the recordings themselves
 are more informative. A renderer that keeps more of the spectrum, or that conditions
 on direction, has room to do better. Direction is a large, structured source of
 variance, plausibly reflecting warp and weft, but we have not tested this.
+The audio result (B) suggests a practical route. A renderer driven by the contact
+audio, band-limited to what the actuator can play, starts from a signal that
+separates fabrics better than acceleration. Whether it also \emph{feels} more
+distinct is a perceptual question that we have not tested.
+
+\emph{For image-to-vibration retrieval.} Analysis A sets a ceiling on approaches
+that use generic image features. Within cloth, visual similarity is unrelated to
+vibrotactile similarity, so any retrieval gain must come from features trained on
+the tactile side, not from ImageNet similarity. For speed, the confirmed partial
+exponent is useful in practice: warping by it helps at an unseen speed (C), but
+not beyond the measured range.
 
 \emph{For the dataset.} The 240--270~Hz centroid common to all 118 surfaces, and
 its insensitivity to speed, should be accounted for by anyone who uses the
@@ -411,8 +547,9 @@ surface profiles, which the dataset does not provide. The ordering of fabrics
 \emph{Limitations.} One rig and one dataset; the rig dependence we report may not
 hold elsewhere. The whitening reference includes the 16 fabrics themselves (16 of
 118 materials); this works against finding a cloth-specific effect, not for it.
-Group labels were assigned by eye. The identification analyses and the CNN are
-exploratory. We have measured the scan$\to$photo gap only in the direction
+Group labels were assigned by eye. The 16-fabric identification analyses are
+exploratory; the round-2 benchmark is descriptive. In (A), the visual side uses
+the dataset's own crops, which are scans, not product photographs. We have measured the scan$\to$photo gap only in the direction
 photograph-trained model $\to$ scans. The reverse direction, which matters for
 shopping, needs labelled product photographs, which we have not collected. No
 perceptual data are reported. Whether people can feel the differences that survive
@@ -427,7 +564,10 @@ CNN partly recovers. The probe's spectral centroid is a property of the rig, not
 of the surface. Measured against the response shared by all surfaces, cloth
 spectra shift with speed in a way that survives a pre-registered held-out test.
 Image models trained on photographs do not recognise the dataset's scans as
-fabric. Each of these findings constrains how the dataset can be used for
+fabric, and their visual similarity does not predict vibrotactile similarity
+between fabrics. Contact audio identifies fabrics better than acceleration. A
+speed warp using the confirmed exponent helps recognition at unseen speeds. Each of
+these findings constrains how the dataset can be used for
 vibrotactile shopping applications.
 
 \section*{Data and Code Availability}
