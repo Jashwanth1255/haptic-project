@@ -1,0 +1,48 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 5, O (commit acc5a79)",
+  "n_materials": 118,
+  "median_velocity_sd_raw": 0.5408128966287626,
+  "median_velocity_sd_whitened": 0.14467537881309314,
+  "n_lower_after": 115,
+  "p": 2.6489132225615726e-21,
+  "predicted": "whitened < raw",
+  "prediction_held": true,
+  "by_category": {
+    "ceramic": {
+      "raw": 0.5698,
+      "whitened": 0.1174
+    },
+    "cloth": {
+      "raw": 0.4118,
+      "whitened": 0.2923
+    },
+    "composite": {
+      "raw": 0.5356,
+      "whitened": 0.0798
+    },
+    "glass": {
+      "raw": 0.7319,
+      "whitened": 0.1831
+    },
+    "leather": {
+      "raw": 0.5318,
+      "whitened": 0.158
+    },
+    "metal": {
+      "raw": 0.7218,
+      "whitened": 0.1684
+    },
+    "polymer": {
+      "raw": 0.6363,
+      "whitened": 0.1716
+    },
+    "stone": {
+      "raw": 0.5003,
+      "whitened": 0.1323
+    },
+    "wood": {
+      "raw": 0.5354,
+      "whitened": 0.1001
+    }
+  }
+}

@@ -645,6 +645,61 @@ choosing a vibration by recognising the material category is nearly as good as
 it gets, and it is only slightly better than playing the average vibration for
 everything. This is the 118-material version of O3's null retrieval result.
 
+## Round 5, N — Does whitening rescue the O1 gate? (pre-registered: no)
+
+Run `gate_whitened/20261107T155735_142723Z`. The gate's own metrics and
+thresholds were recomputed on the 2,493 cloth recordings, before and after
+whitening. The registered gate result is unchanged.
+
+| Features | Silhouette raw | Silhouette whitened | Effective classes (raw → whitened) | Collapsed pairs after |
+|---|---|---|---|---|
+| 4 descriptors (logs) | −0.115 | −0.182 | 1 → 1 | 120/120 |
+| 17 band features | −0.072 | −0.145 | 1 → 1 | 120/120 |
+
+Prediction (bands, whitened > raw): mean per-recording change −0.073, p = 1.0.
+**Prediction failed. Whitening makes the clusters worse, not better.** The raw
+4-descriptor silhouette here (−0.115) differs from the gate's −0.164 because this
+uses log descriptors from the round-2 extraction; the gate's own number stands.
+
+**Reading.** Whitening helps a *trained* classifier (I) but hurts *unsupervised*
+cluster quality. Our explanation, untested, comes from O below: cloth keeps a
+genuine velocity dependence that the other materials lack (k ≈ 0.34, confirmed
+in round 1). Subtracting a median that the 102 non-cloth materials dominate
+therefore over-corrects cloth at the velocity extremes and spreads each fabric's
+cloud. Either way, no simple normalisation makes the 16 fabrics form separable
+clusters.
+
+## Round 5, O — Velocity invariance after whitening (pre-registered; open question 2)
+
+Run `velocity_invariance/20261107T155735_373772Z`. For each material: the SD
+across the 5 velocities of the per-velocity mean of each band feature, then the
+median over the 17 features.
+
+- Median over materials: raw **0.541** → whitened **0.145**. It is lower in 115
+  of 118 materials (Wilcoxon p = 2.7×10⁻²¹). **Prediction held.**
+- By category (median, raw → whitened):
+
+| Category | Raw | Whitened |
+|---|---|---|
+| composite | 0.54 | 0.08 |
+| wood | 0.54 | 0.10 |
+| ceramic | 0.57 | 0.12 |
+| stone | 0.50 | 0.13 |
+| leather | 0.53 | 0.16 |
+| metal | 0.72 | 0.17 |
+| polymer | 0.64 | 0.17 |
+| glass | 0.73 | 0.18 |
+| **cloth** | 0.41 | **0.29** |
+
+**Reading.** About 73% of the velocity dependence of the spectral features is
+shared by all surfaces, so it belongs to the rig. Removing it makes most materials
+nearly speed-invariant. Cloth is the exception: it keeps twice the residual
+velocity dependence of any other category. That is the same cloth-specific
+velocity effect confirmed in round 1 and used in C, now seen at the level of band
+features. For rendering, this means:
+- non-cloth textures can be stored at one speed once the rig response is removed;
+- fabrics need speed-conditioned signatures.
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,

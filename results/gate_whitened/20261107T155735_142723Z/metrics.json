@@ -1,0 +1,45 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 5, N (commit acc5a79)",
+  "n_recordings": 2493,
+  "gates": {
+    "descriptors4": {
+      "raw": {
+        "silhouette": -0.11522551241769016,
+        "collapsed_pairs": 120,
+        "effective_classes": 1,
+        "passed": false
+      },
+      "whitened": {
+        "silhouette": -0.1822694365998858,
+        "collapsed_pairs": 120,
+        "effective_classes": 1,
+        "passed": false
+      }
+    },
+    "bands17": {
+      "raw": {
+        "silhouette": -0.07152871668151102,
+        "collapsed_pairs": 120,
+        "effective_classes": 1,
+        "passed": false
+      },
+      "whitened": {
+        "silhouette": -0.14495815911233967,
+        "collapsed_pairs": 120,
+        "effective_classes": 1,
+        "passed": false
+      }
+    }
+  },
+  "test": {
+    "statistic": "mean per-recording silhouette, whitened - raw, bands17",
+    "mean_diff": -0.07342944243082863,
+    "p": 1.0,
+    "predicted": "whitened > raw",
+    "prediction_held": false
+  },
+  "thresholds": {
+    "silhouette": 0.3,
+    "effective_classes": 8
+  }
+}

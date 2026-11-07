@@ -1,0 +1,13 @@
+{
+  "name": "velocity_invariance",
+  "run_id": "20261107T155735_373772Z",
+  "created_utc": "2026-11-07T15:57:35.373772+00:00",
+  "synthetic": false,
+  "git_commit": "4b23131e93df9e746802b30b6fb315465e066c47",
+  "git_dirty": false,
+  "argv": [
+    "make_round5.py"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}
