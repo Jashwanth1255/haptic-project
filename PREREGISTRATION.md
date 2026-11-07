@@ -336,3 +336,45 @@ pool the predictions. Per-material recall, same vs cross.
 
 Holm across the two. Reported descriptively: the same comparison after
 subtracting `log_rms` from every band (level removed).
+
+### G. Scan → product-photo transfer (registered after E, F, H; before any G data were processed)
+
+Registered 2026-11-07. Photo source: DeepFashion-MultiModal, Kaggle mirror
+`silverstone1903/deep-fashion-multimodal` (CC BY-NC-SA 4.0; 12,278 front-view
+product photos). This mirror has no separate fabric annotation file. Each
+caption names the fabric of each garment it describes ("... with cotton fabric
+..."). A photo is labelled with a fabric only when every fabric its caption names
+is that one fabric. Only the caption label counts were seen before registration
+(cotton 13,528 mentions, denim 2,247, chiffon 1,832, knitting 989, leather 391,
+furry 120). No image had been opened.
+
+**Classes:** the three fabrics present in both sources.
+- cotton: Cluster 104 cotton, 105 cotton broadcloth, 106 cotton gauze;
+- chiffon: Cluster 107;
+- leather: Cluster 87–101.
+
+Cotton linen (117) is excluded as mixed.
+
+**Photos:** up to 100 per class, drawn at random (seed 0) from the qualifying
+photos; all of them if fewer qualify.
+
+**Scans:** the dataset's 100 crops per material. Crops 1–70 train, 71–100 test,
+within each material. With one chiffon material, a held-out-material split is
+impossible, so the scan test is within-material and optimistic. That works for
+the hypothesis, not against it.
+
+**Model:** frozen ImageNet ResNet-50 (`IMAGENET1K_V2`, as in A), 2048-d features,
+standardised logistic regression trained on scan training crops. Classes are
+weighted to balance (cotton 3 materials, chiffon 1, leather 15).
+
+**Metric:** balanced accuracy (mean per-class recall); chance 1/3.
+
+1. **Prediction (headline):** balanced accuracy on photos < balanced accuracy on
+   held-out scan crops. One-sided, 10,000 class-stratified bootstrap resamples of
+   both test sets; p = share of resamples with photo ≥ scan.
+
+Descriptive, no prediction:
+- photo balanced accuracy with a bootstrap 95% CI against chance;
+- the reverse direction (train on photos, test on all scan crops);
+- photo-to-photo 5-fold cross-validated balanced accuracy, as a within-domain
+  reference.
