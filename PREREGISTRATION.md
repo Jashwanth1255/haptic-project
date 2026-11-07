@@ -187,3 +187,85 @@ reference contains no held-out data. One exponent per material is the mean over 
 Both passing confirms that cloth carries a velocity-scaled component that the rest
 of the dataset lacks. Either failing means the post-hoc result is reported as not
 replicated. In neither case is the exponent near 1 expected, and none is claimed.
+
+## Benchmark and findings round 2 (four analyses)
+
+Written 2026-11-07, before any of the analyses below has been run. Nothing in
+them has been computed yet. Seen so far: one audio file's length and format (to
+confirm that audio and position share a clock), and the descriptor-based results
+already in docs/RESULTS.md. The thresholds and predictions below must not change.
+
+### A. Does looks predict feel? (118 materials)
+
+**Visual representation.** ImageNet ResNet-50, the same torchvision weights as
+`vision.train`, not fine-tuned. Penultimate 2048-d features of the 100 crops the
+dataset provides per material (`images/crop_images/img{id}/`), averaged per
+material. Distance: cosine.
+
+**Haptic representation (primary).** Per-material mean log Welch spectrum on
+`haptic.velocity.SHIFT_GRID` (20–1000 Hz), averaged over that material's in-band
+recordings at directions 0° and 90°, first repeat, all velocities and forces (the
+`velocity_all_materials` subset). Distance: Euclidean. Secondary, reported
+descriptively: per-material mean of the four standardised raw descriptors,
+Euclidean.
+
+**Tests.** Spearman Mantel correlation between the two distance matrices, 9,999
+permutations, one-sided (r > 0), Holm across the three:
+
+1. All 118 materials, free permutation. **Prediction: r > 0, significant.**
+2. All 118 materials, permutations restricted within the nine categories, so
+   the shared category structure cannot produce the correlation.
+   **Prediction: not significant.**
+3. The 16 cloth materials only. **Prediction: not significant.**
+
+### B. Audio versus acceleration (16 cloth materials)
+
+Same 2,493 recordings as gate run `20261104T153936_758197Z`, same steady
+window, same CNN, training and splits as `haptic/learned.py`, three seeds. Input:
+the noise-cancelled mono `audio` channel at 44.1 kHz. Log STFT (n_fft 2048, hop
+512), pooled into 64 log-spaced bands. Two variants: `audio_full` (20–8000 Hz)
+and `audio_band` (20–1000 Hz, the acceleration band).
+
+**Prediction (confirmatory):** `audio_full` direction-held-out accuracy exceeds
+acceleration's. The test is one-sided Wilcoxon signed-rank over the 8 direction
+folds (seed-averaged accuracy), against run
+`o1_learned_baseline/20261106T214141_196418Z`, α = 0.05. `audio_band` is
+reported descriptively, with no prediction.
+
+### C. Unseen velocity and frequency warping (16 cloth materials)
+
+Same recordings. Leave-one-velocity-out: 5 folds, three seeds, same CNN. Input:
+log-frequency spectrogram (n_fft 1024, hop 128, 48 log-spaced bands, 20–1000 Hz).
+Before the CNN, the frequency axis of each recording is warped to f·(v/40)^k, by
+linear interpolation on log f. Three conditions:
+- k = 0 (no warp);
+- k = 0.338, the held-out median from
+  `velocity_confirm_cloth/20261105T203252_596852Z`;
+- k = 1 (f = v/λ).
+
+A recording counts as correct when the majority of its three seeds are correct.
+Predictions, one-sided exact sign test on recordings where two conditions
+disagree, Holm across the two:
+
+1. **k = 0.338 beats k = 0.**
+2. **k = 0.338 beats k = 1.**
+
+Disclosure: 0.338 was estimated from cloth recordings that overlap these. It was
+not fitted to classification accuracy.
+
+### D. Whole-dataset identification benchmark (118 materials), descriptive
+
+Analysis plan fixed now; no predictions.
+
+- **Data:** every recording of all 118 materials: 8 directions, 2 repeats, 5
+  velocities, 2 forces. Same loader rules as O1: under 0.5 s of steady sliding is
+  skipped, out-of-band is excluded.
+- **Tasks:** 118-way material; 9-way category (IDs as in the dataset paper).
+- **Splits:** direction held out (8 folds), and repeat 0 → 1.
+- **Models:**
+  - logistic regression on 4 raw descriptors;
+  - logistic regression on 16 log bands + RMS;
+  - logistic regression on both;
+  - the CNN from `haptic/learned.py`, three seeds.
+- **Reported:** accuracy, macro-F1, top-5 (material task), per-category recall,
+  chance (1/118, 1/9) and the majority-class baseline.
