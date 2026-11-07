@@ -289,6 +289,36 @@ which the dataset does not have. Figure: `figures/paper/fig3_velocity_exponents`
 
 ---
 
+## Round 2, A — Does looks predict feel? (pre-registered)
+
+Run `looks_feel/20261107T082554_607613Z`. Pre-registered in PREREGISTRATION.md
+("Benchmark and findings round 2", A, commit `545702e`) before it was run.
+Visual distance is the cosine distance between per-material mean ImageNet
+ResNet-50 features of the dataset's 100 crops. Haptic distance is the Euclidean
+distance between per-material mean log acceleration spectra (2,315 in-band
+recordings, directions 0°/90°, first repeat). Tests are one-sided Spearman Mantel
+tests with 9,999 permutations, Holm-corrected.
+
+| Test | r | p | Holm p | Predicted | Outcome |
+|---|---|---|---|---|---|
+| All 118 materials, free permutation | +0.154 | 0.0011 | 0.0033 | significant | **held** |
+| All 118, permuted within category | +0.154 | 0.211 | 0.422 | not significant | **held** |
+| 16 cloth materials only | −0.095 | 0.833 | 0.833 | not significant | **held** |
+
+Secondary, descriptive: with the four-number descriptor in place of the spectrum,
+all 118 give r = +0.117 (p = 0.011) and cloth gives r = −0.018 (p = 0.49). The
+spectrum and descriptor distances agree with each other at r = +0.749.
+
+**Reading.** Materials that look alike vibrate a little alike, but only because
+both distances separate categories: wood looks and feels unlike cloth. Permuting
+within category removes the effect. Among the 16 fabrics, visual similarity
+carries no information about vibration similarity. This is why appearance-based
+retrieval in O3 could not beat the mean descriptor. It also limits any
+image-to-vibration system that relies on generic ImageNet features to tell one
+fabric from another.
+
+---
+
 ## O4 — What survives a binary vibration channel (open question 3)
 
 Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,

@@ -1,0 +1,5 @@
+{
+  "root": "data/cluster",
+  "perm": 9999,
+  "visual": "resnet50 IMAGENET1K_V2, 100 crops"
+}

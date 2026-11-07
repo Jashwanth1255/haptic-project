@@ -1,0 +1,65 @@
+{
+  "preregistration": "PREREGISTRATION.md: Benchmark and findings round 2, A",
+  "n_materials": 118,
+  "n_recordings": 2315,
+  "n_skipped": 38,
+  "tests": {
+    "all_free": {
+      "r": 0.1544472319906735,
+      "p": 0.0011,
+      "n_items": 118,
+      "n_perm": 9999,
+      "stratified": false,
+      "holm_p": 0.0033,
+      "significant": true,
+      "predicted_significant": true,
+      "prediction_held": true
+    },
+    "all_within_category": {
+      "r": 0.1544472319906735,
+      "p": 0.2109,
+      "n_items": 118,
+      "n_perm": 9999,
+      "stratified": true,
+      "holm_p": 0.4218,
+      "significant": false,
+      "predicted_significant": false,
+      "prediction_held": true
+    },
+    "cloth_only": {
+      "r": -0.09543023821098687,
+      "p": 0.8327,
+      "n_items": 16,
+      "n_perm": 9999,
+      "stratified": false,
+      "holm_p": 0.8327,
+      "significant": false,
+      "predicted_significant": false,
+      "prediction_held": true
+    }
+  },
+  "secondary": {
+    "descriptor_all_free": {
+      "r": 0.11659168487196012,
+      "p": 0.011,
+      "n_items": 118,
+      "n_perm": 9999,
+      "stratified": false
+    },
+    "descriptor_cloth_only": {
+      "r": -0.018167928328356137,
+      "p": 0.4905,
+      "n_items": 16,
+      "n_perm": 9999,
+      "stratified": false
+    },
+    "spectrum_vs_descriptor_all": {
+      "r": 0.7492654263270512,
+      "p": 0.0001,
+      "n_items": 118,
+      "n_perm": 9999,
+      "stratified": false
+    }
+  },
+  "all_predictions_held": true
+}
