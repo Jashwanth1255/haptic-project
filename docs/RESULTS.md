@@ -575,6 +575,47 @@ are largely rig- and contact-driven. The one weak descriptor, the envelope
 period, is also the one the on/off renderer depends on most. That compounds F's
 finding that little identity survives rendering.
 
+## Round 4, J — Scan → photo, stricter, and with a photo-trained model (pre-registered)
+
+Run `photo_transfer_strict/20261107T154450_969423Z`.
+
+**J1, leave-one-material-out scans (cotton vs leather).** This removes G's
+optimism: every scan material is now predicted by a model that never saw it.
+
+| Test | Balanced accuracy | 95% CI |
+|---|---|---|
+| Unseen scan materials | 0.675 | [0.647, 0.705] |
+| Product photos (100 cotton, 11 leather) | 0.287 | [0.141, 0.439] |
+
+Chance is 0.5. Photo < scan in every bootstrap resample (Holm p < 10⁻⁴).
+**Prediction held.** With unseen swatches the scan score drops from 1.000 to
+0.675, so G's perfect scan score was swatch memorisation, as disclosed. The photo
+score stays below chance either way.
+
+**J2, CLIP zero-shot** ("a photo of {cotton|chiffon|leather} fabric").
+
+| Test | Balanced accuracy | 95% CI | Recall: cotton / chiffon / leather |
+|---|---|---|---|
+| Scan crops (1,900) | 0.460 | [0.451, 0.468] | 1.00 / 0.00 / 0.38 |
+| Product photos (211) | **0.635** | [0.528, 0.740] | 0.58 / 0.78 / 0.55 |
+
+Photo > scan (Holm p = 0.0007). **Prediction held.**
+
+Descriptive: we trained a linear probe on the scans' CLIP features. It is perfect
+on held-out scan crops (1.000) and at chance on photos (0.326).
+
+**Reading.** The domain gap runs in both directions and does not depend on the
+backbone:
+- Trained on scans (ResNet or CLIP features), a model is useless on photos.
+- A model built from web photographs (CLIP) works on product photos (0.64, chance
+  0.33) but not on the scans (0.46; it calls every chiffon scan something else).
+
+Together with G this answers open question 1. Lab scans and shop photos are
+different visual domains for fabric. A shopping pipeline should recognise the
+fabric with a photo-domain model, never with one trained on the haptic dataset's
+scans, and only then look up the haptic signature. Limits: three classes, 11
+leather photos, labels taken from captions.
+
 ## Round 4, L — Image → category → descriptor at 118 scale (pre-registered)
 
 Run `image_to_descriptor/20261107T153643_203552Z`. Leave-one-material-out:

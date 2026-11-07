@@ -1,0 +1,80 @@
+{
+  "preregistration": "PREREGISTRATION.md: Round 4, J (commit a86cb06)",
+  "j1_lomo": {
+    "classes": [
+      "cotton",
+      "leather"
+    ],
+    "scan_balanced_accuracy": 0.6753333333333333,
+    "scan_ci95": [
+      0.647325,
+      0.7046666666666667
+    ],
+    "scan_per_material_hit": {
+      "87": 0.22,
+      "88": 1.0,
+      "89": 1.0,
+      "90": 1.0,
+      "91": 1.0,
+      "92": 1.0,
+      "93": 1.0,
+      "94": 1.0,
+      "95": 1.0,
+      "96": 1.0,
+      "97": 1.0,
+      "98": 0.96,
+      "99": 1.0,
+      "100": 1.0,
+      "101": 0.78,
+      "104": 0.05,
+      "105": 0.27,
+      "106": 0.94
+    },
+    "photo_balanced_accuracy": 0.28727272727272724,
+    "photo_ci95": [
+      0.14090909090909093,
+      0.43863636363636366
+    ],
+    "n_photos": 111,
+    "p": 0.0,
+    "holm_p": 0.0,
+    "predicted": "photo < LOMO scan",
+    "prediction_held": true
+  },
+  "j2_clip_zero_shot": {
+    "model": "openai/clip-vit-base-patch32",
+    "prompts": [
+      "a photo of cotton fabric",
+      "a photo of chiffon fabric",
+      "a photo of leather fabric"
+    ],
+    "scan_balanced_accuracy": 0.45955555555555555,
+    "scan_ci95": [
+      0.45133333333333336,
+      0.4677777777777778
+    ],
+    "photo_balanced_accuracy": 0.6351515151515151,
+    "photo_ci95": [
+      0.5275757575757576,
+      0.7396969696969697
+    ],
+    "scan_recall": {
+      "cotton": 1.0,
+      "chiffon": 0.0,
+      "leather": 0.37866666666666665
+    },
+    "photo_recall": {
+      "cotton": 0.58,
+      "chiffon": 0.78,
+      "leather": 0.5454545454545454
+    },
+    "p": 0.0007,
+    "holm_p": 0.0007,
+    "predicted": "photo > scan",
+    "prediction_held": true
+  },
+  "descriptive_clip_probe": {
+    "scan_test_balanced_accuracy": 1.0,
+    "photo_balanced_accuracy": 0.32636363636363636
+  }
+}

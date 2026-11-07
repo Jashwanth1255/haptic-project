@@ -1,0 +1,14 @@
+{
+  "name": "photo_transfer_strict",
+  "run_id": "20261107T154450_969423Z",
+  "created_utc": "2026-11-07T15:44:50.969423+00:00",
+  "synthetic": false,
+  "git_commit": "a7e19c4d56b593af2477bcdbe49f471ec1f1b1b5",
+  "git_dirty": false,
+  "argv": [
+    "make_round4_images.py",
+    "j"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}
