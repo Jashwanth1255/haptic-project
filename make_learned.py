@@ -96,7 +96,7 @@ def main(argv=None) -> int:
                           "accuracy_sd_over_seeds": float(per_seed.std(ddof=1)),
                           "fold_min": float(g.accuracy.min()), "fold_max": float(g.accuracy.max())}
     path = runlog.save_run("o1_learned_baseline", {**vars(a), "config": vars(cfg)}, metrics,
-                           {"folds": res.drop(columns=["predictions", "truth"]),
+                           {"folds": res.drop(columns=["predictions", "truth", "rows"], errors="ignore"),
                             "recall": recall.reset_index()}, synthetic=False)
     print(f"saved run {path}")
     return 0
