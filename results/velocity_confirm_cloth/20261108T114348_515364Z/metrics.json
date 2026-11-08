@@ -1,0 +1,17 @@
+{
+  "original_run": "20261108T114149_659895Z",
+  "n_cells": 444,
+  "n_materials": 16,
+  "held_out_skipped": 40,
+  "reference_skipped": 38,
+  "cloth_median": 0.33760669322502457,
+  "others_median": -0.021745053126445597,
+  "wilcoxon_gt0_p": 1.52587890625e-05,
+  "mannwhitney_gt_others_p": 5.440678140751494e-10,
+  "holm": [
+    1.52587890625e-05,
+    1.0881356281502987e-09
+  ],
+  "confirmed": true,
+  "preregistration": "PREREGISTRATION.md: Confirmation: cloth spectra shift with velocity after whitening"
+}

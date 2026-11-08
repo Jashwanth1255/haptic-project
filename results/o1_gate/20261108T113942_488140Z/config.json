@@ -1,0 +1,10 @@
+{
+  "cmd": "gate",
+  "root": "data/cluster",
+  "synthetic": false,
+  "seconds": null,
+  "repeats": 3,
+  "out": "C:/Users/saija/AppData/Local/Temp/claude/804da8ed3d4c68ba/c7109981-a252-4988-b1a6-281344bac2a9/scratchpad/descriptors_rerun.csv",
+  "keep_out_of_band": false,
+  "no_save": false
+}

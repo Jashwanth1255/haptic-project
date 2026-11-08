@@ -1,0 +1,51 @@
+{
+  "gate_run": "20261108T113942_488140Z",
+  "n_materials": 16,
+  "n_views": 100,
+  "dropped": [],
+  "closed": {
+    "class_pair": {
+      "top1": 0.47333333333333333,
+      "top3": 0.7593750000000001
+    },
+    "cosine": {
+      "top1": 0.99,
+      "top3": 0.99875
+    }
+  },
+  "chance": {
+    "top1": 0.0625,
+    "top3": 0.1875
+  },
+  "velocity_verdicts": {
+    "given": {
+      "conditioning helps": 2,
+      "conditioning hurts": 5,
+      "no clear difference": 13
+    },
+    "unseen_velocity": {
+      "conditioning helps": 3,
+      "conditioning hurts": 5,
+      "no clear difference": 12
+    },
+    "cosine_substitute": {
+      "conditioning helps": 2,
+      "conditioning hurts": 5,
+      "no clear difference": 13
+    }
+  },
+  "scaling_exponent_median": {
+    "frequency_hz": -0.031517119835951485,
+    "intensity": 1.3405762175852671,
+    "duration_ms": 0.13524670636959027
+  },
+  "cv_median": {
+    "frequency_hz": 0.06290001629776958,
+    "intensity": 0.5303698522183812,
+    "pattern": 0.09227367909540897,
+    "duration_ms": 0.3157336632707044,
+    "wavelength_mm": 0.3978199222011368,
+    "roughness_index": 0.3725774207144639,
+    "burst_spacing_mm": 0.5825568930578973
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "velocities": [
+    20.0,
+    40.0,
+    60.0
+  ],
+  "taus_ms": [
+    10.0,
+    25.0,
+    50.0
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "assumed_tau_ms": 25.0,
+  "materials": [
+    "Chiffon",
+    "Corduroy",
+    "Cotton",
+    "Cotton broadcloth",
+    "Cotton gauze",
+    "Cotton linen",
+    "Georgette",
+    "Lace",
+    "Linen",
+    "Mesh",
+    "Nylon",
+    "Organdy",
+    "Polyester",
+    "Silk",
+    "Velvet",
+    "Wool"
+  ],
+  "real_root": "data/cluster",
+  "duration_ms": 800
+}

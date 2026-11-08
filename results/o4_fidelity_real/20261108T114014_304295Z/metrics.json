@@ -1,0 +1,49 @@
+{
+  "renderable_recordings": 9,
+  "recordings": 80,
+  "switching_limit_hz": 25.0,
+  "median_renderable": {
+    "A": {
+      "lsd_db": 15.725486042824754,
+      "wasserstein_hz": 4.066079744711009,
+      "level_error": 0.02828838768341385
+    },
+    "B": {
+      "lsd_db": 8.430829086118898,
+      "wasserstein_hz": 1.8746695778167088,
+      "level_error": 0.14914920976069557
+    },
+    "C": {
+      "lsd_db": 20.467247909508476,
+      "wasserstein_hz": 8.106722208039642,
+      "level_error": 0.475
+    },
+    "D": {
+      "lsd_db": 7.455054540495566,
+      "wasserstein_hz": 2.4927479181833214,
+      "level_error": 0.14914920976069557
+    }
+  },
+  "median_not_renderable": {
+    "A": {
+      "lsd_db": 17.046676277109064,
+      "wasserstein_hz": 5.947565972037133,
+      "level_error": 0.02548042056780009
+    },
+    "B": {
+      "lsd_db": 8.197957948085236,
+      "wasserstein_hz": 4.357865839046031,
+      "level_error": 0.0165960922490489
+    },
+    "C": {
+      "lsd_db": 22.69016633650553,
+      "wasserstein_hz": 6.038021836705198,
+      "level_error": 0.20840390775095113
+    },
+    "D": {
+      "lsd_db": 8.635855549910396,
+      "wasserstein_hz": 4.2596830861445065,
+      "level_error": 0.0165960922490489
+    }
+  }
+}

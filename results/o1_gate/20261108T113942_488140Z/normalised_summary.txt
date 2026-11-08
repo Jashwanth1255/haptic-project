@@ -1,0 +1,143 @@
+====================================================================
+OBJECTIVE 1 GATE
+====================================================================
+  materials          : 16
+  recordings         : 2493
+  silhouette (4-D)   : -0.124   (threshold 0.3)
+  effective classes  : 1   (need 8)
+
+  ANOVA across materials, per descriptor dimension:
+    wavelength_mm          F=     7.52  p=1.25e-16  p_holm=1.25e-16  omega2=+0.038  significant
+    roughness_index        F=    16.19  p=5.61e-41  p_holm=1.68e-40  omega2=+0.084  significant
+    pattern                F=    15.52  p=4.31e-39  p_holm=8.63e-39  omega2=+0.080  significant
+    burst_spacing_mm       F=    19.28  p=1.21e-49  p_holm=4.86e-49  omega2=+0.099  significant
+
+  collapsed pairs (120):
+    Cotton broadcloth      ~ Polyester              separation=0.05
+    Chiffon                ~ Polyester              separation=0.07
+    Mesh                   ~ Nylon                  separation=0.07
+    Mesh                   ~ Polyester              separation=0.08
+    Chiffon                ~ Mesh                   separation=0.08
+    Georgette              ~ Mesh                   separation=0.08
+    Chiffon                ~ Cotton linen           separation=0.08
+    Cotton linen           ~ Nylon                  separation=0.09
+    Georgette              ~ Silk                   separation=0.09
+    Cotton                 ~ Cotton broadcloth      separation=0.09
+    Organdy                ~ Silk                   separation=0.09
+    Chiffon                ~ Nylon                  separation=0.10
+    Cotton linen           ~ Mesh                   separation=0.10
+    Chiffon                ~ Cotton broadcloth      separation=0.10
+    Cotton broadcloth      ~ Mesh                   separation=0.10
+    Cotton broadcloth      ~ Cotton linen           separation=0.11
+    Georgette              ~ Nylon                  separation=0.11
+    Cotton linen           ~ Polyester              separation=0.11
+    Cotton                 ~ Linen                  separation=0.11
+    Mesh                   ~ Organdy                separation=0.11
+    Mesh                   ~ Silk                   separation=0.12
+    Georgette              ~ Organdy                separation=0.12
+    Cotton                 ~ Polyester              separation=0.12
+    Nylon                  ~ Polyester              separation=0.13
+    Organdy                ~ Polyester              separation=0.13
+    Silk                   ~ Wool                   separation=0.13
+    Chiffon                ~ Organdy                separation=0.13
+    Cotton broadcloth      ~ Nylon                  separation=0.14
+    Corduroy               ~ Wool                   separation=0.15
+    Chiffon                ~ Georgette              separation=0.15
+    Cotton broadcloth      ~ Organdy                separation=0.15
+    Corduroy               ~ Cotton gauze           separation=0.15
+    Cotton broadcloth      ~ Linen                  separation=0.15
+    Cotton linen           ~ Organdy                separation=0.15
+    Cotton linen           ~ Georgette              separation=0.16
+    Georgette              ~ Polyester              separation=0.16
+    Polyester              ~ Silk                   separation=0.16
+    Nylon                  ~ Organdy                separation=0.16
+    Corduroy               ~ Silk                   separation=0.17
+    Linen                  ~ Polyester              separation=0.17
+    Cotton                 ~ Mesh                   separation=0.17
+    Organdy                ~ Wool                   separation=0.18
+    Nylon                  ~ Silk                   separation=0.18
+    Cotton gauze           ~ Velvet                 separation=0.18
+    Cotton broadcloth      ~ Georgette              separation=0.18
+    Chiffon                ~ Silk                   separation=0.18
+    Cotton gauze           ~ Polyester              separation=0.18
+    Cotton broadcloth      ~ Silk                   separation=0.18
+    Cotton                 ~ Cotton linen           separation=0.18
+    Chiffon                ~ Cotton                 separation=0.19
+    Georgette              ~ Wool                   separation=0.19
+    Cotton                 ~ Organdy                separation=0.19
+    Linen                  ~ Velvet                 separation=0.20
+    Cotton gauze           ~ Wool                   separation=0.20
+    Corduroy               ~ Cotton                 separation=0.20
+    Corduroy               ~ Organdy                separation=0.20
+    Cotton linen           ~ Silk                   separation=0.20
+    Corduroy               ~ Velvet                 separation=0.20
+    Corduroy               ~ Polyester              separation=0.21
+    Cotton                 ~ Velvet                 separation=0.21
+    Cotton broadcloth      ~ Cotton gauze           separation=0.21
+    Cotton                 ~ Nylon                  separation=0.21
+    Cotton                 ~ Silk                   separation=0.21
+    Mesh                   ~ Wool                   separation=0.21
+    Cotton gauze           ~ Mesh                   separation=0.22
+    Cotton gauze           ~ Organdy                separation=0.22
+    Chiffon                ~ Cotton gauze           separation=0.22
+    Chiffon                ~ Linen                  separation=0.22
+    Cotton                 ~ Cotton gauze           separation=0.22
+    Corduroy               ~ Mesh                   separation=0.22
+    Corduroy               ~ Cotton broadcloth      separation=0.22
+    Cotton gauze           ~ Silk                   separation=0.23
+    Cotton                 ~ Georgette              separation=0.23
+    Linen                  ~ Mesh                   separation=0.24
+    Corduroy               ~ Georgette              separation=0.24
+    Cotton linen           ~ Linen                  separation=0.24
+    Polyester              ~ Wool                   separation=0.24
+    Cotton gauze           ~ Linen                  separation=0.24
+    Chiffon                ~ Wool                   separation=0.25
+    Polyester              ~ Velvet                 separation=0.26
+    Chiffon                ~ Corduroy               separation=0.26
+    Cotton broadcloth      ~ Velvet                 separation=0.26
+    Cotton                 ~ Lace                   separation=0.26
+    Cotton gauze           ~ Georgette              separation=0.27
+    Lace                   ~ Linen                  separation=0.27
+    Linen                  ~ Nylon                  separation=0.27
+    Corduroy               ~ Linen                  separation=0.27
+    Lace                   ~ Velvet                 separation=0.27
+    Cotton broadcloth      ~ Wool                   separation=0.27
+    Linen                  ~ Organdy                separation=0.28
+    Nylon                  ~ Wool                   separation=0.28
+    Cotton gauze           ~ Nylon                  separation=0.29
+    Corduroy               ~ Nylon                  separation=0.29
+    Cotton gauze           ~ Cotton linen           separation=0.29
+    Cotton                 ~ Wool                   separation=0.29
+    Corduroy               ~ Cotton linen           separation=0.30
+    Organdy                ~ Velvet                 separation=0.30
+    Chiffon                ~ Velvet                 separation=0.30
+    Corduroy               ~ Lace                   separation=0.30
+    Mesh                   ~ Velvet                 separation=0.31
+    Cotton linen           ~ Wool                   separation=0.31
+    Linen                  ~ Silk                   separation=0.31
+    Velvet                 ~ Wool                   separation=0.32
+    Georgette              ~ Linen                  separation=0.32
+    Silk                   ~ Velvet                 separation=0.32
+    Cotton broadcloth      ~ Lace                   separation=0.33
+    Lace                   ~ Polyester              separation=0.34
+    Cotton linen           ~ Velvet                 separation=0.34
+    Cotton gauze           ~ Lace                   separation=0.35
+    Nylon                  ~ Velvet                 separation=0.36
+    Georgette              ~ Velvet                 separation=0.36
+    Lace                   ~ Mesh                   separation=0.37
+    Linen                  ~ Wool                   separation=0.37
+    Chiffon                ~ Lace                   separation=0.40
+    Lace                   ~ Silk                   separation=0.41
+    Lace                   ~ Nylon                  separation=0.41
+    Georgette              ~ Lace                   separation=0.43
+    Cotton linen           ~ Lace                   separation=0.43
+    Lace                   ~ Organdy                separation=0.43
+    Lace                   ~ Wool                   separation=0.45
+
+  notes:
+    - significant dimensions: wavelength_mm, roughness_index, pattern, burst_spacing_mm
+    - significant but weak effect (omega2<0.06), driven by sample size rather than a real difference: wavelength_mm
+    - 120 pair(s) overlap; 16 materials reduce to 1 effective classes
+
+  RESULT: FAIL
+====================================================================

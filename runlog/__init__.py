@@ -48,9 +48,8 @@ def results_root(root: str | Path | None = None) -> Path:
     return Path(os.environ.get("RUNLOG_ROOT") or REPO / RESULTS_DIR)
 
 
-def git_state(repo: Path = REPO) -> tuple[str | None, bool | None]:
-    """(commit, dirty). Saved results under `results/` do not make a tree dirty,
-    or every run would mark the next one."""
+def _git(repo: Path = REPO) -> tuple[str | None, list[str] | None]:
+    """(commit, uncommitted code paths), or (RUNLOG_COMMIT, None) without git."""
     try:
         head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo,
                               capture_output=True, text=True, check=True).stdout.strip()
@@ -58,7 +57,14 @@ def git_state(repo: Path = REPO) -> tuple[str | None, bool | None]:
                                 capture_output=True, text=True, check=True).stdout
     except (OSError, subprocess.CalledProcessError):
         return os.environ.get("RUNLOG_COMMIT") or None, None
-    return head, bool(_code_changes(status))
+    return head, _code_changes(status)
+
+
+def git_state(repo: Path = REPO) -> tuple[str | None, bool | None]:
+    """(commit, dirty). Saved results under `results/` do not make a tree dirty,
+    or every run would mark the next one."""
+    head, paths = _git(repo)
+    return head, None if paths is None else bool(paths)
 
 
 def _code_changes(status: str) -> list[str]:
@@ -97,13 +103,20 @@ def source_digest(repo: Path = REPO) -> str:
     return h.hexdigest()
 
 
+_DIGEST: str | None = None
+
+
+def _process_digest() -> str:
+    """source_digest() of this repository, computed once per process: the code a
+    process runs is fixed when it starts."""
+    global _DIGEST
+    if _DIGEST is None:
+        _DIGEST = source_digest()
+    return _DIGEST
+
+
 def dirty_paths(repo: Path = REPO) -> list[str] | None:
-    try:
-        status = subprocess.run(["git", "status", "--porcelain"], cwd=repo,
-                                capture_output=True, text=True, check=True).stdout
-    except (OSError, subprocess.CalledProcessError):
-        return None
-    return _code_changes(status)
+    return _git(repo)[1]
 
 
 def plain(obj):
@@ -159,7 +172,8 @@ def save_run(name: str, config: dict, metrics: dict, artifacts: dict | None = No
         raise ValueError(f"bad run name {name!r}")
     if not isinstance(synthetic, bool):
         raise TypeError("synthetic must be True or False")
-    commit, dirty = git_state()
+    commit, paths = _git()
+    dirty = None if paths is None else bool(paths)
     now = datetime.now(timezone.utc)
     run_id = now.strftime("%Y%m%dT%H%M%S_%fZ")
     base = results_root(root) / name
@@ -170,8 +184,8 @@ def save_run(name: str, config: dict, metrics: dict, artifacts: dict | None = No
         _dump(tmp / "run.json", {
             "name": name, "run_id": run_id, "created_utc": now.isoformat(),
             "synthetic": synthetic, "git_commit": commit, "git_dirty": dirty,
-            "dirty_paths": dirty_paths() if dirty else [],
-            "source_sha256": source_digest(),
+            "dirty_paths": paths,
+            "source_sha256": _process_digest(),
             "argv": sys.argv, "python": sys.version.split()[0],
             "platform": platform.platform()})
         _dump(tmp / "config.json", config)

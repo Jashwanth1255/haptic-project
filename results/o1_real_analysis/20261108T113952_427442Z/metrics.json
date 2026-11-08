@@ -1,0 +1,1305 @@
+{
+  "gate_run": "20261108T113942_488140Z",
+  "gate": {
+    "raw": {
+      "passed": false,
+      "silhouette": -0.1641011935393405,
+      "n_materials": 16,
+      "n_recordings": 2493,
+      "effective_classes": 1,
+      "collapsed_pairs": [
+        [
+          "Cotton broadcloth",
+          "Polyester",
+          0.06169303804606657
+        ],
+        [
+          "Mesh",
+          "Polyester",
+          0.06946694541940969
+        ],
+        [
+          "Mesh",
+          "Nylon",
+          0.09150382819209561
+        ],
+        [
+          "Organdy",
+          "Silk",
+          0.09385932519186424
+        ],
+        [
+          "Georgette",
+          "Silk",
+          0.10385408255088086
+        ],
+        [
+          "Chiffon",
+          "Mesh",
+          0.10599765808208671
+        ],
+        [
+          "Georgette",
+          "Mesh",
+          0.10892363004335226
+        ],
+        [
+          "Chiffon",
+          "Polyester",
+          0.11001774090910832
+        ],
+        [
+          "Cotton broadcloth",
+          "Cotton linen",
+          0.11530943345467075
+        ],
+        [
+          "Cotton broadcloth",
+          "Mesh",
+          0.1170093465393593
+        ],
+        [
+          "Chiffon",
+          "Nylon",
+          0.11854253994022151
+        ],
+        [
+          "Cotton linen",
+          "Nylon",
+          0.12361722161724588
+        ],
+        [
+          "Cotton",
+          "Linen",
+          0.12625016794384436
+        ],
+        [
+          "Georgette",
+          "Nylon",
+          0.12632433427711098
+        ],
+        [
+          "Cotton linen",
+          "Polyester",
+          0.12825355722207246
+        ],
+        [
+          "Georgette",
+          "Organdy",
+          0.12869026731326677
+        ],
+        [
+          "Mesh",
+          "Organdy",
+          0.13595504840015435
+        ],
+        [
+          "Nylon",
+          "Polyester",
+          0.13692435428819413
+        ],
+        [
+          "Mesh",
+          "Silk",
+          0.13889181490921415
+        ],
+        [
+          "Cotton linen",
+          "Mesh",
+          0.13932595966002528
+        ],
+        [
+          "Chiffon",
+          "Cotton linen",
+          0.14346253341589857
+        ],
+        [
+          "Organdy",
+          "Polyester",
+          0.14576254122749752
+        ],
+        [
+          "Chiffon",
+          "Cotton broadcloth",
+          0.1510243580967728
+        ],
+        [
+          "Cotton broadcloth",
+          "Organdy",
+          0.15680140264205092
+        ],
+        [
+          "Cotton",
+          "Cotton broadcloth",
+          0.16374415499055647
+        ],
+        [
+          "Cotton broadcloth",
+          "Linen",
+          0.16439507102821296
+        ],
+        [
+          "Cotton broadcloth",
+          "Nylon",
+          0.1655816330517123
+        ],
+        [
+          "Georgette",
+          "Polyester",
+          0.17222446995202254
+        ],
+        [
+          "Chiffon",
+          "Organdy",
+          0.17244604590246862
+        ],
+        [
+          "Cotton linen",
+          "Organdy",
+          0.17559084361530425
+        ],
+        [
+          "Polyester",
+          "Silk",
+          0.17697681279587002
+        ],
+        [
+          "Chiffon",
+          "Georgette",
+          0.17701819279144793
+        ],
+        [
+          "Cotton",
+          "Velvet",
+          0.18231031403481862
+        ],
+        [
+          "Corduroy",
+          "Velvet",
+          0.18335762811595296
+        ],
+        [
+          "Corduroy",
+          "Cotton",
+          0.18759989747902472
+        ],
+        [
+          "Linen",
+          "Velvet",
+          0.1881951616808995
+        ],
+        [
+          "Cotton linen",
+          "Georgette",
+          0.18988016765482477
+        ],
+        [
+          "Nylon",
+          "Organdy",
+          0.19141125496546524
+        ],
+        [
+          "Cotton broadcloth",
+          "Silk",
+          0.1977925713847299
+        ],
+        [
+          "Silk",
+          "Wool",
+          0.19803828824520617
+        ],
+        [
+          "Cotton broadcloth",
+          "Georgette",
+          0.20192815900439529
+        ],
+        [
+          "Nylon",
+          "Silk",
+          0.20481628773395866
+        ],
+        [
+          "Cotton",
+          "Polyester",
+          0.2145906661290462
+        ],
+        [
+          "Linen",
+          "Polyester",
+          0.21470247381192037
+        ],
+        [
+          "Chiffon",
+          "Silk",
+          0.21665735896825913
+        ],
+        [
+          "Lace",
+          "Velvet",
+          0.22134797502597395
+        ],
+        [
+          "Cotton linen",
+          "Silk",
+          0.23372022109912427
+        ],
+        [
+          "Cotton gauze",
+          "Wool",
+          0.2358024400261968
+        ],
+        [
+          "Corduroy",
+          "Silk",
+          0.24139219154334562
+        ],
+        [
+          "Cotton",
+          "Mesh",
+          0.24454023782950135
+        ],
+        [
+          "Cotton gauze",
+          "Polyester",
+          0.24874746761961147
+        ],
+        [
+          "Cotton",
+          "Cotton linen",
+          0.24992501210337517
+        ],
+        [
+          "Cotton gauze",
+          "Mesh",
+          0.2516314445702177
+        ],
+        [
+          "Georgette",
+          "Wool",
+          0.25338547850210824
+        ],
+        [
+          "Organdy",
+          "Wool",
+          0.2538465692368616
+        ],
+        [
+          "Cotton",
+          "Organdy",
+          0.25495217725756664
+        ],
+        [
+          "Cotton linen",
+          "Linen",
+          0.261575919419673
+        ],
+        [
+          "Cotton",
+          "Lace",
+          0.263006932664823
+        ],
+        [
+          "Chiffon",
+          "Cotton gauze",
+          0.2631492656957199
+        ],
+        [
+          "Linen",
+          "Mesh",
+          0.26413280046641235
+        ],
+        [
+          "Corduroy",
+          "Lace",
+          0.26552118046556294
+        ],
+        [
+          "Corduroy",
+          "Cotton broadcloth",
+          0.2676491977647427
+        ],
+        [
+          "Mesh",
+          "Wool",
+          0.26838463465375084
+        ],
+        [
+          "Cotton",
+          "Silk",
+          0.2684346699361437
+        ],
+        [
+          "Cotton broadcloth",
+          "Velvet",
+          0.2702523228248258
+        ],
+        [
+          "Corduroy",
+          "Organdy",
+          0.274555908037038
+        ],
+        [
+          "Corduroy",
+          "Linen",
+          0.27704598798770014
+        ],
+        [
+          "Cotton broadcloth",
+          "Cotton gauze",
+          0.2780366839679216
+        ],
+        [
+          "Cotton gauze",
+          "Silk",
+          0.2790157016636238
+        ],
+        [
+          "Cotton gauze",
+          "Organdy",
+          0.28416922082435825
+        ],
+        [
+          "Corduroy",
+          "Polyester",
+          0.28553850374224443
+        ],
+        [
+          "Chiffon",
+          "Linen",
+          0.28640686199834686
+        ],
+        [
+          "Corduroy",
+          "Mesh",
+          0.2876206501657752
+        ],
+        [
+          "Cotton",
+          "Nylon",
+          0.28989637345339747
+        ],
+        [
+          "Cotton gauze",
+          "Velvet",
+          0.2961499842839001
+        ],
+        [
+          "Lace",
+          "Linen",
+          0.2988677930191687
+        ],
+        [
+          "Linen",
+          "Organdy",
+          0.30029160495145624
+        ],
+        [
+          "Cotton",
+          "Georgette",
+          0.3013683999881912
+        ],
+        [
+          "Polyester",
+          "Velvet",
+          0.3013978938268906
+        ],
+        [
+          "Chiffon",
+          "Cotton",
+          0.3025029412365745
+        ],
+        [
+          "Corduroy",
+          "Cotton gauze",
+          0.30482422346086535
+        ],
+        [
+          "Linen",
+          "Nylon",
+          0.30646027863888353
+        ],
+        [
+          "Corduroy",
+          "Georgette",
+          0.31337406979667365
+        ],
+        [
+          "Polyester",
+          "Wool",
+          0.3152491996063673
+        ],
+        [
+          "Chiffon",
+          "Wool",
+          0.3168778096955739
+        ],
+        [
+          "Corduroy",
+          "Wool",
+          0.3184627206070587
+        ],
+        [
+          "Cotton gauze",
+          "Georgette",
+          0.32361763412246153
+        ],
+        [
+          "Organdy",
+          "Velvet",
+          0.32727197170487654
+        ],
+        [
+          "Cotton gauze",
+          "Linen",
+          0.33078203066333667
+        ],
+        [
+          "Mesh",
+          "Velvet",
+          0.331673604701663
+        ],
+        [
+          "Cotton gauze",
+          "Nylon",
+          0.3338585568666905
+        ],
+        [
+          "Linen",
+          "Silk",
+          0.3352756664100304
+        ],
+        [
+          "Silk",
+          "Velvet",
+          0.3379545596699606
+        ],
+        [
+          "Nylon",
+          "Wool",
+          0.3424122744514731
+        ],
+        [
+          "Cotton",
+          "Cotton gauze",
+          0.34803174733381
+        ],
+        [
+          "Cotton broadcloth",
+          "Wool",
+          0.3518900394478277
+        ],
+        [
+          "Georgette",
+          "Linen",
+          0.3553502060484419
+        ],
+        [
+          "Corduroy",
+          "Nylon",
+          0.3571414247799907
+        ],
+        [
+          "Corduroy",
+          "Cotton linen",
+          0.3583713156746259
+        ],
+        [
+          "Chiffon",
+          "Corduroy",
+          0.36357131224480094
+        ],
+        [
+          "Chiffon",
+          "Velvet",
+          0.3645134823893448
+        ],
+        [
+          "Cotton linen",
+          "Velvet",
+          0.36451935655081835
+        ],
+        [
+          "Cotton gauze",
+          "Cotton linen",
+          0.3726204331404284
+        ],
+        [
+          "Nylon",
+          "Velvet",
+          0.3896659497879585
+        ],
+        [
+          "Cotton broadcloth",
+          "Lace",
+          0.389727419986375
+        ],
+        [
+          "Georgette",
+          "Velvet",
+          0.3899917443714633
+        ],
+        [
+          "Velvet",
+          "Wool",
+          0.4073162933347468
+        ],
+        [
+          "Cotton linen",
+          "Wool",
+          0.41470755387154723
+        ],
+        [
+          "Cotton",
+          "Wool",
+          0.4194317776068957
+        ],
+        [
+          "Lace",
+          "Polyester",
+          0.4209873899100594
+        ],
+        [
+          "Lace",
+          "Mesh",
+          0.43220782063781366
+        ],
+        [
+          "Cotton gauze",
+          "Lace",
+          0.45063199693082545
+        ],
+        [
+          "Linen",
+          "Wool",
+          0.46882348473723384
+        ],
+        [
+          "Lace",
+          "Silk",
+          0.46973270630108555
+        ],
+        [
+          "Lace",
+          "Nylon",
+          0.48675090487221423
+        ],
+        [
+          "Lace",
+          "Organdy",
+          0.49036262024700317
+        ],
+        [
+          "Cotton linen",
+          "Lace",
+          0.5017773753564347
+        ],
+        [
+          "Chiffon",
+          "Lace",
+          0.5050110582333469
+        ],
+        [
+          "Georgette",
+          "Lace",
+          0.506574758685681
+        ],
+        [
+          "Lace",
+          "Wool",
+          0.5664444967448173
+        ]
+      ],
+      "notes": [
+        "significant dimensions: frequency_hz, intensity, pattern, duration_ms",
+        "120 pair(s) overlap; 16 materials reduce to 1 effective classes"
+      ],
+      "thresholds": {
+        "alpha": 0.05,
+        "silhouette_min": 0.3,
+        "collapse_ratio": 1.0,
+        "min_separable": 8
+      }
+    },
+    "normalised": {
+      "passed": false,
+      "silhouette": -0.12403167230361059,
+      "n_materials": 16,
+      "n_recordings": 2493,
+      "effective_classes": 1,
+      "collapsed_pairs": [
+        [
+          "Cotton broadcloth",
+          "Polyester",
+          0.046168428053508084
+        ],
+        [
+          "Chiffon",
+          "Polyester",
+          0.07173187520974536
+        ],
+        [
+          "Mesh",
+          "Nylon",
+          0.07425603689074749
+        ],
+        [
+          "Mesh",
+          "Polyester",
+          0.07677310478016004
+        ],
+        [
+          "Chiffon",
+          "Mesh",
+          0.07701313708451868
+        ],
+        [
+          "Georgette",
+          "Mesh",
+          0.08299247895844598
+        ],
+        [
+          "Chiffon",
+          "Cotton linen",
+          0.08373716714823355
+        ],
+        [
+          "Cotton linen",
+          "Nylon",
+          0.08615963145693109
+        ],
+        [
+          "Georgette",
+          "Silk",
+          0.08705315801182802
+        ],
+        [
+          "Cotton",
+          "Cotton broadcloth",
+          0.09080145679736702
+        ],
+        [
+          "Organdy",
+          "Silk",
+          0.09462241722093966
+        ],
+        [
+          "Chiffon",
+          "Nylon",
+          0.09532855601386037
+        ],
+        [
+          "Cotton linen",
+          "Mesh",
+          0.10224333197064854
+        ],
+        [
+          "Chiffon",
+          "Cotton broadcloth",
+          0.10289100294281998
+        ],
+        [
+          "Cotton broadcloth",
+          "Mesh",
+          0.10386909113848776
+        ],
+        [
+          "Cotton broadcloth",
+          "Cotton linen",
+          0.10546567575638699
+        ],
+        [
+          "Georgette",
+          "Nylon",
+          0.10714600784662835
+        ],
+        [
+          "Cotton linen",
+          "Polyester",
+          0.10830516744589075
+        ],
+        [
+          "Cotton",
+          "Linen",
+          0.11096130084900872
+        ],
+        [
+          "Mesh",
+          "Organdy",
+          0.11381454780124042
+        ],
+        [
+          "Mesh",
+          "Silk",
+          0.11926372933750104
+        ],
+        [
+          "Georgette",
+          "Organdy",
+          0.11988964833218348
+        ],
+        [
+          "Cotton",
+          "Polyester",
+          0.12288231782687367
+        ],
+        [
+          "Nylon",
+          "Polyester",
+          0.127320742864324
+        ],
+        [
+          "Organdy",
+          "Polyester",
+          0.129172607989993
+        ],
+        [
+          "Silk",
+          "Wool",
+          0.13069319862032558
+        ],
+        [
+          "Chiffon",
+          "Organdy",
+          0.13303752487900916
+        ],
+        [
+          "Cotton broadcloth",
+          "Nylon",
+          0.1422886849445498
+        ],
+        [
+          "Corduroy",
+          "Wool",
+          0.14548425039851764
+        ],
+        [
+          "Chiffon",
+          "Georgette",
+          0.14578986958176568
+        ],
+        [
+          "Cotton broadcloth",
+          "Organdy",
+          0.14583352888352205
+        ],
+        [
+          "Corduroy",
+          "Cotton gauze",
+          0.1465575652243971
+        ],
+        [
+          "Cotton broadcloth",
+          "Linen",
+          0.14869355954191465
+        ],
+        [
+          "Cotton linen",
+          "Organdy",
+          0.14987255895886442
+        ],
+        [
+          "Cotton linen",
+          "Georgette",
+          0.1563500885362086
+        ],
+        [
+          "Georgette",
+          "Polyester",
+          0.156811867089339
+        ],
+        [
+          "Polyester",
+          "Silk",
+          0.1632387904310681
+        ],
+        [
+          "Nylon",
+          "Organdy",
+          0.16498676903332968
+        ],
+        [
+          "Corduroy",
+          "Silk",
+          0.16734918416498384
+        ],
+        [
+          "Linen",
+          "Polyester",
+          0.16906164183206374
+        ],
+        [
+          "Cotton",
+          "Mesh",
+          0.1721775929568677
+        ],
+        [
+          "Organdy",
+          "Wool",
+          0.17559362277015583
+        ],
+        [
+          "Nylon",
+          "Silk",
+          0.17650817766865237
+        ],
+        [
+          "Cotton gauze",
+          "Velvet",
+          0.1786916767971469
+        ],
+        [
+          "Cotton broadcloth",
+          "Georgette",
+          0.1789962706012276
+        ],
+        [
+          "Chiffon",
+          "Silk",
+          0.18006437537879372
+        ],
+        [
+          "Cotton gauze",
+          "Polyester",
+          0.18026209315496014
+        ],
+        [
+          "Cotton broadcloth",
+          "Silk",
+          0.18241693701102335
+        ],
+        [
+          "Cotton",
+          "Cotton linen",
+          0.1838263375682469
+        ],
+        [
+          "Chiffon",
+          "Cotton",
+          0.18536236565817568
+        ],
+        [
+          "Georgette",
+          "Wool",
+          0.19367736023127374
+        ],
+        [
+          "Cotton",
+          "Organdy",
+          0.19435885971772743
+        ],
+        [
+          "Linen",
+          "Velvet",
+          0.19533722989635438
+        ],
+        [
+          "Cotton gauze",
+          "Wool",
+          0.1954093729480308
+        ],
+        [
+          "Corduroy",
+          "Cotton",
+          0.19711952834255453
+        ],
+        [
+          "Corduroy",
+          "Organdy",
+          0.1978456614250851
+        ],
+        [
+          "Cotton linen",
+          "Silk",
+          0.20000106271861842
+        ],
+        [
+          "Corduroy",
+          "Velvet",
+          0.20077580197932898
+        ],
+        [
+          "Corduroy",
+          "Polyester",
+          0.2101298870371884
+        ],
+        [
+          "Cotton",
+          "Velvet",
+          0.21134198571528903
+        ],
+        [
+          "Cotton broadcloth",
+          "Cotton gauze",
+          0.21183438506866278
+        ],
+        [
+          "Cotton",
+          "Nylon",
+          0.21232340253230628
+        ],
+        [
+          "Cotton",
+          "Silk",
+          0.21278492283002057
+        ],
+        [
+          "Mesh",
+          "Wool",
+          0.21368163026688158
+        ],
+        [
+          "Cotton gauze",
+          "Mesh",
+          0.2151773388844719
+        ],
+        [
+          "Cotton gauze",
+          "Organdy",
+          0.21526251341072164
+        ],
+        [
+          "Chiffon",
+          "Cotton gauze",
+          0.21568940617024582
+        ],
+        [
+          "Chiffon",
+          "Linen",
+          0.21837393496915045
+        ],
+        [
+          "Cotton",
+          "Cotton gauze",
+          0.21917578285734401
+        ],
+        [
+          "Corduroy",
+          "Mesh",
+          0.22071601356458256
+        ],
+        [
+          "Corduroy",
+          "Cotton broadcloth",
+          0.222430282761756
+        ],
+        [
+          "Cotton gauze",
+          "Silk",
+          0.22552867140742236
+        ],
+        [
+          "Cotton",
+          "Georgette",
+          0.23244526113485725
+        ],
+        [
+          "Linen",
+          "Mesh",
+          0.23677078974612645
+        ],
+        [
+          "Corduroy",
+          "Georgette",
+          0.2367795588146388
+        ],
+        [
+          "Cotton linen",
+          "Linen",
+          0.23837640457872916
+        ],
+        [
+          "Polyester",
+          "Wool",
+          0.24091435683611845
+        ],
+        [
+          "Cotton gauze",
+          "Linen",
+          0.24208376865341616
+        ],
+        [
+          "Chiffon",
+          "Wool",
+          0.2549544406676806
+        ],
+        [
+          "Polyester",
+          "Velvet",
+          0.25657183470237155
+        ],
+        [
+          "Chiffon",
+          "Corduroy",
+          0.2576394327857625
+        ],
+        [
+          "Cotton broadcloth",
+          "Velvet",
+          0.2579395585182853
+        ],
+        [
+          "Cotton",
+          "Lace",
+          0.25902131192929667
+        ],
+        [
+          "Cotton gauze",
+          "Georgette",
+          0.2660861590952817
+        ],
+        [
+          "Lace",
+          "Linen",
+          0.26632136276523116
+        ],
+        [
+          "Linen",
+          "Nylon",
+          0.26717456276029294
+        ],
+        [
+          "Corduroy",
+          "Linen",
+          0.2704549278821116
+        ],
+        [
+          "Lace",
+          "Velvet",
+          0.2726392388746966
+        ],
+        [
+          "Cotton broadcloth",
+          "Wool",
+          0.27337954934554687
+        ],
+        [
+          "Linen",
+          "Organdy",
+          0.27685528742434184
+        ],
+        [
+          "Nylon",
+          "Wool",
+          0.27947652524431305
+        ],
+        [
+          "Cotton gauze",
+          "Nylon",
+          0.28508151014572153
+        ],
+        [
+          "Corduroy",
+          "Nylon",
+          0.28871728523968554
+        ],
+        [
+          "Cotton gauze",
+          "Cotton linen",
+          0.29023393618052634
+        ],
+        [
+          "Cotton",
+          "Wool",
+          0.2922558244198181
+        ],
+        [
+          "Corduroy",
+          "Cotton linen",
+          0.29596852460010836
+        ],
+        [
+          "Organdy",
+          "Velvet",
+          0.30043139990715
+        ],
+        [
+          "Chiffon",
+          "Velvet",
+          0.30121012920309154
+        ],
+        [
+          "Corduroy",
+          "Lace",
+          0.304738737247754
+        ],
+        [
+          "Mesh",
+          "Velvet",
+          0.3089004369000792
+        ],
+        [
+          "Cotton linen",
+          "Wool",
+          0.3099591992931915
+        ],
+        [
+          "Linen",
+          "Silk",
+          0.3105348666772079
+        ],
+        [
+          "Velvet",
+          "Wool",
+          0.31600797090850785
+        ],
+        [
+          "Georgette",
+          "Linen",
+          0.3173295137326443
+        ],
+        [
+          "Silk",
+          "Velvet",
+          0.3213790636873285
+        ],
+        [
+          "Cotton broadcloth",
+          "Lace",
+          0.3330350869717489
+        ],
+        [
+          "Lace",
+          "Polyester",
+          0.34017001453923035
+        ],
+        [
+          "Cotton linen",
+          "Velvet",
+          0.3437237521352269
+        ],
+        [
+          "Cotton gauze",
+          "Lace",
+          0.3488854451761714
+        ],
+        [
+          "Nylon",
+          "Velvet",
+          0.3606888790823723
+        ],
+        [
+          "Georgette",
+          "Velvet",
+          0.36256635799603204
+        ],
+        [
+          "Lace",
+          "Mesh",
+          0.3695221542722364
+        ],
+        [
+          "Linen",
+          "Wool",
+          0.37482308752471927
+        ],
+        [
+          "Chiffon",
+          "Lace",
+          0.4009240224698719
+        ],
+        [
+          "Lace",
+          "Silk",
+          0.4059742150503615
+        ],
+        [
+          "Lace",
+          "Nylon",
+          0.4091606325960606
+        ],
+        [
+          "Georgette",
+          "Lace",
+          0.42672815003580417
+        ],
+        [
+          "Cotton linen",
+          "Lace",
+          0.4325896702918167
+        ],
+        [
+          "Lace",
+          "Organdy",
+          0.43398993351655185
+        ],
+        [
+          "Lace",
+          "Wool",
+          0.4503681228291219
+        ]
+      ],
+      "notes": [
+        "significant dimensions: wavelength_mm, roughness_index, pattern, burst_spacing_mm",
+        "significant but weak effect (omega2<0.06), driven by sample size rather than a real difference: wavelength_mm",
+        "120 pair(s) overlap; 16 materials reduce to 1 effective classes"
+      ],
+      "thresholds": {
+        "alpha": 0.05,
+        "silhouette_min": 0.3,
+        "collapse_ratio": 1.0,
+        "min_separable": 8
+      }
+    }
+  },
+  "group_test": {
+    "confirmatory": "failed (weave does not cluster); untested: pile has 2 materials (minimum 3)",
+    "drape": "drape does not cluster, as predicted (weak evidence: non-significance with 4 materials)"
+  },
+  "groups": {
+    "pile": {
+      "n": 2,
+      "ratio": null,
+      "p": null,
+      "p_holm": 1.0,
+      "tested": false
+    },
+    "weave": {
+      "n": 7,
+      "ratio": 0.8054519873718557,
+      "p": 0.11421911421911422,
+      "p_holm": 0.22843822843822845,
+      "tested": true
+    },
+    "drape": {
+      "n": 4,
+      "ratio": 0.899900621809338,
+      "p": 0.2811188811188811,
+      "p_holm": null,
+      "tested": true
+    }
+  },
+  "identification_exploratory": {
+    "raw4": {
+      "accuracy": 0.1379863618130766,
+      "fold_mean": 0.1381139489395335,
+      "fold_std": 0.03245192107618678,
+      "n_folds": 8,
+      "chance": 0.0625,
+      "n": 2493
+    },
+    "norm4": {
+      "accuracy": 0.15363016446048938,
+      "fold_mean": 0.15371833289239337,
+      "fold_std": 0.04185660422106504,
+      "n_folds": 8,
+      "chance": 0.0625,
+      "n": 2493
+    },
+    "bands": {
+      "accuracy": 0.21821099077416767,
+      "fold_mean": 0.2184232914796518,
+      "fold_std": 0.04943396816028339,
+      "n_folds": 8,
+      "chance": 0.0625,
+      "n": 2493
+    },
+    "bands+raw4": {
+      "accuracy": 0.24789410348977137,
+      "fold_mean": 0.24817042333457914,
+      "fold_std": 0.060357626928917316,
+      "n_folds": 8,
+      "chance": 0.0625,
+      "n": 2493
+    }
+  }
+}

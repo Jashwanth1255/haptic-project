@@ -1,0 +1,41 @@
+{
+  "minc": {
+    "fabric_fraction": 0.0325,
+    "n_crops": 1600,
+    "called": {
+      "carpet": 689,
+      "wallpaper": 515,
+      "tile": 148,
+      "painted": 116,
+      "fabric": 52,
+      "glass": 30,
+      "brick": 19,
+      "other": 11,
+      "food": 10,
+      "ceramic": 5,
+      "sky": 2,
+      "mirror": 1,
+      "leather": 1,
+      "stone": 1
+    },
+    "materials_majority_fabric": 0
+  },
+  "dtd_group": {
+    "crop_group_acc_all16": {
+      "mean": 0.531125,
+      "std": 0.043005369496791394,
+      "n_folds": 10
+    },
+    "crop_group_acc_assigned13": {
+      "mean": 0.6516923076923077,
+      "std": 0.052699388132436645,
+      "n_folds": 10
+    },
+    "material_majority_acc_all16": {
+      "mean": 0.53125,
+      "std": 0.04419417382415922,
+      "n_folds": 10
+    }
+  },
+  "majority_group_baseline_all16": 0.4375
+}

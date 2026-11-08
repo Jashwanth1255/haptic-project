@@ -320,6 +320,37 @@ fabric from another.
 
 ---
 
+## Reproduction from committed code (2026-11-08)
+
+Every run the paper quotes that had been saved from an uncommitted tree was rerun
+from a clean checkout (commit 9ba22bb; each new run also records `source_sha256`).
+All eight reproduce their originals exactly: every metric is identical, and the
+only fields that differ are pointers to other runs. The paper now cites the new
+run IDs. The originals stay in `results/` for the record.
+
+| Original run (dirty tree) | Clean rerun |
+|---|---|
+| `o1_gate/20261104T153936_758197Z` | `20261108T113942_488140Z` |
+| `o1_real_analysis/20261104T155118_372566Z` | `20261108T113952_427442Z` |
+| `o2_cluster_scans/20261104T161427_584869Z` | `20261108T133149_279712Z` |
+| `o2_cluster_scan_scale/20261104T161606_361379Z` | `20261108T113824_998654Z` |
+| `o3_real/20261104T161615_092994Z` | `20261108T114001_519385Z` |
+| `o4_fidelity_real/20261104T155413_654754Z` | `20261108T114014_304295Z` |
+| `velocity_all_materials/20261105T202123_412283Z` | `20261108T114149_659895Z` |
+| `velocity_confirm_cloth/20261105T203252_596852Z` | `20261108T114348_515364Z` |
+
+- `o2_cluster_scan_scale` was first produced by an unsaved stdin script. It is now
+  `vision/cluster_scan_scale.py`. Its summary fractions are identical (100 mm
+  0.0625, 50 mm 0.0469), but 8 of the 64 quadrant labels differ, probably from
+  resampling or encoding details of the lost script. The number of quadrants
+  called fabric is the same (3 of 64), but on different materials.
+- Not rerun: `o1_learned_baseline/20261106T214141_196418Z` (GPU; code recorded as
+  `312c86f+uncommitted` with a source hash). The round-2 rerun of the same model
+  from recorded code (`audio_vs_accel/20261107T110948_431117Z`, `accel_rerun`)
+  gives 0.381 against its 0.378.
+- PREREGISTRATION.md keeps the original run IDs, because those are what the
+  entries were written against.
+
 ## Round 2, B — Contact audio vs acceleration (pre-registered)
 
 Run `audio_vs_accel/20261107T110948_431117Z` (Kaggle T4, code `c0efe48`). Same

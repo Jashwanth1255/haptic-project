@@ -249,7 +249,7 @@ majority-class baseline.
 \section{Results}
 
 \subsection{Compact descriptors do not separate the fabrics}\label{sec:sep}
-% run o1_gate/20261104T153936_758197Z
+% run o1_gate/20261108T113942_488140Z
 The gate fails on every criterion (Table~\ref{tab:gate}). The best-separated pair
 (lace--wool) reaches 0.57, well under the collapse threshold. Every dimension
 differs across materials (Holm $p<10^{-15}$), but the effects are small
@@ -272,7 +272,7 @@ Effective classes (need 8) & 1 & 1 \\
 \end{tabular}
 \end{table}
 
-Fig.~\ref{fig:var} shows why. % run o1_real_analysis/20261104T155118_372566Z
+Fig.~\ref{fig:var} shows why. % run o1_real_analysis/20261108T113952_427442Z
 Material explains 8--15\% of the variance of each raw dimension. Sliding direction
 and the material$\times$direction interaction together explain as much or more,
 and the residual, recording-to-recording variation is 24--61\%. Velocity dominates
@@ -319,7 +319,7 @@ from an unseen direction.
 \end{figure}
 
 \subsection{The centroid reflects the rig, not the surface}\label{sec:vel}
-% run velocity_all_materials/20261105T202123_412283Z
+% run velocity_all_materials/20261108T114149_659895Z
 Across all 118 materials, wood, stone and metal included, the centroid exponent
 is near zero (Table~\ref{tab:vel}, Fig.~\ref{fig:vel} left). None of the 118 lies
 within 0.25 of the $f=v/\lambda$ prediction, and 92\% lie within 0.25 of zero. The
@@ -370,7 +370,7 @@ recordings (pre-registered test). Runs
 \end{figure*}
 
 \subsection{Held-out replication: cloth spectra shift with velocity}\label{sec:confirm}
-% run velocity_confirm_cloth/20261105T203252_596852Z
+% run velocity_confirm_cloth/20261108T114348_515364Z
 We tested two one-sided predictions on cloth recordings not used in the
 discovery. They were fixed before the run but committed to the repository
 afterwards, so we report this as a held-out replication, not a pre-registered
@@ -401,7 +401,7 @@ Fabrics above 0 & 16 / 16 \\
 \end{table}
 
 \subsection{Flatbed scans are not photographs}\label{sec:scan}
-% runs o2_cluster_scans/20261104T161427_584869Z, o2_cluster_scan_scale/20261104T161606_361379Z
+% runs o2_cluster_scans/20261108T133149_279712Z, o2_cluster_scan_scale/20261108T113824_998654Z
 The MINC-trained classifier calls 75.6\% (189/250) of MINC's own fabric test
 photographs ``fabric'', but only 3.25\% (52/1,600) of the cloth scan crops
 (Fig.~\ref{fig:scan}). No fabric is classified as fabric by majority. Scans are
@@ -423,7 +423,7 @@ Cluster's 300~dpi cloth scans at three fields of view. Runs
 \end{figure}
 
 \subsection{Consequences for retrieval and rendering}
-% runs o3_real/20261104T161615_092994Z, o4_fidelity_real/20261104T155413_654754Z
+% runs o3_real/20261108T114001_519385Z, o4_fidelity_real/20261108T114014_304295Z
 Two exploratory checks follow from the above. First, we retrieved the descriptor of
 the most similar \emph{other} fabric, with the query fabric held out. Neither
 class-pair lookup nor cosine similarity of image features beat predicting the mean

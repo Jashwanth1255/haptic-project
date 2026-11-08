@@ -1,0 +1,17 @@
+{
+  "name": "velocity_confirm_cloth",
+  "run_id": "20261108T114348_515364Z",
+  "created_utc": "2026-11-08T11:43:48.515364+00:00",
+  "synthetic": false,
+  "git_commit": "9ba22bb61058ce40fbfd0379d86e20eae372dc13",
+  "git_dirty": false,
+  "dirty_paths": [],
+  "source_sha256": "05018d9201c31a94283b1d71c0835be8434b9d6233d1e1746d06a823e7f2a295",
+  "argv": [
+    "make_velocity_confirm.py",
+    "--root",
+    "data/cluster"
+  ],
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

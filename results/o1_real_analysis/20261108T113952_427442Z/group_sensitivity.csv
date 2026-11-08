@@ -1,0 +1,9 @@
+reading,group,n,n_pool,ratio,p,tested
+pile+weave+drape (registered reading),pile,2,13,,,False
+pile+weave+drape (registered reading),weave,7,13,0.8054519873718557,0.11421911421911422,True
+pile+weave+drape (registered reading),drape,4,13,0.899900621809338,0.2811188811188811,True
+pile+weave only,pile,2,9,,,False
+pile+weave only,weave,7,9,0.598483829095889,0.05555555555555555,True
+"all 16, neither included",pile,2,16,,,False
+"all 16, neither included",weave,7,16,0.7722077310265417,0.09982517482517482,True
+"all 16, neither included",drape,4,16,0.8517631111844651,0.24285714285714285,True
