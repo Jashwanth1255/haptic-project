@@ -128,3 +128,30 @@ def test_dataclasses_are_saved_as_their_fields(tmp_path):
         x: float = math.pi
     run = R.load_run(R.save_run("exp", C(), {}, synthetic=True, root=tmp_path))
     assert run.config == {"x": math.pi}
+
+
+def test_code_changes_ignore_results_and_untracked_documents():
+    status = (" M haptic/descriptor.py\n?? PLAN.docx\n?? new_script.py\n"
+              " M results/o1_gate/x/run.json\n?? notes/\n")
+    assert R._code_changes(status) == ["haptic/descriptor.py", "new_script.py", "notes/"]
+    assert R._code_changes("?? PLAN.docx\n") == []
+
+
+def test_source_digest_changes_with_code_and_ignores_line_endings(tmp_path):
+    (tmp_path / "pkg").mkdir()
+    (tmp_path / "data").mkdir()
+    (tmp_path / "pkg" / "a.py").write_bytes(b"x = 1\n")
+    (tmp_path / "data" / "big.py").write_bytes(b"ignored\n")
+    d1 = R.source_digest(tmp_path)
+    (tmp_path / "data" / "big.py").write_bytes(b"still ignored\n")
+    assert R.source_digest(tmp_path) == d1
+    (tmp_path / "pkg" / "a.py").write_bytes(b"x = 1\r\n")
+    assert R.source_digest(tmp_path) == d1
+    (tmp_path / "pkg" / "a.py").write_bytes(b"x = 2\n")
+    assert R.source_digest(tmp_path) != d1
+
+
+def test_runs_record_source_digest(tmp_path):
+    info = R.load_run(R.save_run("t", {}, {}, synthetic=True, root=tmp_path)).info
+    assert len(info["source_sha256"]) == 64
+    assert isinstance(info["dirty_paths"], list)

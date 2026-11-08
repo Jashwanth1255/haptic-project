@@ -21,6 +21,7 @@ from __future__ import annotations
 import dataclasses
 import json
 import math
+import hashlib
 import os
 import platform
 import re
@@ -57,8 +58,52 @@ def git_state(repo: Path = REPO) -> tuple[str | None, bool | None]:
                                 capture_output=True, text=True, check=True).stdout
     except (OSError, subprocess.CalledProcessError):
         return os.environ.get("RUNLOG_COMMIT") or None, None
-    changed = [line[3:].strip('"') for line in status.splitlines() if line.strip()]
-    return head, any(not p.startswith(RESULTS_DIR + "/") for p in changed)
+    return head, bool(_code_changes(status))
+
+
+def _code_changes(status: str) -> list[str]:
+    """Paths from `git status --porcelain` that can change what code runs: any
+    tracked change outside results/, and untracked .py files. Untracked documents
+    (a plan, a draft) do not make a run dirty."""
+    out = []
+    for line in status.splitlines():
+        if not line.strip():
+            continue
+        path = line[3:].strip('"')
+        if path.startswith(RESULTS_DIR + "/"):
+            continue
+        if line.startswith("??") and not (path.endswith(".py") or path.endswith("/")):
+            continue
+        out.append(path)
+    return out
+
+
+SOURCE_SKIP = {".git", RESULTS_DIR, "data", "derived", "__pycache__", ".pytest_cache", "paper"}
+
+
+def source_digest(repo: Path = REPO) -> str:
+    """sha256 over every .py file under the repository (path and bytes, sorted),
+    skipping data, results and caches. Two runs with the same digest ran the same
+    code, committed or not."""
+    h = hashlib.sha256()
+    files = []
+    for d, sub, names in os.walk(repo):
+        sub[:] = sorted(s for s in sub if s not in SOURCE_SKIP and not s.startswith("."))
+        files += [Path(d) / n for n in names if n.endswith(".py")]
+    files.sort(key=lambda f: f.relative_to(repo).as_posix())
+    for f in files:
+        h.update(f.relative_to(repo).as_posix().encode() + bytes([0]))
+        h.update(f.read_bytes().replace(bytes([13, 10]), bytes([10])) + bytes([0]))
+    return h.hexdigest()
+
+
+def dirty_paths(repo: Path = REPO) -> list[str] | None:
+    try:
+        status = subprocess.run(["git", "status", "--porcelain"], cwd=repo,
+                                capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return _code_changes(status)
 
 
 def plain(obj):
@@ -125,6 +170,8 @@ def save_run(name: str, config: dict, metrics: dict, artifacts: dict | None = No
         _dump(tmp / "run.json", {
             "name": name, "run_id": run_id, "created_utc": now.isoformat(),
             "synthetic": synthetic, "git_commit": commit, "git_dirty": dirty,
+            "dirty_paths": dirty_paths() if dirty else [],
+            "source_sha256": source_digest(),
             "argv": sys.argv, "python": sys.version.split()[0],
             "platform": platform.platform()})
         _dump(tmp / "config.json", config)
