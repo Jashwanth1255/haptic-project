@@ -159,13 +159,24 @@ specifies.
 
 This assignment must not change.
 
-## Confirmation: cloth spectra shift with velocity after whitening
+## Held-out replication: cloth spectra shift with velocity after whitening
 
-Written 2026-11-06, after run `velocity_all_materials/20261105T202123_412283Z`
+**Provenance correction (2026-11-08).** This entry was previously headed
+"Confirmation" and said it was written before the held-out recordings were
+analysed. The record does not support that. The replication run
+(`velocity_confirm_cloth/20261105T203252_596852Z`, 2026-11-05 20:32:52 UTC) ran
+eleven minutes after the exploratory run (`velocity_all_materials/20261105T202123_412283Z`,
+20:21:23 UTC), from an uncommitted tree. This entry was first committed in f8eb22e
+at 2026-11-06 21:51:15 UTC, about 25 hours after the replication run. The
+predictions were fixed locally before the run, but git cannot show that. So this
+is a held-out replication, not a pre-registration. The text below is unchanged
+except for the heading and the bolded sentence, and the result is unaffected.
+
+Committed 2026-11-06 (see the correction above), after run `velocity_all_materials/20261105T202123_412283Z`
 showed (post hoc) that cloth's rig-whitened spectral-shift exponent, median 0.218,
 exceeds the other 102 materials' median of −0.022. That finding came from
-directions 0° and 90°, first repeat only. **This entry is written before any of the
-held-out recordings below have been passed through the shift analysis.**
+directions 0° and 90°, first repeat only. ~~This entry is written before any of the held-out recordings below have been
+passed through the shift analysis.~~ (Not verifiable; see the correction above.)
 
 **Held-out data.** The 16 cloth materials (102–117): every recording at directions
 45, 135, 180, 225, 270 and 315°, both repeats, plus the second repeat at 0° and 90°.

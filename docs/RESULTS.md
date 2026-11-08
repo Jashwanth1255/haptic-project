@@ -262,9 +262,10 @@ the figure. Once the shared spectrum is removed, cloth is the only category that
 shifts upward with speed at all, median 0.22, with a cluster of materials at
 0.3–0.65.
 
-**Confirmed on held-out data.** Run `velocity_confirm_cloth/20261105T203252_596852Z`,
-pre-registered in PREREGISTRATION.md ("Confirmation: cloth spectra shift with
-velocity after whitening") before the held-out recordings were analysed. Held out:
+**Replicated on held-out data.** Run `velocity_confirm_cloth/20261105T203252_596852Z`,
+with predictions in PREREGISTRATION.md ("Held-out replication: cloth spectra shift
+with velocity after whitening"). That entry was committed 25 hours after the run,
+so this is a held-out replication, not a pre-registration (see the correction there). Held out:
 cloth at the six other directions, both repeats, plus the second repeat at 0° and
 90°. 2,240 recordings, 40 skipped, giving 444 (material, force, direction, repeat)
 cells. The whitening reference comes only from the original subset.
@@ -787,11 +788,11 @@ Run `o4_fidelity_real/20261104T155413_654754Z`. 80 in-band real recordings (20,
    118 within 0.25 of the f = v/λ prediction, centroid 240–270 Hz everywhere), so
    v/f normalisation hurts. This is a property of the measurement, not of cloth,
    and it matters for anyone rendering from Cluster.
-4. **Confirmed positive result (velocity, cloth):** after removing the spectrum
+4. **Replicated positive result (velocity, cloth):** after removing the spectrum
    shared by all surfaces, cloth alone shifts upward with speed, by about a third
    of v/λ (held-out median exponent 0.338, 16 of 16 materials above 0, Holm p =
-   1.5×10⁻⁵ and 1.1×10⁻⁹). It was found post hoc, then pre-registered and
-   confirmed on 2,240 held-out recordings. This is the strongest single result in
+   1.5×10⁻⁵ and 1.1×10⁻⁹). It was found post hoc, then replicated on 2,240
+   held-out recordings (predictions fixed locally, committed afterwards). This is the strongest single result in
    the project.
 5. **Pre-registration outcome:** confirmatory prediction failed (weave p = 0.23
    Holm) with pile untestable; drape as predicted, weakly.

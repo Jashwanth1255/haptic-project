@@ -48,7 +48,7 @@ spectral centroid does not follow sliding speed for any material and sits at
 240--270~Hz in every category, which indicates that it reflects the measurement
 rig. After the response shared by all surfaces is removed, cloth spectra shift
 upward with speed by about a third of the $f=v/\lambda$ prediction. This effect was
-found post hoc, then pre-registered and confirmed on 2,240 held-out recordings
+found post hoc, then replicated on 2,240 held-out recordings
 (median exponent 0.34, 16 of 16 fabrics above zero, Holm $p=1.5\times10^{-5}$).
 Finally, a photo-trained material classifier recognises only 3.25\% of the
 dataset's flatbed fabric scans as fabric, against 75.6\% of photographed fabric.
@@ -96,7 +96,7 @@ are:
 \item A dataset-level finding across all 118 materials: the spectral centroid of
 the probe acceleration is set by the rig, not the surface, and does not scale with
 velocity (Sec.~\ref{sec:vel}).
-\item A pre-registered, held-out confirmation that, relative to the response
+\item A held-out replication showing that, relative to the response
 shared by all surfaces, cloth spectra do shift with velocity, by about one third
 of the $f=v/\lambda$ prediction (Sec.~\ref{sec:vel}).
 \item A measurement of the domain gap between the dataset's flatbed scans and
@@ -369,10 +369,12 @@ recordings (pre-registered test). Runs
 \label{fig:vel}
 \end{figure*}
 
-\subsection{Pre-registered confirmation: cloth spectra shift with velocity}\label{sec:confirm}
+\subsection{Held-out replication: cloth spectra shift with velocity}\label{sec:confirm}
 % run velocity_confirm_cloth/20261105T203252_596852Z
-Before analysing them, we registered two one-sided predictions on cloth
-recordings not used in the discovery: (1) the cloth whitened exponent exceeds 0;
+We tested two one-sided predictions on cloth recordings not used in the
+discovery. They were fixed before the run but committed to the repository
+afterwards, so we report this as a held-out replication, not a pre-registered
+test: (1) the cloth whitened exponent exceeds 0;
 (2) it exceeds that of the 102 other materials (from the discovery run). The
 held-out data are cloth at the six other directions with both repeats, plus the
 second repeat at 0$^\circ$ and 90$^\circ$: 2,240 recordings, 40 skipped, 444
@@ -385,7 +387,7 @@ Both predictions hold (Table~\ref{tab:confirm}). All 16 fabrics shift upward, fr
 stroking speed by about a third of $v/\lambda$, and no other category's do.
 
 \begin{table}[t]
-\caption{Pre-registered held-out test (444 cells, 16 fabrics)}
+\caption{Held-out replication (444 cells, 16 fabrics)}
 \label{tab:confirm}
 \centering
 \begin{tabular}{lc}
@@ -562,7 +564,7 @@ On the 16 cloth materials of the Cluster dataset, compact vibrotactile descripto
 do not separate fabrics, although the signal carries identity that a spectrogram
 CNN partly recovers. The probe's spectral centroid is a property of the rig, not
 of the surface. Measured against the response shared by all surfaces, cloth
-spectra shift with speed in a way that survives a pre-registered held-out test.
+spectra shift with speed in a way that replicates on held-out recordings.
 Image models trained on photographs do not recognise the dataset's scans as
 fabric, and their visual similarity does not predict vibrotactile similarity
 between fabrics. Contact audio identifies fabrics better than acceleration. A
