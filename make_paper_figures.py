@@ -173,7 +173,7 @@ def fig_velocity(sources):
     m = run.metrics
     fig.suptitle(f"No material follows f = v/λ; once the shared rig spectrum is removed, only cloth "
                  f"shifts with speed\n(all {m['n_materials']} materials; bar = median; orange = "
-                 f"cloth; hollow = pre-registered held-out cloth recordings)",
+                 f"cloth; hollow = held-out replication, cloth)",
                  x=0.06, y=1.07, ha="left", fontsize=9, fontweight="bold")
     runs = {"velocity_all_materials": run.info["run_id"]}
     if confirm is not None:
