@@ -1,0 +1,12 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Analysing : photo chosen
+    Analysing --> Ready : result received
+    Analysing --> Error : bad image or server error
+    Error --> Idle : choose another photo
+    Ready --> Playing : tap Play
+    Playing --> Ready : pattern finished
+    Ready --> Comparing : compare mode on
+    Comparing --> Ready : compare mode off
+    Ready --> Analysing : new photo chosen
+    Ready --> [*] : page closed

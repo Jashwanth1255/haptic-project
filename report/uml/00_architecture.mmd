@@ -1,0 +1,40 @@
+flowchart TB
+    subgraph DATA[Public data]
+        CL[Cluster Haptic Texture Dataset<br/>118 materials, 16 cloth]
+        MI[MINC-2500<br/>material photos]
+        DT[DTD<br/>texture photos]
+        DF[DeepFashion-MultiModal<br/>product photos]
+    end
+    subgraph O1[O1 Haptic database]
+        LD[Loader and steady-sliding window]
+        DE[Descriptor extraction<br/>20-1000 Hz]
+        GT[Separability gate<br/>and statistics]
+    end
+    subgraph O2[O2 Visual classification]
+        RM[ResNet-50<br/>material model]
+        RT[ResNet-50<br/>texture model]
+        TR[Scan to photo<br/>transfer test]
+    end
+    subgraph O3[O3 Association and velocity]
+        AS[Class-pair lookup or embedding<br/>similarity; velocity analysis]
+    end
+    subgraph O4[O4 Rendering and interface]
+        EN[On/off encoder<br/>10 ms tick]
+        WA[FastAPI web app<br/>Vibration API]
+    end
+    subgraph O5[O5 User study]
+        RI[Rating instrument]
+    end
+    RL[(Run log: config, metrics,<br/>commit and source hash)]
+    CL --> LD --> DE --> GT
+    MI --> RM
+    DT --> RT
+    DF --> TR
+    RM --> TR
+    RT --> TR
+    RT --> AS
+    DE --> AS
+    AS --> EN --> WA --> RI
+    GT --> RL
+    TR --> RL
+    AS --> RL

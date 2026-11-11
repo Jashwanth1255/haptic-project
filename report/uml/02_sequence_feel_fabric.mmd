@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant Shopper
+    participant Page as Web page
+    participant App as FastAPI app
+    participant Pipe as Pipeline
+    participant Model as DTD ResNet-50
+    participant Rend as Renderer
+    participant Log as SessionLog
+    Shopper->>Page: Choose garment photo
+    Page->>App: POST /api/analyse (image)
+    App->>Pipe: analyse(image)
+    Pipe->>Model: classify(image)
+    Model-->>Pipe: ranked textile classes
+    Pipe->>Pipe: look up descriptor for top class
+    Pipe->>Rend: encode patterns A-D and fidelity
+    Rend-->>Pipe: patterns and fidelity scores
+    Pipe-->>App: result with timings
+    App-->>Page: JSON (class, waveform, spectrum, patterns)
+    Page-->>Shopper: show waveform, spectrum and top-3 classes
+    Shopper->>Page: Tap Play
+    Page->>Page: navigator.vibrate(pattern)
+    Page-->>Shopper: phone vibrates
+    Page->>App: POST /api/latency (timings)
+    App->>Log: append latency record
+    Page->>App: POST /api/session (device model)
+    App->>Log: append session record

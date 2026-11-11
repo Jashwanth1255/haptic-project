@@ -1,0 +1,122 @@
+classDiagram
+    class Descriptor {
+        +int material_id
+        +float velocity_mm_s
+        +float force_n
+        +float frequency_hz
+        +float intensity
+        +float pattern
+        +float duration_ms
+        +core_vector() ndarray
+        +full_vector() ndarray
+        +as_dict() dict
+    }
+    class DescriptorExtractor {
+        +to_magnitude(accel) ndarray
+        +bandpass(x, fs) ndarray
+        +spectral_centroid(f, p) float
+        +spectral_entropy(f, p) float
+        +envelope_period_ms(env, fs) float
+        +extract(accel, fs) Descriptor
+        +normalise(d) dict
+    }
+    class ClusterLoader {
+        +discover(root, material_ids) list
+        +steady_window(position, velocity) tuple
+        +load(stub, fs) dict
+        +load_names(root) dict
+    }
+    class SeparabilityGate {
+        +anova_by_dimension(df) DataFrame
+        +holm_adjust(p_values) ndarray
+        +pairwise_separation(df) DataFrame
+        +run_gate(descriptors) GateResult
+    }
+    class GateResult {
+        +bool passed
+        +float silhouette
+        +int n_materials
+        +int effective_classes
+        +list collapsed_pairs
+        +summary() str
+    }
+    class RenderConfig {
+        +float intensity_ref
+        +int duration_ms
+        +int tick_ms
+    }
+    class VibrationPattern {
+        +str scheme
+        +tuple durations
+        +int tick_ms
+        +total_ms() int
+        +duty() float
+    }
+    class Fidelity {
+        +str scheme
+        +float log_spectral_db
+        +float wasserstein_hz
+        +float level_error
+        +renderable() bool
+    }
+    class Renderer {
+        +encode_a(d, cfg) VibrationPattern
+        +encode_b(d, cfg, envelope) VibrationPattern
+        +encode_c(d, cfg) VibrationPattern
+        +encode_d(reference, seed) VibrationPattern
+        +fidelity(envelope, pattern) Fidelity
+    }
+    class TextureClassifier {
+        +ResNet50 model
+        +classify(image) list
+    }
+    class Retrieved {
+        +str fabric
+        +ndarray signal
+        +ndarray envelope
+        +Descriptor descriptor
+    }
+    class Pipeline {
+        +load_classifier(checkpoint) TextureClassifier
+        +build_library() dict
+        +analyse(image, classify, library, cfg) dict
+    }
+    class WebApp {
+        +index() page
+        +analyse(image) json
+        +session(record) json
+        +latency(record) json
+    }
+    class SessionLog {
+        +Path dir
+        +session(data) dict
+        +latency(data) dict
+        +latency_summary() dict
+    }
+    class RunLog {
+        +save_run(name, config, metrics) Path
+        +load_run(name) Run
+        +source_digest() str
+    }
+    class Run {
+        +Path path
+        +dict info
+        +dict config
+        +dict metrics
+        +table(name) DataFrame
+    }
+    ClusterLoader ..> DescriptorExtractor : supplies recordings
+    DescriptorExtractor ..> Descriptor : creates
+    SeparabilityGate ..> Descriptor : analyses
+    SeparabilityGate ..> GateResult : returns
+    Renderer ..> RenderConfig : uses
+    Renderer ..> VibrationPattern : creates
+    Renderer ..> Fidelity : scores
+    Retrieved *-- Descriptor
+    Pipeline --> TextureClassifier
+    Pipeline o-- Retrieved : library
+    Pipeline ..> Renderer : encodes with
+    WebApp --> Pipeline
+    WebApp --> SessionLog
+    RunLog ..> Run : saves and loads
+    SeparabilityGate ..> RunLog : saves results

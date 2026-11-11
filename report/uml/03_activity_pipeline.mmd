@@ -1,0 +1,17 @@
+flowchart TD
+    A([Start]) --> B[Garment photo uploaded]
+    B --> C[Classify texture with DTD ResNet-50]
+    C --> D[Take top class and top-3 probabilities]
+    D --> E[Retrieve descriptor for the class]
+    E --> F[Encode on/off patterns with a 10 ms tick]
+    F --> G[Score fidelity of each pattern]
+    G --> H[Show waveform, spectrum and fidelity]
+    H --> I{Can this browser vibrate?}
+    I -->|No: iOS or desktop| J[Show waveform and spectrum only]
+    I -->|Yes: Android| K{Compare mode on?}
+    K -->|No| L[Play pattern with navigator.vibrate]
+    K -->|Yes| M[Load second fabric and play both in turn]
+    M --> L
+    L --> N[Log device model and latency]
+    J --> O([End])
+    N --> O
